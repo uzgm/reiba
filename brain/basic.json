@@ -1,0 +1,23 @@
+{
+  "topic": "en",
+  "entries": [
+    {
+      "id": "hello",
+      "tags": ["hello", "hi", "hey", "greeting"],
+      "patterns": ["hello", "hi there", "hey how are you"],
+      "answer": "Hello! I’m a small language model that reads the JSON files in my brain folder. Ask me something!"
+    },
+    {
+      "id": "llm",
+      "tags": ["llm", "language", "model", "token"],
+      "patterns": ["what is a language model", "what is an llm", "how do language models work"],
+      "answer": "A language model splits text into tokens and uses patterns it has learned to pick the most fitting response. I do a tiny version of that with word tokens and similarity scores."
+    },
+    {
+      "id": "learn",
+      "tags": ["learn", "train", "brain", "json"],
+      "patterns": ["how do you learn", "how can i teach you", "where is your knowledge"],
+      "answer": "I learn by reading JSON files in the brain folder. Add a new file with patterns and answers, load it, and I’ll know it right away."
+    }
+  ]
+}
