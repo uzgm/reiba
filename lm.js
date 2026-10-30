@@ -412,8 +412,16 @@ function farthest(E, from) {
   return last;
 }
 
+const SYMN = "친구|형제|자매|남매|부부|연인|동료|이웃|사촌|라이벌|동창|동기|짝꿍|파트너|사돈|룸메이트";
 const expand = s => { // “고양이, 개는 동물이다”·“고양이는 동물이고 포유류다”를 문장 여러 개로
   const t = s.replace(/^(그럼|그러면|그렇다면|그리고|그런데|근데|그래서)\s+/, "");
+  const sm = !/\d|면\s/.test(t) && t.match(/^(\S{2,}?)[와과]\s+(\S+?)[은는이가]\s+(.+)$/);
+  if (sm && !/^(서로\s+)?(같|다르|비슷|동갑)/.test(sm[3])) { // “A와 B는 …”: 대칭 관계는 양방향으로, 공동 주어는 각각으로
+    const [, A, B, rest] = sm, qn = isQ(t, stripP(t)), sy = new RegExp(`^(?:서로\\s+)?(?:${SYMN})`).test(rest), body = rest.replace(/^서로\s+/, "");
+    if (sy) return [`${A}는 ${B}의 ${body}`, ...(qn ? [] : [`${B}는 ${A}의 ${body}`])].flatMap(expand);
+    if (/^서로\s/.test(rest)) return [`${A}는 ${B}를 ${body}`, ...(qn ? [] : [`${B}는 ${A}를 ${body}`])].flatMap(expand);
+    return [`${A}는 ${rest}`, `${B}는 ${rest}`].flatMap(expand);
+  }
   if (/\d|면\s/.test(t) || isQ(t, stripP(t))) return [t];
   let m = t.match(/^((?:[^\s,]+,\s*)+)([^\s,]+?)([은는이가])\s+(.+)$/);
   if (m) return [...m[1].split(/,\s*/).filter(Boolean), m[2]].flatMap(n => expand(`${n}${m[3]} ${m[4]}`));
@@ -542,6 +550,87 @@ function wordProblem(q0) {
   return `풀이: ${expr} = ${fmt(v)}${u}\n(문장 속 숫자 ${n.length}개와 행동 단서를 읽어서 식을 세웠어)`;
 }
 
+/* ---------- 수량 추론: 숫자가 든 사실·비교·합계·주고받기를 연립방정식으로 세워 푼다 ---------- */
+const UN = "개|명|마리|권|장|원|살|번|대|병|송이|자루|시간|분|초|cm|km|kg|잔|그루|켤레|봉지|상자|층|점|m", UNR = new RegExp("^(?:" + UN + ")");
+const KN = { 한: 1, 두: 2, 세: 3, 네: 4, 다섯: 5, 여섯: 6, 일곱: 7, 여덟: 8, 아홉: 9, 열: 10 };
+const fnum = v => (+v.toPrecision(10)).toLocaleString("ko-KR", { maximumFractionDigits: 6 });
+const qnm = t => t.replace(/(보다는?|에게서?|한테서?|께|은|는|이|가|도|와|과|의|을|를|만)$/, ""), inm = t => t.replace(/(을|를|은|는|이|가)$/, "");
+function gauss(eqs) { // Σ(계수×변수)=상수 꼴의 식들을 풀어 값이 하나로 정해진 변수와 모순 여부를 돌려준다
+  const vs = [...new Set(eqs.flatMap(e => Object.keys(e.c)))], n = vs.length, M = eqs.map(e => [...vs.map(v => e.c[v] || 0), e.r]), piv = []; let row = 0;
+  for (let c = 0; c < n && row < M.length; c++) {
+    let p = row; for (let i = row + 1; i < M.length; i++) if (Math.abs(M[i][c]) > Math.abs(M[p][c])) p = i;
+    if (Math.abs(M[p][c]) < 1e-9) continue;
+    [M[row], M[p]] = [M[p], M[row]]; const d = M[row][c]; M[row] = M[row].map(x => x / d);
+    for (let i = 0; i < M.length; i++) if (i !== row && Math.abs(M[i][c]) > 1e-12) { const f = M[i][c]; M[i] = M[i].map((x, j) => x - f * M[row][j]); }
+    piv.push(c); row++;
+  }
+  const val = {}; piv.forEach((c, i) => { if (M[i].every((x, j) => j === c || j === n || Math.abs(x) < 1e-9)) val[vs[c]] = M[i][n]; });
+  return { val, bad: M.some(r => r.slice(0, n).every(x => Math.abs(x) < 1e-9) && Math.abs(r[n]) > 1e-9) };
+}
+function qty(q0) {
+  if (!/\d|몇|얼마|누가|누구/.test(q0)) return;
+  const Q = mem.qty || (mem.qty = { sets: {}, item: "", unit: "" });
+  const q = q0.replace(new RegExp(`(${Object.keys(KN).join("|")})\\s*(?=${UN})`, "g"), (m, k) => KN[k]).replace(new RegExp(`(\\d)\\s+(?=${UN})`, "g"), "$1");
+  const ev = []; let last = Q.last, carry = false, bad = false;
+  for (const sent of q.split(/(?<=[.!?。？])\s+/)) { const parts = sent.split(/,\s*/); parts.forEach((c0, pi) => { /* ① 문장을 사건으로 */
+    const cl = stripP(c0); if (!cl) return; const tk = cl.split(/\s+/), nt = tk.filter(t => /^\d/.test(t));
+    const than = tk.find(t => /보다는?$/.test(t)), sg = tk.map(t => adj(t.replace(/이$/, ""))).find(Boolean);
+    const sj = tk.find(t => t !== than && !/^\d/.test(t) && t.length > 1 && /[은는이가]$/.test(t) && !/^(둘이|셋이|누가|누구가?|우리가?|모두가?)$/.test(t));
+    const co = tk.filter(t => t.length > 2 && /[와과]$/.test(t)).map(qnm), s = sj ? qnm(sj) : last, of = tk.find(t => /의$/.test(t) && t !== sj);
+    if (/[?？]\s*$/.test(c0) || /(몇|얼마|누가|누구)/.test(cl)) { ev.push({ k: "q", cl, sj, than, sg, co }); return; }
+    if (!nt.length) { bad = true; return; }
+    const ni = tk.indexOf(nt[0]), np = nt.length === 1 && tk[ni].match(/^(\d+(?:\.\d+)?)(.*)$/);
+    if (!np) { bad = true; return; }
+    const N = +np[1], mul = /^배/.test(np[2]), un = (np[2].match(UNR) || [])[0], pv = ni > 0 ? tk[ni - 1] : "";
+    const it = pv && pv !== sj && pv !== than && !/^(더|각각|모두|총|합쳐서?|함께|정확히|딱)$|의$/.test(pv) ? inm(pv) : "", E = { cl, N, it, un };
+    if (!(un || mul)) { bad = true; return; }
+    if (than && (sg || mul) && s && !(mul && !N)) { const sn = sg ? sg.s : 1; ev.push({ ...E, k: "rel", a: s, b: qnm(than), d: mul ? 0 : sn * N, m: mul ? (sn > 0 ? N : 1 / N) : 1 }); last = s; return; }
+    if (mul && of && sj && N) { ev.push({ ...E, k: "rel", a: qnm(sj), b: qnm(of), d: 0, m: N }); last = qnm(sj); return; }
+    if (/합쳐|합치|합하|합계|모두|전부|둘이|함께|다해/.test(cl) && !/씩|각각/.test(cl)) { ev.push({ ...E, k: "sum", names: [...co, ...(sj ? [qnm(sj)] : [])] }); return; }
+    const to = tk.find(t => /(에게|한테|께)$/.test(t));
+    if (to && /(줬|주었|준다|드렸|건넸)/.test(cl) && s) { ev.push({ ...E, k: "xf", a: s, to: qnm(to) }); last = s; return; }
+    if (s && /(먹었|먹는다|썼|쓴다|잃었|잃어|버렸|팔았|떨어뜨렸|깨뜨렸|가져갔|사용했)/.test(cl)) { ev.push({ ...E, k: "dec", a: s }); last = s; return; }
+    if (s && /(받았|얻었|주웠|땄|캤|생겼|샀|벌었|늘었|추가)/.test(cl)) { ev.push({ ...E, k: "inc", a: s }); last = s; return; }
+    if (s && (/(가지고|가졌|갖고|가진|가져|갖|있|보유|이다|이야|이에요|예요|입니다)/.test(cl) || /씩|각각/.test(cl) || ((carry || pi < parts.length - 1) && tk.length <= 3))) { ev.push({ ...E, k: "fact", names: [...co, s] }); carry = true; last = s; return; }
+    bad = true;
+  }); }
+  if (bad || !ev.length) return;
+  /* ② 사건을 식으로 쌓고 푼다. 사과·연필처럼 물건마다 식 묶음을 따로 둔다 */
+  const out = [], learn = [], St = () => Q.sets[Q.item] || (Q.sets[Q.item] = { eq: [], cur: {} });
+  const V = n => n + "#" + (St().cur[n] || 0), has = n => St().cur[n] != null, touch = n => { if (!has(n)) St().cur[n] = 0; };
+  const add = (c, r, s, drop) => { const L = [...St().eq.filter(x => x !== drop), { c, r, s }]; if (gauss(L).bad) return false; St().eq = L; return true; };
+  const bump = (n, d, s) => { touch(n); const o = V(n); St().cur[n]++; return add({ [V(n)]: 1, [o]: -1 }, d, s); }; // 주고받기는 ‘새 시점의 변수’로 표현
+  const why = (S, vs) => { const seen = new Set(vs), use = new Set(); for (let g = true; g;) { g = false; for (const x of S.eq) if (!use.has(x) && Object.keys(x.c).some(k => seen.has(k))) { use.add(x); Object.keys(x.c).forEach(k => seen.add(k)); g = true; } } return [...new Set(S.eq.filter(x => use.has(x)).map(x => "• " + x.s))].join("\n"); };
+  const ask = e => {
+    const cl = e.cl, nA = e.sj && qnm(e.sj), nB = e.than && qnm(e.than), names = [nA, nB, ...e.co].filter(Boolean);
+    if (names.length && !names.every(n => has(n))) { const k = Object.keys(Q.sets).find(k => names.every(n => Q.sets[k].cur[n] != null)); if (k != null) Q.item = k; }
+    const S = St(), val = gauss(S.eq).val, u = Q.unit, g = n => val[V(n)], known = names.every(has), wh = /(몇|얼마)/.test(cl);
+    if (!Object.keys(S.cur).length) return;
+    const say = (t, vs) => t + "\n" + why(S, vs.map(V)), no = vs => known ? say("알려준 정보만으로는 알 수 없어.", vs) : undefined;
+    if (nA && nB && /몇\s*배/.test(cl)) { const a = g(nA), b = g(nB); return a != null && b ? say(`${nA}는 ${nB}의 ${fnum(a / b)}배야!`, [nA, nB]) : no([nA, nB]); }
+    if (nA && nB && wh) { const a = g(nA), b = g(nB), more = !e.sg || e.sg.d === 5; return a != null && b != null ? say(a === b ? `${nA}와 ${nB}는 ${fnum(a)}${u}로 똑같아!` : `${nA}가 ${nB}보다 ${fnum(Math.abs(a - b))}${u} ${a > b ? (more ? "더 많아" : "더 커") : (more ? "더 적어" : "더 작아")}!`, [nA, nB]) : no([nA, nB]); }
+    if (nA && nB && e.sg) { const a = g(nA), b = g(nB); if (a == null || b == null) return; return say(`${(e.sg.s > 0 ? a > b : a < b) ? "응" : "아니야"}, ${nA}는 ${fnum(a)}${u}, ${nB}는 ${fnum(b)}${u}야.`, [nA, nB]); }
+    if (/누가|누구/.test(cl)) { const ks = Object.keys(S.cur), mx = e.sg && e.sg.s < 0 ? -1 : 1; if (ks.length < 2 || ks.some(k => g(k) == null)) return; const best = Math.max(...ks.map(k => mx * g(k))), w = ks.filter(k => mx * g(k) === best); return say(w.length > 1 ? `${w.join(", ")} 모두 ${fnum(g(w[0]))}${u}로 같아!` : `${w[0]}! (${fnum(g(w[0]))}${u})`, ks); }
+    if (/합쳐|합치|합하|합계|모두|전부|둘이|함께|다해|총/.test(cl)) { const ns = names.length ? names : Object.keys(S.cur); if (!ns.length || ns.some(n => g(n) == null)) return no(ns); return say(`합쳐서 ${fnum(ns.reduce((a, n) => a + g(n), 0))}${u}야! (${ns.map(n => `${n} ${fnum(g(n))}`).join(" + ")})`, ns); }
+    if (nA && wh) { const a = g(nA); return a != null ? say(`${nA}는 ${fnum(a)}${u}야!`, [nA]) : no([nA]); }
+  };
+  for (const e of ev) {
+    if (e.it) Q.item = e.it; if (e.un) Q.unit = e.un;
+    if (e.k === "q") { const r = ask(e); if (r) out.push(r); continue; }
+    const ok = () => learn.push(e.cl), fail = () => out.push(`앞에서 알려준 것과 맞지 않아서 “${e.cl}”는 기억하지 않았어. (처음부터 하려면 ‘기억 지우기’)`);
+    const fact = (n, v) => { touch(n); const old = St().eq.find(x => Object.keys(x.c).length === 1 && x.c[V(n)] === 1); add({ [V(n)]: 1 }, v, e.cl, old) ? ok() : fail(); };
+    if (e.k === "fact") e.names.forEach(n => fact(n, e.N));
+    else if (e.k === "rel") { touch(e.a); touch(e.b); add({ [V(e.a)]: 1, [V(e.b)]: -e.m }, e.d, e.cl) ? ok() : fail(); }
+    else if (e.k === "sum") { const ns = e.names.length > 1 ? e.names : Object.keys(St().cur); if (ns.length < 2) { out.push("누구와 누구의 합인지 몰라. 먼저 각자의 이름과 함께 알려줘."); continue; } ns.forEach(touch); add(Object.fromEntries(ns.map(n => [V(n), 1])), e.N, e.cl) ? ok() : fail(); }
+    else if (e.k === "xf") { bump(e.a, -e.N, e.cl); bump(e.to, e.N, e.cl); ok(); }
+    else if (e.k === "inc" && !has(e.a)) fact(e.a, e.N);
+    else { bump(e.a, e.k === "inc" ? e.N : -e.N, e.cl); ok(); }
+  }
+  Q.last = last; root.LMKit.onMem && root.LMKit.onMem(mem);
+  if (out.length) return out.join("\n\n");
+  if (learn.length) return "알겠어! 수량을 기억해둘게:\n" + [...new Set(learn)].map(x => "• " + x).join("\n") + "\n이제 ‘몇 개야?’, ‘둘이 합치면?’, ‘누가 더 많아?’처럼 물어봐!";
+}
+
 /* ---------- 스킬: brain보다 먼저 시도하는 정확한 규칙들 ---------- */
 const SK = [
   ["기억", q => {
@@ -578,6 +667,7 @@ const SK = [
     if (/몇\s*시|지금\s*시간|현재\s*시간|what time/i.test(q)) return `지금은 ${d.toLocaleTimeString("ko-KR", { hour: "numeric", minute: "2-digit" })}이야.`;
     if (/(오늘|지금).*(날짜|며칠|요일)|무슨\s*요일|what day/i.test(q)) return `오늘은 ${d.toLocaleDateString("ko-KR", { year: "numeric", month: "long", day: "numeric", weekday: "long" })}이야.`;
   }],
+  ["수량", q => qty(q)],
   ["문장제", q => wordProblem(q)],
   ["배우기", q => { // 되묻기 칩의 답: 어간을 mem.lex에 저장하고, 못 풀던 문장을 다시 푼다
     const m = q.trim().match(/^'(.+?)'\s*[은는]\s*(크다류|작다류|기타)$/); if (!m) return;
