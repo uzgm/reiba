@@ -295,7 +295,7 @@ const adj = t => { t = stripP(t); for (let d = 0; d < DIMS.length; d++) { if (DI
 /* ---------- 추론 v2 ----------
    정규식으로 문장 전체를 맞추지 않고 ① 조사로 어절의 역할을 나누고 ② 서술어 어간을 사전에서 찾아
    ③ (주어, 관계, 대상, 부정) 조각으로 조립한 뒤 ④ 규칙(전이·상속·모순·조건)으로 추론한다. */
-const PART = [["에게", "to"], ["한테", "to"], ["보다", "than"], ["은", "top"], ["는", "top"], ["이", "sub"], ["가", "sub"], ["을", "obj"], ["를", "obj"], ["도", "also"]];
+const PART = [["에게", "to"], ["한테", "to"], ["보다", "than"], ["은", "top"], ["는", "top"], ["이", "sub"], ["가", "sub"], ["을", "obj"], ["를", "obj"], ["도", "also"], ["에서", "loc"], ["에", "loc"]];
 const ADN = /(있는|없는|하는|되는|먹는|가진|같은|좋은|작은|높은|낮은|많은|적은|넓은|좁은|깊은|얕은)$/; // 명사를 꾸미는 말은 조사가 아니다
 const roles = s => stripP(s).split(/\s+/).filter(Boolean).map(raw => {
   if (!ADN.test(raw)) for (const [p, r] of PART) if (raw.length > p.length && raw.endsWith(p)) return { w: raw.slice(0, -p.length), r, raw };
@@ -303,15 +303,19 @@ const roles = s => stripP(s).split(/\s+/).filter(Boolean).map(raw => {
 });
 const WH = /^(누구|누|뭐|뭘|무엇|무얼|어디|어느|어떤)$/;
 const DEIC = /^(나|너|저|내|네|우리|당신|이것|그것|이거|그거|이건|그건|이게|그게)$/;
-const REL = { 먹: "eats", 마시: "drinks", 있: "has", 가지: "has", 좋아하: "likes", 싫어하: "dislikes" }; // 서술어 사전. 모르는 어간은 어간 자체가 관계 이름이 된다
-const CH = { isa: 1, prop: 1 }; // 이어 붙일 수 있는(전이되는) 관계
+const REL = { 먹: "eats", 마시: "drinks", 있: "has", 가지: "has", 좋아하: "likes", 싫어하: "dislikes", 즐기: "likes", 사랑하: "likes", 선호하: "likes", 미워하: "dislikes", 꺼리: "dislikes", 잡아먹: "eats", 섭취하: "eats", 보유하: "has", 소유하: "has" };
+const LOCV = /^(사|있|없|위치하|머물|지내|계시|존재하)$/; // 서술어 사전. 모르는 어간은 어간 자체가 관계 이름이 된다
+const CH = { isa: 1, prop: 1, in: 2 }; // 같은 숫자끼리만 이어 붙인다 (isa·prop은 개념 사슬, in은 장소 사슬) // 이어 붙일 수 있는(전이되는) 관계
 const dn = d => typeof d === "number" ? DIMS[d][0] : d.slice(1) + "다 기준";
 const fold = w => { // 활용형 받침 ㄴ/ㄹ을 떼서 기본형 쪽으로 (온→오, 갈→가)
   const c = w.charCodeAt(w.length - 1) - 0xAC00; if (!(c >= 0 && c < 11172)) return w;
   const f = c % 28; return f === 4 || f === 8 ? w.slice(0, -1) + String.fromCharCode(0xAC00 + c - f) : w;
 };
-const vstem = raw => fold(raw.replace(/(?:었|았|였|겠)?(?:는다|습니다|니다|는|은|을까요|을까|ㄹ까요|면|다|요|어|아|지|죠|까|냐)+$/, "").replace(/해$/, "하").replace(/[셔져쳐]$/, m => ({ 셔: "시", 져: "지", 쳐: "치" })[m]));
-const same = (a, b) => a.f === b.f && a.t === b.t && (a.r === b.r || (CH[a.r] && CH[b.r])); // isa/prop은 같은 줄기로 본다
+const hap = w => w.replace(/([가-힣])니[다까]$/, (m, c) => { if (c === "습") return m; const x = c.charCodeAt(0) - 0xAC00; return x % 28 === 17 ? String.fromCharCode(0xAC00 + x - 17) : c; }); // 갑니다→가
+const past = w => { const c = w.charCodeAt(w.length - 1) - 0xAC00; if (!(c >= 0 && c < 11172) || c % 28 !== 20) return w; const nm = { 9: 8, 14: 13, 0: 0, 1: 0, 4: 4, 6: 20, 10: 11 }[((c % 588) / 28) | 0]; return nm == null ? w : w.slice(0, -1) + String.fromCharCode(0xAC00 + ((c / 588 | 0) * 21 + nm) * 28); }; // 왔→오 갔→가 했→하 줬→주 가졌→가지
+const bfix = w => { if (/[워웠]$/.test(w)) return w.slice(0, -1) + "우"; const c = w.charCodeAt(w.length - 1) - 0xAC00; return c >= 0 && c < 11172 && c % 28 === 17 ? w.slice(0, -1) + String.fromCharCode(0xAC00 + c - 17) + "우" : w; }; // 춥/추워/추웠 → 추우
+const vstem = raw => bfix(past(fold(hap(raw).replace(/(?:었|았|였|겠)?(?:는다|습니다|습니까|니다|는|은|을까요|을까|ㄹ까요|면|다|요|어|아|지|죠|까|냐)+$/, "").replace(/해$/, "하").replace(/[셔져쳐]$/, m => ({ 셔: "시", 져: "지", 쳐: "치" })[m]))));
+const same = (a, b) => a.f === b.f && a.t === b.t && (a.r === b.r || (CH[a.r] && CH[a.r] === CH[b.r])); // isa/prop은 같은 줄기로 본다
 const miss = s => { const a = mem.miss || (mem.miss = []); if (!a.includes(s) && a.length < 30) a.push(s); };
 
 /* 문장 하나를 조각으로: 주어·대상·비교 기준·서술어·부정·최상급 플래그 */
@@ -321,14 +325,14 @@ function parse(raw) {
     if (/^(모든|모두|전부)$/.test(x.raw)) return false;
     if (/^(제일|가장|젤)$/.test(x.raw)) { F.sup = true; return false; }
     if (/^(안|못)$/.test(x.raw)) { F.neg = true; return false; }
-    return !/^(더|훨씬|조금|좀|매우|아주|정말)$/.test(x.raw);
+    return !/^(더|훨씬|조금|좀|매우|아주|정말|그럼|그러면|그렇다면|그리고|근데|그런데|그래서|혹시|또)$/.test(x.raw);
   });
   if (ws.length < 2) return null;
   const rest = ws.slice(0, -1); let verb = ws[ws.length - 1];
   if (/^(않|못하|못한)/.test(verb.raw) && rest.length > 1) { F.neg = true; verb = rest.pop(); } // “먹지 않는다”: 앞 어절이 서술어
   const tops = rest.filter(x => x.r === "top"), subs = rest.filter(x => x.r === "sub" || x.r === "also");
   const to = rest.find(x => x.r === "to"), subj = tops[0] || (to ? to : subs[0]);
-  Object.assign(F, { subj, verb, vraw: verb.raw, than: rest.find(x => x.r === "than"), obj: rest.find(x => x.r === "obj") || (tops[0] || to ? subs[0] : subs[1]) });
+  Object.assign(F, { subj, verb, vraw: verb.raw, than: rest.find(x => x.r === "than"), loc: rest.find(x => x.r === "loc"), obj: rest.find(x => x.r === "obj") || (tops[0] || to ? subs[0] : subs[1]) });
   F.cop = /(이다|이야|이에요|예요|에요|입니다|인가요|인가|이냐|일까요|일까|이죠|야)$/.test(verb.raw);
   F.whS = !!subj && WH.test(subj.w);
   F.whO = rest.some(x => x !== subj && (WH.test(x.w) || WH.test(x.raw)));
@@ -338,8 +342,10 @@ function parse(raw) {
   const tail = rest.slice(rest.indexOf(subj) + 1).filter(x => x !== F.obj).map(x => x.raw);
   let r, t;
   if (/^아[니닙냐]/.test(verb.raw)) { F.neg = true; if (F.obj) { r = "isa"; t = key(F.obj.w); } }
+  else if (F.loc && !F.obj && /^(속하|포함되|해당하)$/.test(v)) { r = "isa"; t = key(F.loc.w); }
+  else if (F.loc && !F.obj && !F.cop && LOCV.test(v)) { if (no) F.neg = true; r = "in"; t = key(F.loc.w); }
   else if (F.obj && !F.cop) { if (no) F.neg = true; const vs = no ? "있" : v; r = REL[vs] || vs; t = key(F.obj.w); }
-  else if (F.cop) { r = "isa"; t = key([...tail, stem(verb.raw)].join("")); }
+  else if (F.cop) { r = "isa"; t = key([...tail, stem(verb.raw)].join("")).replace(/(의)?(일종|종류|한종류|한가지|일원)$/, ""); }
   else { if (no) F.neg = true; r = "prop"; t = key([...tail, no ? "있" : v].join("")); }
   if (r && t) F.e = { f: key(subj.w), r, t, n: F.neg, p: words.slice(i + 1).join(" "), s, A: subj.raw };
   return F;
@@ -351,25 +357,31 @@ function splitCond(s) {
 }
 
 /* ---------- 추론 규칙 ---------- */
-const up = (E, f) => { const m = new Map([[f, []]]); for (const x of new Set(E.map(e => e.t))) { const p = chain(E, f, x); if (p) m.set(x, p); } return m; }; // f에서 이어 올라갈 수 있는 곳(상위 개념)과 그 경로
+const up = (E, f) => { const m = new Map([[f, []]]); for (const x of new Set(E.map(e => e.t))) { const p = chain(E, f, x, 1); if (p) m.set(x, p); } return m; }; // f에서 이어 올라갈 수 있는 곳(상위 개념)과 그 경로
 function lookup(E, f, r, t) { // 참/거짓/모순/모름 + 근거 문장들. 더 가까운(구체적인) 문장이 우선
-  const CE = E.filter(e => !e.n && CH[e.r]), c = [];
-  if (CH[r]) { const p = chain(CE, f, t); if (p) c.push({ n: false, d: p.length, why: p }); }
-  for (const [g, pa] of up(CE, f)) for (const e of E)
-    if (e.f === g && e.t === t && (CH[r] ? CH[e.r] && e.n : e.r === r)) c.push({ n: e.n, d: pa.length + 1, why: [...pa, e] });
+  const CE = E.filter(e => !e.n && CH[e.r]), c = [], gr = CH[r];
+  if (gr) { const p = chain(CE, f, t, gr); if (p) c.push({ n: false, d: p.length, why: p }); }
+  for (const [g, pa] of up(CE, f)) {
+    if (gr === 2 && pa.length) { const p = chain(CE, g, t, 2); if (p) c.push({ n: false, d: pa.length + p.length, why: [...pa, ...p] }); } // 윗 개념의 장소도 물려받는다
+    for (const e of E) if (e.f === g && e.t === t && (gr ? CH[e.r] === gr && e.n : e.r === r)) c.push({ n: e.n, d: pa.length + 1, why: [...pa, e] });
+  }
   if (!c.length) return { v: null };
   const m = Math.min(...c.map(x => x.d)), b = c.filter(x => x.d === m), pos = b.find(x => !x.n), neg = b.find(x => x.n);
   return pos && neg ? { v: "conflict", pos, neg } : { v: !b[0].n, why: b[0].why, d: m };
 }
-function derive(kb, rules) { // 조건 규칙(modus ponens): 앞절이 사실이면 뒷절을 꺼낸다
+function derive(kb, rules) { // 앞절이 사실이면 뒷절을, 뒷절이 거짓이면 앞절도 거짓(대우)을 꺼낸다
   const D = [];
-  for (let k = 0; k < 4; k++) {
+  for (let k = 0; k < 6; k++) {
     let grew = false;
     for (const ru of rules) {
-      const E = [...kb, ...D], b = ru.b;
-      if (E.some(e => same(e, b))) continue;
-      const L = lookup(E, ru.a.f, ru.a.r, ru.a.t);
-      if (L.v === !ru.a.n) { D.push({ ...b, d: { rule: ru, why: L.why } }); grew = true; }
+      const E = [...kb, ...D], a = ru.a, b = ru.b;
+      if (!E.some(e => same(e, b))) {
+        const L = lookup(E, a.f, a.r, a.t);
+        if (L.v === !a.n) { D.push({ ...b, d: { rule: ru, why: L.why } }); grew = true; }
+      } else if (!E.some(e => same(e, a))) {
+        const M = lookup(E, b.f, b.r, b.t);
+        if (M.v === b.n) { D.push({ ...a, n: !a.n, s: (a.s || ru.s) + " (아님)", p: (a.p || "") + " (아님)", d: { rule: ru, why: M.why } }); grew = true; }
+      }
     }
     if (!grew) break;
   }
@@ -377,9 +389,9 @@ function derive(kb, rules) { // 조건 규칙(modus ponens): 앞절이 사실이
 }
 const lines = why => why.flatMap(e => e.d ? [...lines(e.d.why), "• " + e.d.rule.s] : ["• " + e.s]);
 
-function chain(kb, f, t) { // f에서 t까지 문장들을 이어 붙인 경로(BFS)
+function chain(kb, f, t, gr = 1) { // f에서 t까지 문장들을 이어 붙인 경로(BFS)
   const prev = new Map([[f, null]]), Q = [f];
-  while (Q.length) { const x = Q.shift(); for (const e of kb) if (e.f === x && !prev.has(e.t)) { prev.set(e.t, e); Q.push(e.t); } }
+  while (Q.length) { const x = Q.shift(); for (const e of kb) if (e.f === x && !prev.has(e.t) && CH[e.r] === gr) { prev.set(e.t, e); Q.push(e.t); } }
   if (f === t || !prev.has(t)) return null;
   const p = []; for (let x = t; prev.get(x); x = prev.get(x).f) p.unshift(prev.get(x)); return p;
 }
@@ -400,9 +412,18 @@ function farthest(E, from) {
   return last;
 }
 
+const expand = s => { // “고양이, 개는 동물이다”·“고양이는 동물이고 포유류다”를 문장 여러 개로
+  const t = s.replace(/^(그럼|그러면|그렇다면|그리고|그런데|근데|그래서)\s+/, "");
+  if (/\d|면\s/.test(t) || isQ(t, stripP(t))) return [t];
+  let m = t.match(/^((?:[^\s,]+,\s*)+)([^\s,]+?)([은는이가])\s+(.+)$/);
+  if (m) return [...m[1].split(/,\s*/).filter(Boolean), m[2]].flatMap(n => expand(`${n}${m[3]} ${m[4]}`));
+  m = t.match(/^(\S+[은는이가])\s+(.+?)(?:이고|이며)\s+(.+)$/);
+  if (m) return [...expand(`${m[1]} ${m[2]}이다`), ...expand(/^\S+[은는]\s/.test(m[3]) ? m[3] : `${m[1]} ${m[3]}`)];
+  return [t];
+};
 const adjOf = raw => adj(stripP(raw));
 function reason(q) {
-  const ss = q.trim().split(/(?<=[.!?。？])\s+/).filter(Boolean), kb = mem.kb || (mem.kb = []), cmp = mem.cmp || (mem.cmp = []), rules = mem.rules || (mem.rules = []);
+  const ss = q.trim().split(/(?<=[.!?。？])\s+/).filter(Boolean).flatMap(expand), kb = mem.kb || (mem.kb = []), cmp = mem.cmp || (mem.cmp = []), rules = mem.rules || (mem.rules = []);
   kb.forEach(e => { e.r = e.r || "isa"; e.n = !!e.n; });
   const kk = e => [e.f, e.r, e.t, e.n].join("|"), before = new Set(derive(kb, rules).map(kk)), learn = [], ans = [], chips = [];
   let dirty = false;
@@ -414,7 +435,7 @@ function reason(q) {
     if (cd) {
       const A = parse(cd.a), B = parse(cd.b);
       if (A && B && A.e && B.e && !DEIC.test(A.subj.w)) {
-        const ru = { a: { f: A.e.f, r: A.e.r, t: A.e.t, n: A.e.n }, b: B.e, s: s0 };
+        const ru = { a: A.e, b: B.e, s: s0 };
         if (rules.length < 100 && !rules.some(x => x.s === ru.s)) { rules.push(ru); dirty = true; }
         learn.push(s0);
       } else { miss(s0); if (A && A.e && !(B && B.e)) ans.push("조건문은 ‘비가 오면 땅이 젖는다’처럼 뒷절에도 주어가 있어야 이해할 수 있어. ‘이해 못한 문장’에 적어뒀어."); }
@@ -468,7 +489,7 @@ function reason(q) {
       if (F.whV) { const u = known(E, f); if (u.length) ans.push("알고 있는 건:\n" + u.map(e => "• " + e.s).join("\n")); continue; }
       if (F.whS && F.e) { const h = E.filter(e => e.r === F.e.r && e.t === F.e.t && !e.n); if (h.length) ans.push(h.map(e => "• " + e.s).join("\n")); continue; }
       if (F.whO) { // 고양이는 뭘 먹어?
-        const v = vstem(F.vraw), r = REL[v] || v, U = up(E.filter(e => !e.n && CH[e.r]), f), h = E.filter(e => e.r === r && !e.n && U.has(e.f));
+        const v = vstem(F.vraw), r = F.loc && LOCV.test(v) ? "in" : REL[v] || v, U = up(E.filter(e => !e.n && CH[e.r]), f), h = E.filter(e => e.r === r && !e.n && U.has(e.f));
         if (h.length) ans.push("알고 있는 건:\n" + h.map(e => `• ${F.subj.raw} ${e.p}`).join("\n")); else if (E.some(e => e.f === f)) ans.push("내가 아는 것만으로는 알 수 없어.");
         continue;
       }
@@ -485,7 +506,7 @@ function reason(q) {
     /* 문장 기억하기 */
     if (!F.e || DEIC.test(F.subj.w) || /[\d,]/.test(F.s)) continue;
     const endw = s0.split(/\s+/).pop();
-    if (!(STMT.test(endw) || (F.obj && /(어|아|해)$/.test(endw)))) continue;
+    if (!(STMT.test(endw) || ((F.obj || F.loc) && /(어|아|해|요)$/.test(endw)))) continue;
     const e = F.e, dup = kb.find(x => same(x, e));
     if (dup && dup.n !== e.n) { mem.fix = e; dirty = true; ans.push(`앞에서 “${dup.s}”라고 했는데 이번 말은 반대야. 어느 쪽이 맞아?`); chips.push("새 문장으로 바꿔줘"); continue; }
     if (!dup && kb.length < 200) { kb.push(e); dirty = true; }
