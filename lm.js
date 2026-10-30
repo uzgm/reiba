@@ -277,6 +277,124 @@ function evalExpr(src) {
   const v = add(); if (i < t.length) throw 0; return v;
 }
 
+/* ---------- 추론: 사실·규칙·크기 비교를 기억하고, 이어 붙여서 결론을 낸다 ---------- */
+const stripP = s => s.trim().replace(/[.!?。？！\s]+$/, "");
+const END = /(이?었다|이에요|예요|입니다|합니다|한다|는다|ㄴ다|일까요?|을까요?|ㄹ까요?|할까요?|인가요?|이야|이다|해요|어요|해|어|야|다|까)$/;
+const STMT = /(다|야|이에요|예요|입니다)$/;
+const stem = p => stripP(p).replace(END, "").trim();
+const key = s => { s = s.replace(/\s+/g, ""); return s.length > 2 ? s.replace(/이$/, "") : s; }; // 고양이/고양 같은 받침 없는 ‘이’ 차이를 흡수
+const isQ = (raw, s) => /[?？]\s*$/.test(raw.trim()) || /(까요?|냐|나요|가요|뭐야|누구야)$/.test(s);
+
+const ASUF = "(?:다|요|어|아|니다|습니다|지|죠|까|냐|니|워|워요|가|은가|은|을|을까|을까요|ㄹ까|해|해요|하다|아요|어요|지요)?";
+const DIMS = [
+  ["크기", "크|커|큰|클|큽", "작"], ["속도", "빠르|빨라|빠른|빠를|빠릅", "느리|느려|느린|느릴|느립"],
+  ["무게", "무겁|무거|무거운|무거울", "가볍|가벼|가벼운|가벼울"], ["높이", "높", "낮"], ["길이", "길|긴", "짧"],
+  ["양", "많", "적"], ["힘", "세|센|셀|강하|강해|강한|강할", "약하|약해|약한|약할"], ["가격", "비싸|비싼|비쌀|비쌉", "싸|싼|쌀|쌉"]
+].map(([n, a, b]) => [n, new RegExp(`^(?:${a})${ASUF}$`), new RegExp(`^(?:${b})${ASUF}$`)]);
+const adj = t => { t = stripP(t); for (let d = 0; d < DIMS.length; d++) { if (DIMS[d][1].test(t)) return { d, s: 1 }; if (DIMS[d][2].test(t)) return { d, s: -1 }; } return null; };
+
+function logicSent(raw) { // “모든 X는 Y다 / A는 X이다 / A는 Y일까?” 해석
+  const s = stripP(raw).replace(/\s(?:모두|전부)\s/, " "), q = isQ(raw, s);
+  const m = s.match(/^모든\s*(\S+?)(?:은|는|이|가)?\s+(.+)$/), n = m ? null : s.match(/^(\S+?)(은|는|이|가)\s+(.+)$/);
+  if (!m && !n) return null;
+  const A = m ? m[1] : n[1], pred = m ? m[2] : n[3], R = m ? m[1] + "는" : n[1] + n[2], t = key(stem(pred));
+  if (!t || /보다/.test(pred)) return null;
+  if (q) return { type: "q", f: key(A), t, A: R };
+  if (!STMT.test(pred) || /[\d,]/.test(pred)) return null;
+  return { type: "s", e: { f: key(A), t, p: pred, s } };
+}
+function cmpSent(raw) { // “A는 B보다 크다 / A가 B보다 클까? / 누가 제일 커?” 해석
+  const s = stripP(raw), q = isQ(raw, s);
+  let m = s.match(/^(\S+?)(?:은|는|이|가)\s+(\S+?)\s*보다\s*(?:더\s*)?(\S+)$/);
+  if (m) {
+    const a = adj(m[3]); if (!a) return null; const x = key(m[1]), y = key(m[2]);
+    return { type: q ? "cq" : "cs", d: a.d, hi: a.s > 0 ? x : y, lo: a.s > 0 ? y : x, H: a.s > 0 ? m[1] : m[2], L: a.s > 0 ? m[2] : m[1], a };
+  }
+  m = s.match(/(?:제일|가장|젤)\s*(?:더\s*)?(\S+)/);
+  if (m && /누|뭐|무엇|어느|어떤/.test(s)) { const a = adj(m[1]); if (a) return { type: "top", d: a.d, a }; }
+  return null;
+}
+function chain(kb, f, t) { // f에서 t까지 문장들을 이어 붙인 경로(BFS)
+  const prev = new Map([[f, null]]), Q = [f];
+  while (Q.length) { const x = Q.shift(); for (const e of kb) if (e.f === x && !prev.has(e.t)) { prev.set(e.t, e); Q.push(e.t); } }
+  if (f === t || !prev.has(t)) return null;
+  const p = []; for (let x = t; prev.get(x); x = prev.get(x).f) p.unshift(prev.get(x)); return p;
+}
+function known(kb, f) {
+  const seen = new Set([f]), Q = [f], out = [];
+  while (Q.length) { const x = Q.shift(); for (const e of kb) if (e.f === x) { out.push(e); if (!seen.has(e.t)) { seen.add(e.t); Q.push(e.t); } } }
+  return out;
+}
+function pathOf(E, from, to) {
+  const prev = new Map([[from, null]]), Q = [from];
+  while (Q.length) { const x = Q.shift(); for (const e of E) if (e.hi === x && !prev.has(e.lo)) { prev.set(e.lo, x); Q.push(e.lo); } }
+  if (from === to || !prev.has(to)) return null;
+  const p = [to]; for (let x = to; prev.get(x) !== null; x = prev.get(x)) p.unshift(prev.get(x)); return p;
+}
+function farthest(E, from) {
+  const seen = new Set([from]), Q = [from]; let last = from;
+  while (Q.length) { const x = Q.shift(); last = x; for (const e of E) if (e.hi === x && !seen.has(e.lo)) { seen.add(e.lo); Q.push(e.lo); } }
+  return last;
+}
+function reason(q) {
+  const ss = q.trim().split(/(?<=[.!?。？])\s+/).filter(Boolean), kb = mem.kb || [], cmp = mem.cmp || [], learn = [], ans = [];
+  let dirty = false;
+  const add = (arr, o, same) => { if (arr.length < 200 && !arr.some(same)) { arr.push(o); dirty = true; } };
+  for (const raw of ss) {
+    const c = cmpSent(raw);
+    if (c) {
+      if (c.type === "cs") { add(cmp, { d: c.d, hi: c.hi, lo: c.lo, H: c.H, L: c.L }, e => e.d === c.d && e.hi === c.hi && e.lo === c.lo); learn.push(stripP(raw)); continue; }
+      const E = cmp.filter(e => e.d === c.d), nm = new Map(); E.forEach(e => { nm.set(e.hi, e.H); nm.set(e.lo, e.L); });
+      if (c.H) { nm.set(c.hi, nm.get(c.hi) || c.H); nm.set(c.lo, nm.get(c.lo) || c.L); }
+      const N = x => nm.get(x) || x;
+      if (c.type === "cq") {
+        const fw = pathOf(E, c.hi, c.lo), bw = pathOf(E, c.lo, c.hi);
+        if (fw) { ans.push(`응, 맞아! ${fw.map(N).join(" > ")} (${DIMS[c.d][0]})`); continue; }
+        if (bw) { ans.push(`아니야, 오히려 ${bw.map(N).join(" > ")} 이야.`); continue; }
+        if (E.some(e => [e.hi, e.lo].some(x => x === c.hi || x === c.lo))) { ans.push("알려준 비교만으로는 알 수 없어."); continue; }
+      } else if (E.length) { // top: 가장 ~한 것
+        const beat = new Set(E.map(e => c.a.s > 0 ? e.lo : e.hi)), cand = [...new Set(E.flatMap(e => [e.hi, e.lo]))].filter(x => !beat.has(x));
+        if (cand.length === 1) {
+          const R = c.a.s > 0 ? E : E.map(e => ({ hi: e.lo, lo: e.hi })), far = farthest(R, cand[0]), p = pathOf(R, cand[0], far);
+          ans.push(`${N(cand[0])}! (${(c.a.s > 0 ? p : p.reverse()).map(N).join(" > ")})`);
+        } else ans.push(`정보가 부족해서 단정할 수 없어. 후보: ${cand.map(N).join(", ")}`);
+        continue;
+      }
+    }
+    const l = logicSent(raw); if (!l) continue;
+    if (l.type === "s") { add(kb, l.e, e => e.f === l.e.f && e.t === l.e.t); learn.push(l.e.s); continue; }
+    if (/^(누구|뭐|무엇)$/.test(l.t)) { const u = known(kb, l.f); if (u.length) ans.push("알고 있는 건:\n" + u.map(e => "• " + e.s).join("\n")); continue; }
+    const p = chain(kb, l.f, l.t);
+    if (p) ans.push(p.length === 1 ? `응, 알려준 대로야.\n• ${p[0].s}` : `응, 이어서 생각하면 그래!\n${p.map(e => "• " + e.s).join("\n")}\n⇒ ${l.A} ${p[p.length - 1].p}`);
+    else if (kb.some(e => e.f === l.f)) ans.push("내가 아는 것만으로는 알 수 없어.");
+  }
+  if (dirty) { mem.kb = kb; mem.cmp = cmp; root.LMKit.onMem && root.LMKit.onMem(mem); }
+  if (ans.length) return ans.join("\n\n");
+  if (learn.length) return "알겠어! 기억해둘게:\n" + learn.map(x => "• " + x).join("\n") + "\n이제 이걸로 물어봐!";
+}
+
+/* ---------- 간단한 문장제: 숫자와 행동 단서(먹었다·합치면…)를 읽어 식을 세운다 ---------- */
+function wordProblem(q0) {
+  const q = q0.replace(/(\d),(?=\d{3}\b)/g, "$1");
+  if (!/몇|얼마/.test(q)) return;
+  const nums = q.match(/\d+(?:\.\d+)?/g); if (!nums || nums.length < 2) return;
+  const n = nums.map(Number), fmt = v => (+v.toPrecision(12)).toLocaleString("ko-KR", { maximumFractionDigits: 6 });
+  let u = (q.match(/\d+(?:\.\d+)?\s*(개|명|마리|권|장|원|살|번|대|병|송이|자루|시간|분|초|cm|km|kg|잔|그루|켤레|봉지|상자)/) || [])[1] || "", expr, v;
+  if (/몇\s*배/.test(q) && n.length === 2) { expr = `${n[0]} ÷ ${n[1]}`; v = n[0] / n[1]; u = "배"; }
+  else if (/차이|더\s*많|더\s*적|얼마나\s*(많|적|크|작)/.test(q) && n.length === 2) { expr = `|${n[0]} − ${n[1]}|`; v = Math.abs(n[0] - n[1]); }
+  else if (/나누|똑같이|등분/.test(q) && n.length === 2 && n[1] !== 0) { expr = `${n[0]} ÷ ${n[1]}`; v = n[0] / n[1]; }
+  else if (/\d\s*배|곱|씩/.test(q)) { expr = n.join(" × "); v = n.reduce((a, b) => a * b, 1); }
+  else {
+    const MINUS = /먹|남|빼|뺀|줬|주었|주면|주고|잃|썼|쓰|쓴|팔|덜|버렸|떨어|가져가|꺼냈|나가|갔|보냈/, t = [];
+    for (const cl of q.split(/[,，.。?？!]\s*|(?:는데|인데|지만|고|며|서)\s+/)) {
+      const ns = cl.match(/\d+(?:\.\d+)?/g); if (ns) for (const x of ns) t.push((MINUS.test(cl) ? -1 : 1) * +x);
+    }
+    if (t.length < 2) return; t[0] = Math.abs(t[0]);
+    expr = t.map((x, i) => i ? (x < 0 ? `− ${-x}` : `+ ${x}`) : `${x}`).join(" "); v = t.reduce((a, b) => a + b, 0);
+  }
+  return `풀이: ${expr} = ${fmt(v)}${u}\n(문장 속 숫자 ${n.length}개와 행동 단서를 읽어서 식을 세웠어)`;
+}
+
 /* ---------- 스킬: brain보다 먼저 시도하는 정확한 규칙들 ---------- */
 const SK = [
   ["기억", q => {
@@ -312,7 +430,9 @@ const SK = [
     const d = new Date();
     if (/몇\s*시|지금\s*시간|현재\s*시간|what time/i.test(q)) return `지금은 ${d.toLocaleTimeString("ko-KR", { hour: "numeric", minute: "2-digit" })}이야.`;
     if (/(오늘|지금).*(날짜|며칠|요일)|무슨\s*요일|what day/i.test(q)) return `오늘은 ${d.toLocaleDateString("ko-KR", { year: "numeric", month: "long", day: "numeric", weekday: "long" })}이야.`;
-  }]
+  }],
+  ["문장제", q => wordProblem(q)],
+  ["추론", q => reason(q)]
 ];
 
 
