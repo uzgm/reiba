@@ -47,7 +47,7 @@ select{font:inherit;font-size:13px;border-radius:8px;border:1px solid var(--line
     <div class="row">
       <button id="dir" type="button">brain 폴더</button>
       <button id="files" type="button">JSON 추가</button>
-      <button id="clr" type="button">이름 기억 지우기</button>
+      <button id="clr" type="button">기억 지우기</button>
     </div>
   </details>
 </header>
@@ -94,7 +94,7 @@ function refresh() {
 async function ask(q) {
   q = q.trim(); if (!q || busy || !bot) return; busy = true; bubble("u", q);
   const t0 = performance.now(), t = tools(q); let text, meta, sug;
-  if (t) { text = t.a; meta = `도구: ${t.src} · ${(performance.now() - t0).toFixed(1)}ms`; }
+  if (t) { text = t.a; sug = t.chips; meta = `도구: ${t.src} · ${(performance.now() - t0).toFixed(1)}ms`; }
   else {
     const o = bot.reply(q); text = o.text; sug = o.unk ? o.sug : null;
     meta = o.n ? `신경망 ${o.n}토큰 · LM ${o.lm == null ? "-" : Math.round(o.lm * 100) + "%"} · 검색 ${Math.round(o.ret * 100)}% · ${o.ms.toFixed(1)}ms` : `검색 · ${o.ms.toFixed(1)}ms`;
@@ -136,13 +136,13 @@ async function loadFiles(list, replace) {
 $("dir").onclick = () => $("dirIn").click(); $("files").onclick = () => $("fileIn").click();
 $("dirIn").onchange = e => { loadFiles([...e.target.files], true); e.target.value = ""; };
 $("fileIn").onchange = e => { loadFiles([...e.target.files], false); e.target.value = ""; };
-$("clr").onclick = () => { for (const k of Object.keys(mem)) delete mem[k]; LMKit.onMem(mem); bubble("b", "이름 기억을 지웠어."); };
+$("clr").onclick = () => { for (const k of Object.keys(mem)) delete mem[k]; LMKit.onMem(mem); bubble("b", "기억(이름·가르친 문장)을 지웠어."); };
 
 (async () => {
   try { BRAIN = await getJSON("brain.json"); } catch { BRAIN = {}; }
   try { model = await getJSON("model.json"); } catch { model = null; }
   refresh();
-  chips(bubble("b", model ? "안녕! 질문하면 작은 트랜스포머가 직접 답을 골라 말해. 계산이나 시간은 도구로 정확하게 처리할게." : "model.json이 없어서 지금은 검색으로만 답해. ‘학습 · 관리’에서 학습시켜줘."), ["소수가 뭐야", "97은 소수야?", "(12+8)×3÷4", "7단", "what is an llm", "지금 몇 시야"]);
+  chips(bubble("b", model ? "안녕! 질문하면 작은 트랜스포머가 직접 답을 골라 말해. 계산이나 시간은 도구로 정확하게 처리하고, 문장을 가르쳐 주면 조사로 역할을 나눠서 추론도 해. 아래 예시를 눌러봐." : "model.json이 없어서 지금은 검색으로만 답해. ‘학습 · 관리’에서 학습시켜줘."), ["소수가 뭐야", "97은 소수야?", "(12+8)×3÷4", "고양이는 동물이다. 동물은 생물이다. 고양이는 생물일까?", "영희보다 철수가 크다. 민수보다 영희가 크다. 누가 제일 커?", "새는 날 수 있다. 펭귄은 새다. 펭귄은 날 수 없다. 펭귄은 날 수 있어?", "비가 오면 땅이 젖는다. 비가 온다. 땅이 젖을까?"]);
 })();
 </script>
 </body>
