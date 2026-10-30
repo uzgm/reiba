@@ -1,4 +1,4 @@
-/* 진짜 작은 LLM: BPE 토크나이저 + 디코더 전용 트랜스포머 (tf.js로 브라우저에서 직접 학습) */
+/* 진짜 작은 LLM: BPE 토크나이저 + 디코더 전용 트랜스포머 (tf.js로 브라우저에서 직접 학습이다) */
 (function (root) {
   const tf = root.tf || require("@tensorflow/tfjs");
   const SEP = "\u0001";
