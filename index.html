@@ -3,40 +3,41 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Tiny LLM</title>
+<title>Tiny LLM 2</title>
 <style>
-:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
---bg:#f3f5f2;--surface:#fff;--ink:#17201b;--muted:#66726a;--line:#d9dfd9;--accent:#1f4d3a;--on:#f3f5f2;--chip:#e6ece7}
-@media (prefers-color-scheme:dark){:root{--bg:#0f1512;--surface:#18211c;--ink:#e6ede8;--muted:#8d9a92;--line:#2a362f;--accent:#6fcf9f;--on:#0f1512;--chip:#223028}}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f3f5f2;--surface:#fff;--ink:#17201b;--muted:#66726a;--line:#d9dfd9;--accent:#1f4d3a;--on:#f3f5f2;--chip:#e6ece7}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1512;--surface:#18211c;--ink:#e6ede8;--muted:#8d9a92;--line:#2a362f;--accent:#6fcf9f;--on:#0f1512;--chip:#223028}}
+:root[data-theme="dark"]{--bg:#0f1512;--surface:#18211c;--ink:#e6ede8;--muted:#8d9a92;--line:#2a362f;--accent:#6fcf9f;--on:#0f1512;--chip:#223028}
 *,*::before,*::after{box-sizing:inherit}
+html{background:var(--bg)}
 html,body{height:100%;margin:0}
 body{background:var(--bg);color:var(--ink);font:15px/1.55 "Pretendard","Noto Sans KR","Apple SD Gothic Neo",system-ui,sans-serif;display:flex;flex-direction:column}
 header{padding:12px 16px 10px;border-bottom:1px solid var(--line);background:var(--surface)}
 h1{font-size:17px;margin:0}
-#stat{margin:2px 0 8px;color:var(--muted);font-size:12.5px}
-.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:6px}
-button,select{font:inherit;font-size:13px;border-radius:8px;border:1px solid var(--line);background:var(--chip);color:var(--ink);padding:6px 10px}
-#train{background:var(--accent);color:var(--on);border:0;font-weight:700}
-button:disabled{opacity:.5}
-button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-label{font-size:12.5px;color:var(--muted);display:flex;gap:6px;align-items:center}
-details{margin-top:6px;font-size:13px;color:var(--muted)}summary{cursor:pointer}
-progress{margin-top:8px;width:100%;height:8px;accent-color:var(--accent)}
+#stat{margin:2px 0 4px;color:var(--muted);font-size:12.5px}
+.row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+button{font:inherit;font-size:13px;border-radius:8px;border:1px solid var(--line);background:var(--chip);color:var(--ink);padding:6px 10px;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+details{font-size:13px;color:var(--muted)}summary{cursor:pointer}
 #chat{flex:1;overflow-y:auto;padding:14px 14px 6px;display:flex;flex-direction:column;gap:10px}
 .m{max-width:88%;padding:9px 12px;border-radius:14px;white-space:pre-wrap;overflow-wrap:anywhere;word-break:keep-all}
 .u{align-self:flex-end;background:var(--accent);color:var(--on);border-bottom-right-radius:4px}
 .b{align-self:flex-start;background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:4px}
 .meta{display:block;margin-top:6px;font-size:11.5px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chips button{font-size:12.5px;padding:5px 10px;border-radius:999px}
 form{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line);background:var(--surface)}
 input[type=text]{flex:1;min-width:0;font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
 #send{background:var(--accent);color:var(--on);border:0;font-weight:700;padding:0 16px;font-size:14px}
+progress{width:100%;height:8px;margin-top:8px;accent-color:var(--accent)}
+select{font:inherit;font-size:13px;border-radius:8px;border:1px solid var(--line);background:var(--chip);color:var(--ink);padding:6px 10px}
 </style>
 </head>
 <body>
 <header>
-  <h1>Tiny LLM</h1>
-  <div id="stat">모델 불러오는 중…</div>
-  <details id="adv"><summary>학습 · 관리</summary>
+  <h1>Tiny LLM 2</h1>
+  <div id="stat">불러오는 중…</div>
+  <details><summary>학습 · 관리</summary>
     <progress id="bar" value="0" max="1"></progress>
     <div class="row">
       <button id="train" type="button">브라우저에서 학습</button>
@@ -46,7 +47,7 @@ input[type=text]{flex:1;min-width:0;font:inherit;font-size:16px;padding:10px 12p
     <div class="row">
       <button id="dir" type="button">brain 폴더</button>
       <button id="files" type="button">JSON 추가</button>
-      <label>온도 <input id="temp" type="range" min="0" max="1.2" step="0.1" value="0.4"><span id="tv">0.4</span></label>
+      <button id="clr" type="button">이름 기억 지우기</button>
     </div>
   </details>
 </header>
@@ -58,87 +59,91 @@ input[type=text]{flex:1;min-width:0;font:inherit;font-size:16px;padding:10px 12p
 <input type="file" id="dirIn" webkitdirectory multiple hidden>
 <input type="file" id="fileIn" accept=".json,application/json" multiple hidden>
 
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
 <script src="lm.js"></script>
 <script>
-const $ = id => document.getElementById(id), sleep = () => new Promise(r => setTimeout(r));
-let BRAIN = {}, tok = null, model = null, busy = false, lastLoss = null;
-const chat = $("chat");
-function bubble(cls, text) { const e = document.createElement("div"); e.className = "m " + cls; e.textContent = text; chat.appendChild(e); chat.scrollTop = chat.scrollHeight; return e; }
-function stat(extra) {
-  const n = Object.keys(BRAIN).length, ex = LMKit.corpus(BRAIN).examples.length;
-  $("stat").textContent = `brain 파일 ${n}개 · 학습 예시 ${ex}개 · ${extra || (model ? "학습 완료" : "학습 전")}`;
-}
-function ready(msg) { $("q").disabled = false; $("exp").disabled = false; $("stat").textContent = msg; $("q").focus(); }
-async function loadBrain() { try { BRAIN = await (await fetch("brain.json", { cache: "no-store" })).json(); } catch { BRAIN = {}; } }
-async function loadModel() { // 미리 학습된 가중치를 불러오면 곧바로 대화 가능
-  try {
-    const r = await fetch("model.json", { cache: "no-store" }); if (!r.ok) throw 0;
-    const o = await r.json(); tok = LMKit.Tok.fromJSON(o.tok); model = LMKit.LM.fromJSON(o.lm); lastLoss = o.loss;
-    ready(`준비 완료 · 파라미터 ${model.nParams.toLocaleString()}개${o.loss ? " · loss " + o.loss.toFixed(2) : ""}`); return true;
-  } catch { return false; }
-}
-(async () => {
-  await loadBrain();
-  if (await loadModel()) bubble("b", "안녕! 무엇이든 물어봐.");
-  else { $("stat").textContent = "model.json이 없어서 학습이 필요해"; $("adv").open = true; bubble("b", "미리 학습된 model.json이 없어. ‘브라우저에서 학습’을 한 번 누르고, 끝나면 ‘model.json 내보내기’로 저장해서 사이트에 같이 올려줘."); }
-})();
+const $ = id => document.getElementById(id), chat = $("chat"), sleep = ms => new Promise(r => setTimeout(r, ms));
+const { Bot, fit, tools, mem } = LMKit;
+let BRAIN = {}, model = null, bot = null, busy = false;
 
-async function train() {
-  if (busy) return; busy = true; $("train").disabled = true;
-  const { examples, text } = LMKit.corpus(BRAIN);
-  if (!examples.length) { bubble("b", "학습할 예시가 없어. brain JSON을 먼저 불러와줘."); busy = false; $("train").disabled = false; return; }
-  if (model) { tf.disposeVariables(); model = null; }
-  tok = new LMKit.Tok(text, 150);
-  const ex = examples.map(e => [...tok.encode(e), 0]);
-  const T = Math.min(192, Math.max(...ex.map(e => e.length))), B = 8, steps = +$("steps").value;
-  const m = new LMKit.LM(tok.size, { T, D: 64, H: 4, L: 2 });
-  $("bar").max = steps; let avg = null; const t0 = Date.now();
-  for (let s = 1; s <= steps; s++) {
-    const { xs, ys } = LMKit.batch(ex, B, T);
-    const l = m.step(xs, ys, B, T); avg = avg === null ? l : avg * 0.95 + l * 0.05;
-    if (s % 5 === 0 || s === steps) {
-      $("bar").value = s;
-      $("stat").textContent = `학습 중 ${s}/${steps} · loss ${avg.toFixed(3)} · 토큰 ${tok.size}종 · 파라미터 ${m.nParams.toLocaleString()}개`;
-      await sleep();
-    }
+async function getJSON(name) { // 한 파일로 묶인 배포본이면 안에서, 아니면 같은 폴더에서 읽는다
+  const el = document.getElementById("inline-" + name); if (el) return JSON.parse(el.textContent);
+  const r = await fetch(name, { cache: "no-store" }); if (!r.ok) throw 0; return r.json();
+}
+try { Object.assign(mem, JSON.parse(localStorage.getItem("tl-mem") || "{}")); } catch {}
+LMKit.onMem = m => { try { localStorage.setItem("tl-mem", JSON.stringify(m)); } catch {} };
+
+function bubble(cls, text) {
+  const e = document.createElement("div"); e.className = "m " + cls;
+  const t = document.createElement("span"); t.textContent = text || ""; e.appendChild(t);
+  chat.appendChild(e); chat.scrollTop = chat.scrollHeight; return e;
+}
+function chips(el, list) {
+  if (!list || !list.length) return;
+  const w = document.createElement("div"); w.className = "chips";
+  for (const c of list) { const b = document.createElement("button"); b.type = "button"; b.textContent = c; b.onclick = () => ask(c); w.appendChild(b); }
+  el.appendChild(w);
+}
+function refresh() {
+  bot = new Bot(BRAIN, model); if (model && !bot.fast) model = null;
+  const n = Object.keys(BRAIN).length;
+  const st = !model ? "모델 없음 · 검색으로만 답해요" : bot.stale ? "brain이 바뀌었어요 · 재학습 권장(새 지식은 검색으로 먼저 답해요)" : `파라미터 ${model.params.toLocaleString()}개 · loss ${model.loss.toFixed(3)}`;
+  $("stat").textContent = `brain 파일 ${n}개 · 지식 ${bot.P.ans.length - 1}개 · ${st}`;
+  $("q").disabled = false; $("exp").disabled = !model;
+}
+
+async function ask(q) {
+  q = q.trim(); if (!q || busy || !bot) return; busy = true; bubble("u", q);
+  const t0 = performance.now(), t = tools(q); let text, meta, sug;
+  if (t) { text = t.a; meta = `도구: ${t.src} · ${(performance.now() - t0).toFixed(1)}ms`; }
+  else {
+    const o = bot.reply(q); text = o.text; sug = o.unk ? o.sug : null;
+    meta = o.n ? `신경망 ${o.n}토큰 · LM ${o.lm == null ? "-" : Math.round(o.lm * 100) + "%"} · 검색 ${Math.round(o.ret * 100)}% · ${o.ms.toFixed(1)}ms` : `검색 · ${o.ms.toFixed(1)}ms`;
   }
-  model = m; lastLoss = avg; busy = false; $("train").disabled = false;
-  ready(`학습 완료 · loss ${avg.toFixed(3)} · ${((Date.now() - t0) / 1000).toFixed(0)}초`);
-  bubble("b", "학습 끝! 이제 물어봐. 계속 쓰려면 ‘model.json 내보내기’로 저장해서 사이트에 올려줘.");
+  const el = bubble("b", ""), sp = el.firstChild, step = Math.max(1, Math.ceil(text.length / 40));
+  for (let i = 0; i < text.length; i += step) { sp.textContent = text.slice(0, i + step); chat.scrollTop = chat.scrollHeight; await sleep(10); }
+  sp.textContent = text;
+  const m = document.createElement("span"); m.className = "meta"; m.textContent = meta; el.appendChild(m);
+  chips(el, sug); chat.scrollTop = chat.scrollHeight; busy = false;
 }
+$("f").addEventListener("submit", e => { e.preventDefault(); if (busy) return; const v = $("q").value; $("q").value = ""; ask(v); });
 
-$("f").addEventListener("submit", async e => {
-  e.preventDefault();
-  const q = $("q").value.trim(); if (!q || busy) return;
-  $("q").value = ""; bubble("u", q);
-  if (!model) return;
-  busy = true;
-  const el = bubble("b", ""), prompt = tok.encode("Q:" + q + "\nA:"), t0 = Date.now(); let n = 0;
-  const out = await model.generate(prompt, { temp: +$("temp").value, topK: 8, max: 180 }, id => {
-    n++; el.textContent += tok.decode([id]); chat.scrollTop = chat.scrollHeight;
-  });
-  if (!out.length) el.textContent = "(아무 말도 만들지 못했어. 학습을 더 시켜봐.)";
-  const m = document.createElement("span"); m.className = "meta";
-  m.textContent = `토큰 ${n}개 생성 · ${((Date.now() - t0) / 1000).toFixed(1)}초 · 온도 ${$("temp").value}`;
-  el.appendChild(m); busy = false;
-});
-$("temp").oninput = () => $("tv").textContent = $("temp").value;
-$("train").onclick = train;
-$("exp").onclick = () => { if (!model) return; const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify({ tok: tok.toJSON(), lm: model.toJSON(), loss: lastLoss })], { type: "application/json" })); a.download = "model.json"; a.click(); };
+async function ensureTF() {
+  if (!window.tf) await new Promise((res, rej) => { const s = document.createElement("script"); s.src = "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
+  LMKit.setTF(window.tf);
+}
+$("train").onclick = async () => {
+  if (busy) return; busy = true; $("train").disabled = true;
+  try {
+    $("stat").textContent = "학습 엔진(tf.js) 불러오는 중…"; await ensureTF();
+    const steps = +$("steps").value, t0 = Date.now(); $("bar").max = steps;
+    model = await fit(BRAIN, { steps }, (s, n, l) => { $("bar").value = s; $("stat").textContent = `학습 중 ${s}/${n} · loss ${l.toFixed(3)} · ${((Date.now() - t0) / 1000) | 0}초`; });
+    refresh(); bubble("b", `학습 끝! loss ${model.loss.toFixed(3)}. 이제 신경망이 직접 답해. 계속 쓰려면 ‘model.json 내보내기’로 저장해서 사이트에 올려줘.`);
+  } catch (e) { console.error(e); bubble("b", "학습에 실패했어. 네트워크(tf.js 불러오기)를 확인해줘."); refresh(); }
+  busy = false; $("train").disabled = false;
+};
+$("exp").onclick = () => { if (!model) return; const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(model)], { type: "application/json" })); a.download = "model.json"; a.click(); };
 
 async function loadFiles(list, replace) {
   const next = replace ? {} : { ...BRAIN }; let ok = 0;
-  for (const f of list) {
-    if (!/\.json$/i.test(f.name)) continue;
-    try { const d = JSON.parse(await f.text()); if (!Array.isArray(d.entries)) throw 0; next[f.webkitRelativePath || "brain/" + f.name] = d; ok++; } catch {}
-  }
-  if (ok) { BRAIN = next; bubble("b", `JSON ${ok}개를 읽었어. ‘브라우저에서 학습’을 눌러야 내 머릿속에 들어가.`); }
+  const add = (k, d) => {
+    if (d && Array.isArray(d.entries)) { next[k] = d; ok++; }
+    else if (d && typeof d === "object") for (const [k2, v] of Object.entries(d)) if (v && Array.isArray(v.entries)) { next[k2] = v; ok++; }
+  };
+  for (const f of list) { if (!/\.json$/i.test(f.name)) continue; try { add(f.webkitRelativePath || "brain/" + f.name, JSON.parse(await f.text())); } catch {} }
+  if (ok) { BRAIN = next; refresh(); bubble("b", `JSON ${ok}개를 읽었어. 검색으로는 바로 답할 수 있고, 신경망까지 반영하려면 ‘브라우저에서 학습’을 눌러줘.`); }
   else bubble("b", "읽을 수 있는 JSON이 없어.");
 }
 $("dir").onclick = () => $("dirIn").click(); $("files").onclick = () => $("fileIn").click();
 $("dirIn").onchange = e => { loadFiles([...e.target.files], true); e.target.value = ""; };
 $("fileIn").onchange = e => { loadFiles([...e.target.files], false); e.target.value = ""; };
+$("clr").onclick = () => { for (const k of Object.keys(mem)) delete mem[k]; LMKit.onMem(mem); bubble("b", "이름 기억을 지웠어."); };
+
+(async () => {
+  try { BRAIN = await getJSON("brain.json"); } catch { BRAIN = {}; }
+  try { model = await getJSON("model.json"); } catch { model = null; }
+  refresh();
+  chips(bubble("b", model ? "안녕! 질문하면 작은 트랜스포머가 직접 답을 골라 말해. 계산이나 시간은 도구로 정확하게 처리할게." : "model.json이 없어서 지금은 검색으로만 답해. ‘학습 · 관리’에서 학습시켜줘."), ["소수가 뭐야", "97은 소수야?", "(12+8)×3÷4", "7단", "what is an llm", "지금 몇 시야"]);
+})();
 </script>
 </body>
 </html>
