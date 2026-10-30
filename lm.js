@@ -234,7 +234,7 @@
         out.push(pk[0]); n = pk[1]; lg = st.n < T ? fast.step(st, pk[0]) : null;
       }
       let ai = P.unk; { let m = this.trie.root; for (const id of out) { m = m.k.get(id); if (!m) break; } if (m) ai = m.end >= 0 ? m.end : m.a[0]; }
-      return done(tok.decode(out), ai, out.length, nb ? Math.exp(lp / nb) : null);
+      return done(out.length ? P.ans[ai] : tok.decode(out), ai, out.length, nb ? Math.exp(lp / nb) : null);
     }
   }
 
