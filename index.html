@@ -255,22 +255,11 @@ function refresh() {
 }
 
 const GREET = ["안녕? 내 이름은 바레아야\n궁금한거나 모르는거 물어봐줘!", "안녕? 내 이름 바레아\n바게루 래피드 아카리우스!", "안녕?", "무엇을 재미있게 요리해볼레?", "안녕 난 바레아", "안녕 만나서 반가워 난 바레아!!!", "오늘은 무엇을 대화할까요?"];
-const SAMPLES = ["97은 소수야?", "(12+8)×3÷4", "비가 오면 땅이 젖는다. 비가 온다. 땅이 젖을까?"];
-const ABOUT = "나는 바레아(BAREA)야! 🍞\nBAGERU RAPID ACARIUS의 줄임말이고, 바게르탄의 정체성을 가진 이 게임의 AI야.\n\n· Bageru: 바게르탄의 정체성, 게임의 정체성을 담은 AI\n· Rapid: 빠른 처리와 신속한 사고\n· Acarius: 번트브레드의 이름에서 가져온 철학적 계승 (게임 속 이야기)\n\n궁금한 건 뭐든 물어봐줘!";
-function identity(q) {
-  const n = q.toLowerCase().replace(/[\s?!.~,]/g, "");
-  return /^(너는|넌|너|당신은|당신|니가|네가)?(누구(야|니|세요|예요|에요|냐|임|인가요|죠)?|누군데|누군가요)$/.test(n)
-    || /(바레아|barea)(는|가|란|이|의)?(누구|뭐|무엇|뭔|정체|소개|뜻|의미|이름|유래)/.test(n)
-    || /(너|넌|네|니|당신|ai|에이아이)(의|는|가)?(이름|정체|소개)(이|은|가)?(뭐|무엇|뭔|알려|말해)?/.test(n)
-    || /^(자기소개|소개해|너소개|이름이뭐야|이름뭐야|이름이뭐니|whoareyou|yourname)/.test(n)
-    || /(이름).*(뜻|의미|유래)/.test(n);
-}
 async function ask(q) {
   q = q.trim(); if (!q || busy || !bot) return; busy = true; bubble("u", q);
-  const t0 = performance.now(), id = identity(q), t = id ? null : tools(q); let text, meta, sug;
-  if (id) { text = ABOUT; sug = SAMPLES; meta = "바레아 소개"; }
-  else if (t) {
-    text = t.a; sug = t.chips; meta = `도구: ${t.src} · ${(performance.now() - t0).toFixed(1)}ms`;
+  const t0 = performance.now(), t = tools(q); let text, meta, sug;
+  if (t) {
+    text = t.a; sug = t.chips; meta = t.src === "소개" ? "바레아 소개" : `도구: ${t.src} · ${(performance.now() - t0).toFixed(1)}ms`;
     if (t.src === "추론" && freeGen && mode !== "tool") {
       const g = freeGen(q), exact = g.text === t.a, vOk = headKind(g.text) === headKind(t.a), same = vOk && lastLine(g.text) === lastLine(t.a);
       score.n++; if (same) score.ok++; if (vOk) score.v++; if (exact) score.ex++;
