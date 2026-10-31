@@ -631,8 +631,21 @@ function qty(q0) {
   if (learn.length) return "알겠어! 수량을 기억해둘게:\n" + [...new Set(learn)].map(x => "• " + x).join("\n") + "\n이제 ‘몇 개야?’, ‘둘이 합치면?’, ‘누가 더 많아?’처럼 물어봐!";
 }
 
+/* ---------- 바레아(BAREA) 소개: 이름·정체를 묻는 말에는 항상 이 소개로 답한다 ---------- */
+const ABOUT = "나는 바레아(BAREA)야! 🍞\nBAGERU RAPID ACARIUS의 줄임말이고, 바게르탄의 정체성을 가진 이 게임의 AI야.\n\n· Bageru: 바게르탄의 정체성, 게임의 정체성을 담은 AI\n· Rapid: 빠른 처리와 신속한 사고\n· Acarius: 번트브레드의 이름에서 가져온 철학적 계승 (게임 속 이야기)\n\n궁금한 건 뭐든 물어봐줘!";
+const ABOUT_CHIPS = ["97은 소수야?", "(12+8)×3÷4", "비가 오면 땅이 젖는다. 비가 온다. 땅이 젖을까?"];
+function identity(q) {
+  const n = q.toLowerCase().replace(/[\s?!.~,]/g, "");
+  return /^(너는|넌|너|당신은|당신|니가|네가)?(누구(야|니|세요|예요|에요|냐|임|인가요|죠)?|누군데|누군가요)$/.test(n)
+    || /(바레아|barea)(는|가|란|이|의)?(누구|뭐|무엇|뭔|정체|소개|뜻|의미|이름|유래)/.test(n)
+    || /(너|넌|네|니|당신|ai|에이아이)(의|는|가)?(이름|정체|소개)(이|은|가)?(뭐|무엇|뭔|알려|말해)?/.test(n)
+    || /^(자기소개|소개해|너소개|이름이뭐야|이름뭐야|이름이뭐니|whoareyou|yourname)/.test(n)
+    || /(이름).*(뜻|의미|유래)/.test(n);
+}
+
 /* ---------- 스킬: brain보다 먼저 시도하는 정확한 규칙들 ---------- */
 const SK = [
+  ["소개", q => identity(q) ? { a: ABOUT, chips: ABOUT_CHIPS } : undefined],
   ["기억", q => {
     if (/내\s*이름.*(뭐|기억|알아)|my name\?|who am i/i.test(q)) return mem.name ? `네 이름은 ${mem.name}이지!` : "아직 이름을 못 들었어. ‘내 이름은 OO’ 라고 말해줘.";
     const m = q.match(/(?:내\s*이름은|my name is)\s*([^\s.!?,]+)/i); if (!m) return;
@@ -692,6 +705,6 @@ const SK = [
   const tools = q => { for (const [n, fn] of SK) { const a = fn(q); if (a) return typeof a === "string" ? { a, src: n } : { a: a.a, src: n, chips: a.chips }; } return null; };
   const setTF = t => { tf = t; };
 
-  root.LMKit = { Tok, LM, Fast, Retr, Bot, fit, setup, prep, sig, tools, mem, setTF, UNKA };
+  root.LMKit = { Tok, LM, Fast, Retr, Bot, fit, setup, prep, sig, tools, mem, setTF, UNKA, ABOUT, identity };
   if (typeof module !== "undefined") module.exports = root.LMKit;
 })(typeof window !== "undefined" ? window : globalThis);
