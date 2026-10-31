@@ -96,6 +96,7 @@ const $ = id => document.getElementById(id), chat = $("chat"), sleep = ms => new
 const { Bot, fit, tools, mem, Tok, Fast } = LMKit;
 let BRAIN = {}, model = null, bot = null, busy = false;
 let free = null, freeGen = null, mode = "tool", score = { n: 0, ok: 0, v: 0, ex: 0 };
+const HF_REPO = "Uzgm/Barea"; // Hugging Face 모델 레포 "아이디/레포이름". 비우면 이 저장소의 파일을 읽는다
 
 /* ---------- 버튼 이펙트 (메인 메뉴 스타일: 클릭 글로우 + 놓을 때 바운스) ---------- */
 document.addEventListener("click", e => {
@@ -321,7 +322,7 @@ $("clr").onclick = () => { for (const k of Object.keys(mem)) delete mem[k]; LMKi
 (async () => {
   try { BRAIN = await getJSON("brain.json"); } catch { BRAIN = {}; }
   try { model = await getJSON("model.json"); } catch { model = null; }
-  try { let o; try { o = await getJSON("train_data/model_free.json"); } catch { o = await getJSON("model_free.json"); } if (o && o.kind === "free-v1") { freeGen = makeFree(o); free = o; } } catch { free = null; freeGen = null; }
+  try { let o; try { if (!HF_REPO) throw 0; o = await getJSON(`https://huggingface.co/${HF_REPO}/resolve/main/model_free.json`); } catch { try { o = await getJSON("train_data/model_free.json"); } catch { o = await getJSON("model_free.json"); } } if (o && o.kind === "free-v1") { freeGen = makeFree(o); free = o; } } catch { free = null; freeGen = null; }
   let m = "tool";
   if (free) {
     const np = free.lm.w.reduce((a, x) => a + x.length, 0); try { m = localStorage.getItem("tl-mode") || "tool"; } catch {}
