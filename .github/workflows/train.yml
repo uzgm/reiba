@@ -52,8 +52,14 @@ jobs:
           if [ -n "$RESUME_FROM" ]; then
             [ -n "$HF_REPO" ] || { echo "HF_REPO 변수가 없어요"; exit 1; }
             if [ "$RESUME_FROM" = "active" ]; then P="model_free.json"; else P="runs/$RESUME_FROM/model_free.json"; fi
-            curl -fL "https://huggingface.co/$HF_REPO/resolve/main/$P" -o /tmp/base.json \
-              || { echo "Hugging Face에서 못 받았어요: $P"; exit 1; }
+            if ! curl -fL "https://huggingface.co/$HF_REPO/resolve/main/$P" -o /tmp/base.json; then
+              if [ "$RESUME_FROM" = "active" ] && [ -f train_data/model_free.json ]; then
+                echo "HF에 아직 없어서 저장소의 train_data/model_free.json으로 이어서 학습해요"
+                cp train_data/model_free.json /tmp/base.json
+              else
+                echo "Hugging Face에서 못 받았어요: $P"; exit 1
+              fi
+            fi
             ARGS="$ARGS --resume /tmp/base.json"
           fi
           rm -f model_free.json
