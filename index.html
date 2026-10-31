@@ -45,6 +45,10 @@ select{font:inherit;font-size:13px;border-radius:8px;border:1px solid var(--line
       <button id="exp" type="button" disabled>model.json 내보내기</button>
     </div>
     <div class="row">
+      <select id="mode" aria-label="추론 답변 방식" disabled><option value="tool">추론: 도구(정확)</option><option value="nn">추론: 신경망(자유 생성)</option><option value="both">추론: 둘 다 비교</option></select>
+      <span id="freeStat" style="font-size:12px;color:var(--muted);align-self:center">model_free.json 없음 · 추론은 도구가 답해요</span>
+    </div>
+    <div class="row">
       <button id="reload" type="button">data 다시 읽기</button>
       <button id="dir" type="button">폴더 추가</button>
       <button id="files" type="button">JSON 추가</button>
@@ -63,8 +67,9 @@ select{font:inherit;font-size:13px;border-radius:8px;border:1px solid var(--line
 <script src="lm.js"></script>
 <script>
 const $ = id => document.getElementById(id), chat = $("chat"), sleep = ms => new Promise(r => setTimeout(r, ms));
-const { Bot, fit, tools, mem } = LMKit;
+const { Bot, fit, tools, mem, Tok, Fast } = LMKit;
 let BRAIN = {}, model = null, bot = null, busy = false;
+let free = null, freeGen = null, mode = "tool", score = { n: 0, ok: 0, v: 0, ex: 0 }; // free: 자유 생성 모델(model_free.json), score: 도구(교사)와 비교한 누적 결과
 
 async function getJSON(name) { // 한 파일로 묶인 배포본이면 안에서, 아니면 같은 폴더에서 읽는다
   const el = document.getElementById("inline-" + name); if (el) return JSON.parse(el.textContent);
@@ -72,6 +77,24 @@ async function getJSON(name) { // 한 파일로 묶인 배포본이면 안에서
 }
 try { Object.assign(mem, JSON.parse(localStorage.getItem("tl-mem") || "{}")); } catch {}
 LMKit.onMem = m => { try { localStorage.setItem("tl-mem", JSON.stringify(m)); } catch {} };
+
+/* ---------- 자유 생성: 답 전체를 토큰 하나씩 직접 써 내려간다 (train_free.js의 makeGen과 같음. 순수 JS + KV 캐시) ---------- */
+function makeFree(o) {
+  const tok = Tok.fromJSON(o.tok), fast = new Fast(o.lm), T = o.lm.cfg.T, RESERVE = 48;
+  return q => {
+    const t0 = performance.now(); let qq = q.trim(), ids;
+    while ((ids = tok.encode("Q:" + qq + "\nA:")).length > T - RESERVE && qq.length > 1) qq = qq.slice(1); // 너무 길면 앞쪽을 자른다(질문은 맨 끝에 있다)
+    const st = fast.state(); let lg; for (const id of ids) lg = fast.step(st, id);
+    const out = [];
+    while (out.length < 160 && st.n < T) {
+      lg[1] = -Infinity; let b = 0; for (let i = 1; i < lg.length; i++) if (lg[i] > lg[b]) b = i; // <unk> 금지, 가장 높은 점수(greedy)
+      if (b === 0) break; out.push(b); if (st.n >= T) break; lg = fast.step(st, b);
+    }
+    return { text: tok.decode(out), n: out.length, ms: performance.now() - t0 };
+  };
+}
+const lastLine = a => String(a).split("\n").pop();
+const headKind = a => { const h = String(a).split("\n")[0]; return /^응/.test(h) ? "yes" : /^아니야/.test(h) ? "no" : /^(내가 아는 것만|알려준 비교만으로는)/.test(h) ? "unk" : /^\S+!/.test(h) ? "top:" + h.split("!")[0] : "?"; }; // 답의 ‘결론’만 뽑아 비교한다
 
 function bubble(cls, text) {
   const e = document.createElement("div"); e.className = "m " + cls;
@@ -170,7 +193,17 @@ function refresh() {
 async function ask(q) {
   q = q.trim(); if (!q || busy || !bot) return; busy = true; bubble("u", q);
   const t0 = performance.now(), t = tools(q); let text, meta, sug;
-  if (t) { text = t.a; sug = t.chips; meta = `도구: ${t.src} · ${(performance.now() - t0).toFixed(1)}ms`; }
+  if (t) {
+    text = t.a; sug = t.chips; meta = `도구: ${t.src} · ${(performance.now() - t0).toFixed(1)}ms`;
+    if (t.src === "추론" && freeGen && mode !== "tool") { // 도구(교사)는 정답 확인용으로 항상 돌리고, 신경망 답과 비교한다
+      const g = freeGen(q), exact = g.text === t.a, vOk = headKind(g.text) === headKind(t.a), same = vOk && lastLine(g.text) === lastLine(t.a); // same: 판정과 ⇒ 결론 줄까지 같다(우연히 ‘응’만 맞은 건 제외)
+      score.n++; if (same) score.ok++; if (vOk) score.v++; if (exact) score.ex++;
+      const tag = exact ? "도구와 완전 일치" : same ? "결론까지 일치(근거 줄 표현만 다름)" : vOk ? "판정만 일치(내용은 다름)" : "도구와 다름";
+      meta = `신경망 자유 생성 ${g.n}토큰 · ${g.ms.toFixed(0)}ms · ${tag} · 누적 결론까지 일치 ${score.ok}/${score.n} (판정만 맞은 것 포함 ${score.v}/${score.n}, 완전 ${score.ex})`;
+      text = mode === "nn" ? (g.text || "(신경망이 빈 답을 냈어)") : `신경망:\n${g.text || "(빈 답)"}\n\n도구(정확):\n${t.a}`;
+      sug = null;
+    }
+  }
   else {
     const o = bot.reply(q); text = o.text; sug = o.unk ? o.sug : null;
     meta = o.n ? `신경망 ${o.n}토큰 · LM ${o.lm == null ? "-" : Math.round(o.lm * 100) + "%"} · 검색 ${Math.round(o.ret * 100)}% · ${o.ms.toFixed(1)}ms` : `검색 · ${o.ms.toFixed(1)}ms`;
@@ -216,11 +249,18 @@ $("reload").onclick = async () => {
   for (const [k, v] of D.files) BRAIN[k] = v;
   refresh(); bubble("b", (dataMsg(D) || "data 폴더에서 읽을 JSON을 못 찾았어.") + (D.files.length ? " 신경망까지 반영하려면 ‘브라우저에서 학습’을 눌러줘." : "")); busy = false;
 };
+$("mode").onchange = () => { mode = $("mode").value; score = { n: 0, ok: 0, v: 0, ex: 0 }; try { localStorage.setItem("tl-mode", mode); } catch {} };
 $("clr").onclick = () => { for (const k of Object.keys(mem)) delete mem[k]; LMKit.onMem(mem); bubble("b", "기억(이름·가르친 문장)을 지웠어."); };
 
 (async () => {
   try { BRAIN = await getJSON("brain.json"); } catch { BRAIN = {}; }
   try { model = await getJSON("model.json"); } catch { model = null; }
+  try { const o = await getJSON("model_free.json"); if (o && o.kind === "free-v1") { freeGen = makeFree(o); free = o; } } catch { free = null; freeGen = null; }
+  if (free) {
+    const np = free.lm.w.reduce((a, x) => a + x.length, 0); let m = "tool"; try { m = localStorage.getItem("tl-mode") || "tool"; } catch {}
+    $("mode").disabled = false; $("mode").value = mode = ["tool", "nn", "both"].includes(m) ? m : "tool";
+    $("freeStat").textContent = `자유 생성 모델 ${np.toLocaleString()}개 · ${free.steps}step · loss ${(+free.loss).toFixed(3)}`;
+  }
   $("stat").textContent = "data 폴더 읽는 중…";
   let D = { paths: 0, files: [] }; try { D = await loadData(); } catch {}
   for (const [k, v] of D.files) BRAIN[k] = v;
