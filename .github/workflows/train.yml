@@ -2,6 +2,9 @@ name: train
 on:
   workflow_dispatch:
     inputs:
+      name:
+        description: 결과 이름 (영문/숫자만, 비우면 run-번호)
+        default: ""
       steps:
         description: 학습 스텝
         default: "20000"
@@ -11,8 +14,11 @@ on:
       L:
         description: 층 수(L)
         default: "3"
-      resume:
-        description: train_data의 모델에서 이어서 학습
+      resume_from:
+        description: 이어서 학습할 모델 (active = 현재 활성 모델, 비우면 처음부터)
+        default: ""
+      activate:
+        description: 끝나면 사이트가 읽는 모델로 바꾸기
         type: boolean
         default: false
 permissions:
@@ -30,23 +36,60 @@ jobs:
       - name: 학습
         shell: bash
         env:
+          NAME_IN: ${{ inputs.name }}
           STEPS: ${{ inputs.steps }}
           DD: ${{ inputs.D }}
           LL: ${{ inputs.L }}
-          RESUME: ${{ inputs.resume }}
+          RESUME_FROM: ${{ inputs.resume_from }}
         run: |
-          ARGS="--steps $STEPS --D $DD --L $LL"
-          if [ "$RESUME" = "true" ] && [ -f train_data/model_free.json ]; then
-            ARGS="$ARGS --resume train_data/model_free.json"
+          NAME=$(printf '%s' "${NAME_IN:-run-$GITHUB_RUN_NUMBER}" | tr -c 'A-Za-z0-9._-' '_')
+          if [ -e "train_data/runs/$NAME" ]; then
+            echo "이미 있는 이름이에요: $NAME (덮어쓰지 않고 멈춰요)"; exit 1
           fi
+          echo "NAME=$NAME" >> "$GITHUB_ENV"
+          ARGS="--steps $STEPS --D $DD --L $LL"
+          if [ -n "$RESUME_FROM" ]; then
+            SRC="$RESUME_FROM"; [ "$RESUME_FROM" = "active" ] && SRC=train_data/model_free.json
+            [ -f "$SRC" ] || { echo "없는 파일: $SRC"; exit 1; }
+            cp "$SRC" /tmp/base.json
+            ARGS="$ARGS --resume /tmp/base.json"
+          fi
+          rm -f model_free.json
+          echo "$ARGS" > args.txt
           node train_free.js train $ARGS 2>&1 | tee train.log
-      - name: train_data에 저장하고 올리기
+
+      # 푸시가 실패해도 결과가 남도록, 푸시 전에 먼저 아티팩트로 백업
+      - name: 결과 백업 (아티팩트)
+        if: always() && env.NAME != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: train-${{ env.NAME }}
+          path: |
+            model_free.json
+            train.log
+            args.txt
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: 보관하고 올리기
+        shell: bash
+        env:
+          ACTIVATE: ${{ inputs.activate }}
         run: |
-          mkdir -p train_data
-          cp model_free.json train_data/model_free.json
-          cp train.log train_data/train_log.txt
+          D="train_data/runs/$NAME"
+          mkdir -p "$D"
+          cp model_free.json "$D/model_free.json"
+          cp train.log "$D/train_log.txt"
+          cp args.txt "$D/args.txt"
+          if [ "$ACTIVATE" = "true" ]; then
+            cp model_free.json train_data/model_free.json
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add train_data
-          git commit -m "train: model_free 업데이트" || echo "변경 없음"
-          git push
+          git commit -m "train: $NAME"
+          for i in 1 2 3; do
+            git pull --rebase && git push && exit 0
+            echo "푸시 재시도 ($i/3)"; sleep 5
+          done
+          echo "푸시 실패 - 결과는 아티팩트에서 받을 수 있어요"; exit 1
