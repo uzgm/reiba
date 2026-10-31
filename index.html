@@ -332,7 +332,7 @@ $("clr").onclick = () => { for (const k of Object.keys(mem)) delete mem[k]; LMKi
 (async () => {
   try { BRAIN = await getJSON("brain.json"); } catch { BRAIN = {}; }
   try { model = await getJSON("model.json"); } catch { model = null; }
-  try { const o = await getJSON("model_free.json"); if (o && o.kind === "free-v1") { freeGen = makeFree(o); free = o; } } catch { free = null; freeGen = null; }
+  try { let o; try { o = await getJSON("train_data/model_free.json"); } catch { o = await getJSON("model_free.json"); } if (o && o.kind === "free-v1") { freeGen = makeFree(o); free = o; } } catch { free = null; freeGen = null; }
   let m = "tool";
   if (free) {
     const np = free.lm.w.reduce((a, x) => a + x.length, 0); try { m = localStorage.getItem("tl-mode") || "tool"; } catch {}
