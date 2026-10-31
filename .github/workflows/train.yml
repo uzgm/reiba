@@ -1,0 +1,22 @@
+name: train
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: node train_free.js train --steps 20000 --D 96 --L 3 2>&1 | tee train.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: model_free
+          path: |
+            model_free.json
+            train.log
