@@ -1,5 +1,20 @@
 name: train
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      steps:
+        description: 학습 스텝
+        default: "20000"
+      D:
+        description: 모델 폭(D)
+        default: "96"
+      L:
+        description: 층 수(L)
+        default: "3"
+      resume:
+        description: train_data의 모델에서 이어서 학습
+        type: boolean
+        default: false
 permissions:
   contents: write
 jobs:
@@ -12,11 +27,26 @@ jobs:
         with:
           node-version: 20
       - run: npm install
-      - run: node train_free.js train --steps 20000 --D 96 --L 3 2>&1 | tee train.log
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: model_free
-          path: |
-            model_free.json
-            train.log
+      - name: 학습
+        shell: bash
+        env:
+          STEPS: ${{ inputs.steps }}
+          DD: ${{ inputs.D }}
+          LL: ${{ inputs.L }}
+          RESUME: ${{ inputs.resume }}
+        run: |
+          ARGS="--steps $STEPS --D $DD --L $LL"
+          if [ "$RESUME" = "true" ] && [ -f train_data/model_free.json ]; then
+            ARGS="$ARGS --resume train_data/model_free.json"
+          fi
+          node train_free.js train $ARGS 2>&1 | tee train.log
+      - name: train_data에 저장하고 올리기
+        run: |
+          mkdir -p train_data
+          cp model_free.json train_data/model_free.json
+          cp train.log train_data/train_log.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add train_data
+          git commit -m "train: model_free 업데이트" || echo "변경 없음"
+          git push
