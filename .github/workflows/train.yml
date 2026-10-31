@@ -15,7 +15,7 @@ on:
         description: 층 수(L)
         default: "3"
       resume_from:
-        description: 이어서 학습할 모델 (active = 현재 활성 모델, 비우면 처음부터)
+        description: 이어서 학습할 모델 (active = 현재 활성 모델, 결과 이름 = 그 실행의 모델, 비우면 처음부터)
         default: ""
       activate:
         description: 끝나면 사이트가 읽는 모델로 바꾸기
@@ -41,6 +41,7 @@ jobs:
           DD: ${{ inputs.D }}
           LL: ${{ inputs.L }}
           RESUME_FROM: ${{ inputs.resume_from }}
+          HF_REPO: ${{ vars.HF_REPO }}
         run: |
           NAME=$(printf '%s' "${NAME_IN:-run-$GITHUB_RUN_NUMBER}" | tr -c 'A-Za-z0-9._-' '_')
           if [ -e "train_data/runs/$NAME" ]; then
@@ -49,16 +50,17 @@ jobs:
           echo "NAME=$NAME" >> "$GITHUB_ENV"
           ARGS="--steps $STEPS --D $DD --L $LL"
           if [ -n "$RESUME_FROM" ]; then
-            SRC="$RESUME_FROM"; [ "$RESUME_FROM" = "active" ] && SRC=train_data/model_free.json
-            [ -f "$SRC" ] || { echo "없는 파일: $SRC"; exit 1; }
-            cp "$SRC" /tmp/base.json
+            [ -n "$HF_REPO" ] || { echo "HF_REPO 변수가 없어요"; exit 1; }
+            if [ "$RESUME_FROM" = "active" ]; then P="model_free.json"; else P="runs/$RESUME_FROM/model_free.json"; fi
+            curl -fL "https://huggingface.co/$HF_REPO/resolve/main/$P" -o /tmp/base.json \
+              || { echo "Hugging Face에서 못 받았어요: $P"; exit 1; }
             ARGS="$ARGS --resume /tmp/base.json"
           fi
           rm -f model_free.json
           echo "$ARGS" > args.txt
           node train_free.js train $ARGS 2>&1 | tee train.log
 
-      # 푸시가 실패해도 결과가 남도록, 푸시 전에 먼저 아티팩트로 백업
+      # 어떤 일이 생겨도 결과가 남도록 먼저 아티팩트로 백업
       - name: 결과 백업 (아티팩트)
         if: always() && env.NAME != ''
         uses: actions/upload-artifact@v4
@@ -68,28 +70,51 @@ jobs:
             model_free.json
             train.log
             args.txt
+            data/free_eval.json
           if-no-files-found: warn
           retention-days: 30
 
-      - name: 보관하고 올리기
+      - name: Hugging Face에 모델 올리기
         shell: bash
         env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_REPO: ${{ vars.HF_REPO }}
           ACTIVATE: ${{ inputs.activate }}
+        run: |
+          [ -n "$HF_TOKEN" ] && [ -n "$HF_REPO" ] || { echo "HF_TOKEN 시크릿과 HF_REPO 변수를 먼저 등록하세요"; exit 1; }
+          pip install -q huggingface_hub
+          python - <<'PY'
+          import os
+          from huggingface_hub import HfApi
+          api = HfApi(token=os.environ["HF_TOKEN"])
+          repo, name = os.environ["HF_REPO"], os.environ["NAME"]
+          try:
+              api.create_repo(repo, repo_type="model", exist_ok=True)
+          except Exception as e:
+              print("레포 생성 건너뜀(이미 있으면 정상):", type(e).__name__)
+          api.upload_file(path_or_fileobj="model_free.json", path_in_repo=f"runs/{name}/model_free.json",
+                          repo_id=repo, repo_type="model", commit_message=f"train: {name}")
+          if os.environ.get("ACTIVATE") == "true":
+              api.upload_file(path_or_fileobj="model_free.json", path_in_repo="model_free.json",
+                              repo_id=repo, repo_type="model", commit_message=f"activate: {name}")
+          print("업로드 완료:", repo, name)
+          PY
+
+      # GitHub에는 작은 기록만 남긴다 (모델 파일은 Hugging Face에 있음)
+      - name: 기록 커밋
+        shell: bash
         run: |
           D="train_data/runs/$NAME"
           mkdir -p "$D"
-          cp model_free.json "$D/model_free.json"
           cp train.log "$D/train_log.txt"
           cp args.txt "$D/args.txt"
-          if [ "$ACTIVATE" = "true" ]; then
-            cp model_free.json train_data/model_free.json
-          fi
+          [ -f data/free_eval.json ] && cp data/free_eval.json "$D/free_eval.json" || true
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add train_data
-          git commit -m "train: $NAME"
+          git commit -m "train: $NAME (기록)"
           for i in 1 2 3; do
             git pull --rebase && git push && exit 0
             echo "푸시 재시도 ($i/3)"; sleep 5
           done
-          echo "푸시 실패 - 결과는 아티팩트에서 받을 수 있어요"; exit 1
+          echo "푸시 실패 - 모델은 이미 Hugging Face에 올라갔어요"; exit 1
