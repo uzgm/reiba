@@ -1,0 +1,100 @@
+{
+ "tot": {
+  "hold-out(새 이름·사물)": {
+   "n": 400,
+   "verdict": 0.635,
+   "ground": 0.165,
+   "exact": 0.165
+  },
+  "train 샘플(본 문제)": {
+   "n": 200,
+   "verdict": 0.87,
+   "ground": 0.83,
+   "exact": 0.83
+  },
+  "brain 암기": {
+   "n": 64,
+   "verdict": 0.953125,
+   "ground": 0.953125,
+   "exact": 0.953125
+  },
+  "모름(OOD)": {
+   "n": 16,
+   "verdict": 1,
+   "ground": 1,
+   "exact": 1
+  }
+ },
+ "res": {
+  "hold-out(새 이름·사물)": {
+   "isa": {
+    "n": 132,
+    "verdict": 115,
+    "ground": 51,
+    "exact": 51
+   },
+   "cmp": {
+    "n": 143,
+    "verdict": 32,
+    "ground": 0,
+    "exact": 0
+   },
+   "cond": {
+    "n": 50,
+    "verdict": 47,
+    "ground": 0,
+    "exact": 0
+   },
+   "prop": {
+    "n": 75,
+    "verdict": 60,
+    "ground": 15,
+    "exact": 15
+   }
+  },
+  "train 샘플(본 문제)": {
+   "isa": {
+    "n": 89,
+    "verdict": 88,
+    "ground": 88,
+    "exact": 88
+   },
+   "cmp": {
+    "n": 69,
+    "verdict": 44,
+    "ground": 36,
+    "exact": 36
+   },
+   "prop": {
+    "n": 38,
+    "verdict": 38,
+    "ground": 38,
+    "exact": 38
+   },
+   "cond": {
+    "n": 4,
+    "verdict": 4,
+    "ground": 4,
+    "exact": 4
+   }
+  },
+  "brain 암기": {
+   "brain": {
+    "n": 64,
+    "verdict": 61,
+    "ground": 61,
+    "exact": 61
+   }
+  },
+  "모름(OOD)": {
+   "ood": {
+    "n": 16,
+    "verdict": 16,
+    "ground": 16,
+    "exact": 16
+   }
+  }
+ },
+ "steps": 20000,
+ "loss": 0.025552844121841764
+}
