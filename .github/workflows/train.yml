@@ -120,7 +120,7 @@ jobs:
           git add train_data
           git commit -m "train: $NAME (기록)"
           for i in 1 2 3; do
-            git pull --rebase && git push && exit 0
+            git pull --rebase --autostash && git push && exit 0
             echo "푸시 재시도 ($i/3)"; sleep 5
           done
           echo "푸시 실패 - 모델은 이미 Hugging Face에 올라갔어요"; exit 1
