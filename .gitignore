@@ -1,0 +1,6 @@
+node_modules/
+train.log
+data/reason_train.jsonl
+data/reason_eval.jsonl
+data/reason_stats.json
+data/free_eval.json
