@@ -47,10 +47,8 @@ const THINGS = [
 ];
 const HOLD_THINGS = ["우산", "열쇠", "지갑", "리모컨", "카메라", "양산"];
 
-// 무작위 단어: 학습용 단어에 쓰인 글자들을 무작위로 이어 붙인다. 모델이 단어 목록을 외우지 못하고
-// 문장 속 단어를 그대로 베껴 쓰게 만들려는 것이다. 조사처럼 보이는 글자와 평가 전용 단어는 뺀다.
-const POOL = [...new Set([...NAMES, ...THINGS, ...TAX.flatMap(t => t.leaves.filter(l => !HOLD_LEAF.has(l)))].join(""))].filter(c => /[가-힣]/.test(c) && !"은는이가을를의에도만와과보다야요".includes(c));
-const HOLD_WORDS = new Set([...HOLD_NAMES, ...HOLD_THINGS, ...HOLD_LEAF]);
+// 무작위 단어: 글자를 무작위로 이어 붙인다. 모델이 단어 목록을 외우지 못하고 문장 속 단어를 그대로 베껴 쓰게 만들려는 것이다.
+// 글자 풀(POOL)은 아래 단어 목록들이 다 만들어진 뒤에 정한다(평가 전용 단어의 글자도 포함. 단어 전체는 학습에 안 쓴다).
 const RAND_P = .5; // 학습 데이터에서 무작위 단어를 쓰는 비율
 const randWord = (R, n = 2, avoid = []) => { for (;;) { let w = ""; for (let k = 0; k < n; k++) w += R.pick(POOL); if (w[0] !== w[w.length - 1] && !HOLD_WORDS.has(w) && !avoid.includes(w)) return w; } };
 const randName = (R, avoid) => randWord(R, 2, avoid);
@@ -232,6 +230,14 @@ const HVERB = [ // 평가 전용 서술어
   ["미끄러워지", "미끄러워진다", "미끄러워지지 않는다", "미끄러워질까"], ["하얘지", "하얘진다", "하얘지지 않는다", "하얘질까"], ["맺히", "맺힌다", "맺히지 않는다", "맺힐까"],
   ["가라앉으", "가라앉는다", "가라앉지 않는다", "가라앉을까"],
 ];
+
+// 글자 풀: 이름, 물건, 대상 단어, 주어, 서술어 어간, 원인/결과 앞말의 글자를 모두 모은다. 평가 전용 단어의 글자도 넣어서,
+// 새 단어의 글자가 학습 때 문장 속에서 한 번도 안 나오는 일이 없게 한다(평가는 '처음 보는 단어 전체'를 잰다). 조사처럼 보이는 글자는 뺀다.
+const POOL = [...new Set([
+  ...NAMES, ...HOLD_NAMES, ...THINGS, ...HOLD_THINGS, ...TAX.flatMap(t => t.leaves), ...SUBJ, ...HSUBJ,
+  ...VERB.map(v => v[0]), ...HVERB.map(v => v[0]), ...CAUSE.map(v => v[0]), ...EFFECT.map(v => v[0]), ...NCAUSE.map(v => v[0]), ...NEFFECT.map(v => v[0]),
+].join(""))].filter(c => /[가-힣]/.test(c) && !"은는이가을를의에도만와과보다야요".includes(c));
+const HOLD_WORDS = new Set([...HOLD_NAMES, ...HOLD_THINGS, ...HOLD_LEAF, ...HSUBJ]); // 이 단어 자체는 무작위로도 만들지 않는다
 
 // 원인/결과를 하나씩 뽑는다. 사람 주어 20% · 주어x서술어 조합 40% · 자연스러운 목록 40%. hold=true면 평가 전용 단어가 들어간 것만 쓴다.
 function pickCond(R, hold) {
