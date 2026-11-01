@@ -125,7 +125,7 @@ function makeFree(o) {
     while ((ids = tok.encode("Q:" + qq + "\nA:")).length > T - RESERVE && qq.length > 1) qq = qq.slice(1);
     const st = fast.state(); let lg; for (const id of ids) lg = fast.step(st, id);
     const out = [];
-    while (out.length < 160 && st.n < T) {
+    while (out.length < 190 && st.n < T) {
       lg[1] = -Infinity; let b = 0; for (let i = 1; i < lg.length; i++) if (lg[i] > lg[b]) b = i;
       if (b === 0) break; out.push(b); if (st.n >= T) break; lg = fast.step(st, b);
     }
