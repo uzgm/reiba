@@ -14,8 +14,17 @@ on:
       L:
         description: 층 수(L)
         default: "3"
+      gen_n:
+        description: 매번 새로 만들 학습 문제 수 (gen_reason.js의 첫 번째 인자)
+        default: "60000"
+      gen_seed:
+        description: 데이터 시드 (바꾸면 다른 문제가 만들어져요)
+        default: "7"
+      merges:
+        description: BPE 합치기 횟수 (처음부터 학습할 때만 적용, 이어 학습은 옛 값 그대로)
+        default: "300"
       resume_from:
-        description: 이어서 학습할 모델 (active = 현재 활성 모델, 결과 이름 = 그 실행의 모델, 비우면 처음부터)
+        description: 이어서 학습할 모델 (active = 현재 활성 모델, 결과 이름 = 그 실행의 모델, 비우면 처음부터). 데이터나 단어가 크게 바뀌었으면 비우세요
         default: ""
       activate:
         description: 끝나면 사이트가 읽는 모델로 바꾸기
@@ -40,6 +49,9 @@ jobs:
           STEPS: ${{ inputs.steps }}
           DD: ${{ inputs.D }}
           LL: ${{ inputs.L }}
+          GEN_N: ${{ inputs.gen_n }}
+          GEN_SEED: ${{ inputs.gen_seed }}
+          MERGES: ${{ inputs.merges }}
           RESUME_FROM: ${{ inputs.resume_from }}
           HF_REPO: ${{ vars.HF_REPO }}
         run: |
@@ -48,9 +60,26 @@ jobs:
             echo "이미 있는 이름이에요: $NAME (덮어쓰지 않고 멈춰요)"; exit 1
           fi
           echo "NAME=$NAME" >> "$GITHUB_ENV"
-          ARGS="--steps $STEPS --D $DD --L $LL"
+
+          for v in "$STEPS" "$DD" "$LL" "$GEN_N" "$GEN_SEED" "$MERGES"; do
+            case "$v" in ''|*[!0-9]*) echo "숫자만 넣을 수 있어요: '$v'"; exit 1;; esac
+          done
+
+          # 학습 데이터는 저장소에 있는 옛 파일을 쓰지 않고, 매번 gen_reason.js로 새로 만든다
+          echo "== 학습 데이터 생성: node gen_reason.js $GEN_N 400 $GEN_SEED =="
+          node gen_reason.js "$GEN_N" 400 "$GEN_SEED" 2>&1 | tee gen.log
+          NT=$(wc -l < data/reason_train.jsonl)
+          NE=$(wc -l < data/reason_eval.jsonl)
+          NC=$(grep -c '"fam":"cond"' data/reason_train.jsonl || true)
+          echo "생성 결과: 학습 $NT · 평가 $NE · 조건(cond) $NC"
+          if [ "$NT" -le 0 ] || [ "$NE" -le 0 ]; then echo "데이터가 비어 있어요. gen.log를 확인하세요"; exit 1; fi
+          if [ "$NC" -le 0 ]; then echo "조건(cond) 문제가 0개예요. gen_reason.js 버전이나 tools()를 확인하세요"; exit 1; fi
+          if [ "$NT" -lt $((GEN_N * 9 / 10)) ]; then echo "경고: 요청한 $GEN_N개보다 많이 적게 만들어졌어요 (reason_stats.json의 noTeacher, mismatch 확인)"; fi
+
+          ARGS="--steps $STEPS --D $DD --L $LL --merges $MERGES"
           if [ -n "$RESUME_FROM" ]; then
             [ -n "$HF_REPO" ] || { echo "HF_REPO 변수가 없어요"; exit 1; }
+            echo "참고: 이어 학습은 옛 모델의 어휘와 크기(D, L, merges)를 그대로 써요. 입력한 값은 무시돼요"
             if [ "$RESUME_FROM" = "active" ]; then P="model_free.json"; else P="runs/$RESUME_FROM/model_free.json"; fi
             if ! curl -fL "https://huggingface.co/$HF_REPO/resolve/main/$P" -o /tmp/base.json; then
               if [ "$RESUME_FROM" = "active" ] && [ -f train_data/model_free.json ]; then
@@ -63,7 +92,7 @@ jobs:
             ARGS="$ARGS --resume /tmp/base.json"
           fi
           rm -f model_free.json
-          echo "$ARGS" > args.txt
+          echo "$ARGS | gen_reason.js $GEN_N 400 $GEN_SEED" > args.txt
           node train_free.js train $ARGS 2>&1 | tee train.log
 
       # 어떤 일이 생겨도 결과가 남도록 먼저 아티팩트로 백업
@@ -75,8 +104,10 @@ jobs:
           path: |
             model_free.json
             train.log
+            gen.log
             args.txt
             data/free_eval.json
+            data/reason_stats.json
           if-no-files-found: warn
           retention-days: 30
 
@@ -114,6 +145,8 @@ jobs:
           mkdir -p "$D"
           cp train.log "$D/train_log.txt"
           cp args.txt "$D/args.txt"
+          [ -f gen.log ] && cp gen.log "$D/gen_log.txt" || true
+          [ -f data/reason_stats.json ] && cp data/reason_stats.json "$D/reason_stats.json" || true
           [ -f data/free_eval.json ] && cp data/free_eval.json "$D/free_eval.json" || true
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
