@@ -14,6 +14,9 @@ on:
       L:
         description: 층 수(L)
         default: "3"
+      lr:
+        description: 학습률 (큰 모델 D=128, L=4는 1.5e-3 정도로 낮춰 보세요)
+        default: "3e-3"
       gen_n:
         description: 매번 새로 만들 학습 문제 수 (gen_reason.js의 첫 번째 인자)
         default: "60000"
@@ -52,6 +55,7 @@ jobs:
           GEN_N: ${{ inputs.gen_n }}
           GEN_SEED: ${{ inputs.gen_seed }}
           MERGES: ${{ inputs.merges }}
+          LR: ${{ inputs.lr }}
           RESUME_FROM: ${{ inputs.resume_from }}
           HF_REPO: ${{ vars.HF_REPO }}
         run: |
@@ -65,6 +69,8 @@ jobs:
             case "$v" in ''|*[!0-9]*) echo "숫자만 넣을 수 있어요: '$v'"; exit 1;; esac
           done
 
+          printf '%s' "$LR" | grep -Eq '^[0-9]+(\.[0-9]+)?(e-?[0-9]+)?$' || { echo "lr은 3e-3, 0.0015 같은 숫자로 넣으세요: '$LR'"; exit 1; }
+
           # 학습 데이터는 저장소에 있는 옛 파일을 쓰지 않고, 매번 gen_reason.js로 새로 만든다
           echo "== 학습 데이터 생성: node gen_reason.js $GEN_N 400 $GEN_SEED =="
           node gen_reason.js "$GEN_N" 400 "$GEN_SEED" 2>&1 | tee gen.log
@@ -76,7 +82,7 @@ jobs:
           if [ "$NC" -le 0 ]; then echo "조건(cond) 문제가 0개예요. gen_reason.js 버전이나 tools()를 확인하세요"; exit 1; fi
           if [ "$NT" -lt $((GEN_N * 9 / 10)) ]; then echo "경고: 요청한 $GEN_N개보다 많이 적게 만들어졌어요 (reason_stats.json의 noTeacher, mismatch 확인)"; fi
 
-          ARGS="--steps $STEPS --D $DD --L $LL --merges $MERGES"
+          ARGS="--steps $STEPS --D $DD --L $LL --merges $MERGES --lr $LR"
           if [ -n "$RESUME_FROM" ]; then
             [ -n "$HF_REPO" ] || { echo "HF_REPO 변수가 없어요"; exit 1; }
             echo "참고: 이어 학습은 옛 모델의 어휘와 크기(D, L, merges)를 그대로 써요. 입력한 값은 무시돼요"
