@@ -47,11 +47,13 @@ const THINGS = [
 ];
 const HOLD_THINGS = ["우산", "열쇠", "지갑", "리모컨", "카메라", "양산"];
 
-// 무작위 이름: 2글자 조합. 외운 이름이 아니라 '문장 속 단어를 그대로 읽어 쓰는' 연습을 시키려고 섞는다.
-// 조사처럼 보이는 글자(도, 보, 다 등)와 평가 전용 이름은 뺀다.
-const SYL = [..."민준서윤예현주원지호건우진선훈승재태동성유연정영상병대한광종수아하채소율린나미순혜세슬기희석규찬빈솔결담휘강모리별"];
-const RAND_P = .5; // 학습 데이터에서 무작위 이름을 쓰는 비율
-const randName = (R, avoid) => { for (;;) { const n = R.pick(SYL) + R.pick(SYL); if (n[0] !== n[1] && !HOLD_NAMES.includes(n) && !avoid.includes(n)) return n; } };
+// 무작위 단어: 학습용 단어에 쓰인 글자들을 무작위로 이어 붙인다. 모델이 단어 목록을 외우지 못하고
+// 문장 속 단어를 그대로 베껴 쓰게 만들려는 것이다. 조사처럼 보이는 글자와 평가 전용 단어는 뺀다.
+const POOL = [...new Set([...NAMES, ...THINGS, ...TAX.flatMap(t => t.leaves.filter(l => !HOLD_LEAF.has(l)))].join(""))].filter(c => /[가-힣]/.test(c) && !"은는이가을를의에도만와과보다야요".includes(c));
+const HOLD_WORDS = new Set([...HOLD_NAMES, ...HOLD_THINGS, ...HOLD_LEAF]);
+const RAND_P = .5; // 학습 데이터에서 무작위 단어를 쓰는 비율
+const randWord = (R, n = 2, avoid = []) => { for (;;) { let w = ""; for (let k = 0; k < n; k++) w += R.pick(POOL); if (w[0] !== w[w.length - 1] && !HOLD_WORDS.has(w) && !avoid.includes(w)) return w; } };
+const randName = (R, avoid) => randWord(R, 2, avoid);
 
 const FLY = ["펭귄", "타조", "에뮤"];
 const PROPS = [
@@ -208,15 +210,43 @@ const NEFFECT = [
   ["뒤로 물러선다", "뒤로 물러서지 않는다", "뒤로 물러설까", true],
 ];
 
-// 원인/결과를 하나씩 뽑는다. 30%는 사람이 주어인 문장. hold=true면 평가 전용 단어만 쓴다.
+// 주어 x 서술어를 자유롭게 조합한다 (뜻이 안 맞아도 된다. 규칙에서만 답이 나오고, 단어는 베껴 써야 한다).
+// VERB: [~면 앞부분, 평서, 부정, 의문]
+const SUBJ = ["물", "불", "바람", "비", "땅", "방", "문", "창문", "종", "벨", "전기", "얼음", "구름", "해", "달", "별", "꽃", "풀", "잎", "싹", "빵", "반죽", "우유", "음식", "소리", "냄새", "빛", "그림자", "먼지", "거울", "종이", "연기", "수증기", "기계", "배터리", "기온", "강물", "파도", "아이"];
+const HSUBJ = ["눈", "안개", "서리", "우박", "이슬", "태풍", "홍수", "가뭄", "무지개", "노을", "길", "도로", "하늘", "시야", "공기", "마을", "농작물", "산", "호수"];
+const VERB = [
+  ["생기", "생긴다", "생기지 않는다", "생길까"], ["커지", "커진다", "커지지 않는다", "커질까"], ["작아지", "작아진다", "작아지지 않는다", "작아질까"],
+  ["나오", "나온다", "나오지 않는다", "나올까"], ["사라지", "사라진다", "사라지지 않는다", "사라질까"], ["멈추", "멈춘다", "멈추지 않는다", "멈출까"],
+  ["변하", "변한다", "변하지 않는다", "변할까"], ["움직이", "움직인다", "움직이지 않는다", "움직일까"], ["열리", "열린다", "열리지 않는다", "열릴까"],
+  ["닫히", "닫힌다", "닫히지 않는다", "닫힐까"], ["떨어지", "떨어진다", "떨어지지 않는다", "떨어질까"], ["올라가", "올라간다", "올라가지 않는다", "올라갈까"],
+  ["내려가", "내려간다", "내려가지 않는다", "내려갈까"], ["늘어나", "늘어난다", "늘어나지 않는다", "늘어날까"], ["줄어들", "줄어든다", "줄어들지 않는다", "줄어들까"],
+  ["깨지", "깨진다", "깨지지 않는다", "깨질까"], ["젖으", "젖는다", "젖지 않는다", "젖을까"], ["마르", "마른다", "마르지 않는다", "마를까"],
+  ["식으", "식는다", "식지 않는다", "식을까"], ["따뜻해지", "따뜻해진다", "따뜻해지지 않는다", "따뜻해질까"], ["밝아지", "밝아진다", "밝아지지 않는다", "밝아질까"],
+  ["어두워지", "어두워진다", "어두워지지 않는다", "어두워질까"], ["흔들리", "흔들린다", "흔들리지 않는다", "흔들릴까"], ["꺼지", "꺼진다", "꺼지지 않는다", "꺼질까"],
+  ["붙으", "붙는다", "붙지 않는다", "붙을까"], ["넘치", "넘친다", "넘치지 않는다", "넘칠까"], ["쌓이", "쌓인다", "쌓이지 않는다", "쌓일까"],
+  ["자라", "자란다", "자라지 않는다", "자랄까"], ["시들", "시든다", "시들지 않는다", "시들까"], ["퍼지", "퍼진다", "퍼지지 않는다", "퍼질까"], ["흐르", "흐른다", "흐르지 않는다", "흐를까"],
+];
+const HVERB = [ // 평가 전용 서술어
+  ["막히", "막힌다", "막히지 않는다", "막힐까"], ["흐려지", "흐려진다", "흐려지지 않는다", "흐려질까"], ["좁아지", "좁아진다", "좁아지지 않는다", "좁아질까"],
+  ["맑아지", "맑아진다", "맑아지지 않는다", "맑아질까"], ["잠기", "잠긴다", "잠기지 않는다", "잠길까"], ["얼어붙으", "얼어붙는다", "얼어붙지 않는다", "얼어붙을까"],
+  ["미끄러워지", "미끄러워진다", "미끄러워지지 않는다", "미끄러워질까"], ["하얘지", "하얘진다", "하얘지지 않는다", "하얘질까"], ["맺히", "맺힌다", "맺히지 않는다", "맺힐까"],
+  ["가라앉으", "가라앉는다", "가라앉지 않는다", "가라앉을까"],
+];
+
+// 원인/결과를 하나씩 뽑는다. 사람 주어 20% · 주어x서술어 조합 40% · 자연스러운 목록 40%. hold=true면 평가 전용 단어가 들어간 것만 쓴다.
 function pickCond(R, hold) {
   const side = x => !!x[3] === hold, pickN = () => hold ? R.pick(HOLD_NAMES) : R.chance(RAND_P * .8) ? randName(R, []) : R.pick(NAMES);
-  const cause = () => {
-    if (R.chance(.3)) { const v = R.pick(NCAUSE.filter(side)), n = pickN(); return [`${iga(n)} ${v[0]}`, `${iga(n)} ${v[1]}`, `${iga(n)} ${v[2]}`]; }
+  const subj = () => iga(hold ? R.pick(HSUBJ) : R.chance(RAND_P) ? randWord(R, R.int(2, 3)) : R.pick(SUBJ)), verb = () => R.pick(hold && R.chance(.6) ? HVERB : VERB);
+  const cause = () => { // [~면 앞부분, 평서, 의문]
+    const r = R();
+    if (r < .2) { const v = R.pick(NCAUSE.filter(side)), n = pickN(); return [`${iga(n)} ${v[0]}`, `${iga(n)} ${v[1]}`, `${iga(n)} ${v[2]}`]; }
+    if (r < .6) { const s = subj(), v = verb(); return [`${s} ${v[0]}`, `${s} ${v[1]}`, `${s} ${v[3]}`]; }
     return R.pick(CAUSE.filter(side));
   };
-  const effect = () => {
-    if (R.chance(.3)) { const v = R.pick(NEFFECT.filter(side)), n = pickN(); return [`${iga(n)} ${v[0]}`, `${iga(n)} ${v[1]}`, `${iga(n)} ${v[2]}`]; }
+  const effect = () => { // [평서, 부정, 의문]
+    const r = R();
+    if (r < .2) { const v = R.pick(NEFFECT.filter(side)), n = pickN(); return [`${iga(n)} ${v[0]}`, `${iga(n)} ${v[1]}`, `${iga(n)} ${v[2]}`]; }
+    if (r < .6) { const s = subj(), v = verb(); return [`${s} ${v[1]}`, `${s} ${v[2]}`, `${s} ${v[3]}`]; }
     return R.pick(EFFECT.filter(side));
   };
   const c = cause(); let e = effect();
@@ -234,12 +264,12 @@ const isaQ = (a, b) => S(`${eun(a)} ${b}일까?`, `${eun(a)} ${iya(b)}?`, `${iga
 
 function make(R, hold) {
   const leaves = t => t.leaves.filter(l => hold === HOLD_LEAF.has(l)), nm = hold ? HOLD_NAMES : NAMES, th = hold ? HOLD_THINGS : THINGS;
-  const pickLeaf = () => { const t = R.pick(TAX.filter(t => leaves(t).length)); const l = R.pick(leaves(t)); return { l, chain: [l, ...[...t.path].reverse()] }; };
+  const pickLeaf = () => { const t = R.pick(TAX.filter(t => leaves(t).length)), rnd = !hold && R.chance(RAND_P), l = rnd ? randWord(R, R.int(2, 3)) : R.pick(leaves(t)); return { l, rnd, chain: [l, ...[...t.path].reverse()] }; };
   const distract = (n, skip) => { const o = []; for (let i = 0; i < n; i++) { const t = R.pick(TAX), c = [R.pick(t.leaves.filter(x => !HOLD_LEAF.has(x) || hold)), ...[...t.path].reverse()]; if (c.some(x => skip.includes(x))) continue; const j = R.int(0, c.length - 2); o.push(isaF(c[j], c[j + 1])); } return o; };
   const fam = R.pick(["isa", "isa", "isa", "prop", "prop", "cmp", "cmp", "cmp", "cond", "cond"]);
   if (fam === "isa") {
     const { l, chain } = pickLeaf(), mode = R.pick(["yes", "yes", "yes", "unk", "no"]);
-    if (mode === "yes") { const a = R.int(0, chain.length - 2), b = R.int(a + 1, chain.length - 1), F = []; for (let i = a; i < b; i++) F.push(isaF(chain[i], chain[i + 1])); return { fam, kind: "yes", F: [...F, ...distract(R.int(0, 2), chain)], Q: isaQ(chain[a], chain[b]) }; }
+    if (mode === "yes") { const a = hold ? 0 : R.int(0, chain.length - 2), b = R.int(a + 1, chain.length - 1), F = []; for (let i = a; i < b; i++) F.push(isaF(chain[i], chain[i + 1])); return { fam, kind: "yes", F: [...F, ...distract(R.int(0, 2), chain)], Q: isaQ(chain[a], chain[b]) }; }
     const other = R.pick(TAX.filter(t => !t.path.includes(chain[1]) && t.path[0] !== chain[chain.length - 1])), tgt = R.pick(other.path.slice(1)), F = [];
     for (let i = 0; i < chain.length - 1; i++) F.push(isaF(chain[i], chain[i + 1]));
     if (mode === "no") return { fam, kind: "no", F: [...F, S(`${eun(l)} ${iga(tgt)} 아니다.`, `${eun(l)} ${iga(tgt)} 아니야.`)], Q: isaQ(l, tgt) };
@@ -247,13 +277,13 @@ function make(R, hold) {
   }
   if (fam === "prop") {
     const P = R.pick(PROPS), t = TAX.find(t => t.path.at(-1) === P[0]), pool = t.leaves.filter(x => hold === HOLD_LEAF.has(x));
-    const ls = pool.length ? pool : t.leaves, l = R.pick(ls), mode = R.pick(["yes", "yes", "unk", FLY.includes(l) ? "no" : "yes"]), gen = S(`${eun(P[0])} ${P[1]}.`, `${P[0]}들은 ${P[1]}.`);
-    if (mode === "unk") { const o = R.pick(TAX.filter(x => x.path.at(-1) !== P[0] && x.path.at(-1) !== "물고기")), ol = R.pick(o.leaves.filter(x => !HOLD_LEAF.has(x) || hold)); return { fam, kind: "unk", F: [gen, isaF(ol, o.path.at(-1))], Q: S(`${eun(ol)} ${P[3]}?`, `${iga(ol)} ${P[3]}?`) }; }
+    const ls = pool.length ? pool : t.leaves, rnd = !hold && R.chance(RAND_P), l = rnd ? randWord(R, R.int(2, 3)) : R.pick(ls), mode = R.pick(["yes", "yes", "unk", FLY.includes(l) || rnd ? "no" : "yes"]), gen = S(`${eun(P[0])} ${P[1]}.`, `${P[0]}들은 ${P[1]}.`);
+    if (mode === "unk") { const o = R.pick(TAX.filter(x => x.path.at(-1) !== P[0] && x.path.at(-1) !== "물고기")), ol = !hold && R.chance(RAND_P) ? randWord(R, R.int(2, 3)) : R.pick(o.leaves.filter(x => !HOLD_LEAF.has(x) || hold)); return { fam, kind: "unk", F: [gen, isaF(ol, o.path.at(-1))], Q: S(`${eun(ol)} ${P[3]}?`, `${iga(ol)} ${P[3]}?`) }; }
     const F = [gen, isaF(l, P[0])]; if (mode === "no") F.push(S(`${eun(l)} ${P[2]}.`)); else if (R.chance(.4)) F.push(...distract(1, [l, P[0]]));
     return { fam, kind: mode, F, Q: S(`${eun(l)} ${P[3]}?`, `${iga(l)} ${P[3]}?`) };
   }
   if (fam === "cmp") {
-    const D = R.pick(DIM), pool = D[4] === "p" ? nm : th, n = Math.min(R.int(3, 4), pool.length), E = [], F = [];
+    const D = R.pick(DIM), pool = D[4] === "p" ? nm : th, n = Math.min(R.pick([2, 3, 3, 4]), pool.length), E = [], F = [];
     while (E.length < n) { const w = !hold && R.chance(RAND_P) ? randName(R, E) : R.pick(pool); if (!E.includes(w)) E.push(w); }
     for (let i = 0; i < n - 1; i++) { const hi = E[i], lo = E[i + 1]; F.push(S(`${lo}보다 ${iga(hi)} ${D[0]}.`, `${eun(hi)} ${lo}보다 ${D[0]}.`, `${eun(lo)} ${hi}보다 ${D[1]}.`, `${lo}보다 ${iga(hi)} 더 ${D[0]}.`)); }
     const mode = R.pick(["top", "bot", "pair", "pair"]);
@@ -271,7 +301,7 @@ function make(R, hold) {
 
 function render(R, ex, canon) {
   const pick = s => canon || !s.v.length || R.chance(.35) ? s.c : R.pick(s.v);
-  const F = canon ? ex.F : (R.chance(.7) ? R.shuf(ex.F) : ex.F), pre = canon ? "" : R.pick(["", "", "", "그럼 ", "자, ", "그러면 "]);
+  const F = canon ? ex.F : (R.chance(ex.fam === "cmp" ? .3 : .7) ? R.shuf(ex.F) : ex.F), pre = canon ? "" : R.pick(["", "", "", "그럼 ", "자, ", "그러면 "]);
   return F.map(pick).join(" ") + " " + pre + pick(ex.Q);
 }
 
