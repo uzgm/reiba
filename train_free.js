@@ -85,7 +85,7 @@ function buildTok(D) { // BPE는 학습 데이터로만 만들고, 평가 세트
 /* ---------- 생성 (순수 JS · KV 캐시) ---------- */
 function makeGen(o) {
   const tok = Tok.fromJSON(o.tok), fast = new Fast(o.lm), T = o.lm.cfg.T;
-  return (q, { max = 160, reserve = opt.reserve } = {}) => {
+  return (q, { max = 190, reserve = opt.reserve } = {}) => {
     let qq = q.trim(), ids; // 너무 길면 앞쪽을 자른다(질문은 맨 끝에 있다)
     while ((ids = tok.encode(promptOf(qq))).length > T - reserve && qq.length > 1) qq = qq.slice(1);
     const st = fast.state(); let lg; for (const id of ids) lg = fast.step(st, id);
