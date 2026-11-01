@@ -7,12 +7,12 @@
 
    사용법
      node gen_reason.js 24000 400 7                  # 먼저 data/reason_train.jsonl, reason_eval.jsonl 생성
-     node train_free.js train [--steps 6000 --B 16 --D 96 --H 4 --L 3 --merges 300 --maxT 256]
+     node train_free.js train [--steps 6000 --B 16 --D 96 --H 4 --L 3 --merges 300 --maxT 256 --cmpw 0.4 --cp 0.10]
      node train_free.js eval  [--model model_free.json --n 400]
      node train_free.js ask "동물은 생물이다. 고양이는 동물이다. 고양이는 생물일까?" [--teacher]
 
    학습 시퀀스:  Q:{질문}\nA:{답}<eos>   (손실은 답 토큰에 1, 질문 토큰에 --pw(기본 0.05))
-   배치 구성:    추론 78% (isa·prop·cmp·cond 균등) · brain 12% · 모름(OOD) 4% · 글자 복사 6%
+   배치 구성:    추론 76% (cmp --cmpw 40%, isa·prop·cond 각 20%) · brain 10% · 모름(OOD) 4% · 글자 복사 --cp(기본 10%)
    저장 형식:    { kind:"free-v1", tok, lm, ... } — lm 부분은 lm.js의 Fast가 그대로 읽는다.
    tfjs:         @tensorflow/tfjs-node가 있으면 그것을(가장 빠름), 없으면 tfjs-backend-wasm, 그것도 없으면 순수 JS cpu를 쓴다.
                  (--backend auto|wasm|cpu)  설치:  npm i @tensorflow/tfjs @tensorflow/tfjs-node   (또는 tfjs-backend-wasm) */
@@ -24,7 +24,7 @@ const K = require("./lm.js"), { Tok, LM, Fast } = K;
 
 /* ---------- 인자 ---------- */
 const argv = process.argv.slice(2), cmd = argv[0], pos = [];
-const opt = { steps: 6000, B: 16, D: 96, H: 4, L: 3, merges: 300, lr: 3e-3, maxT: 256, pw: .05, seed: 7, save: 500, log: 25, n: 400, reserve: 48,
+const opt = { steps: 6000, B: 16, D: 96, H: 4, L: 3, merges: 300, lr: 3e-3, maxT: 256, pw: .05, seed: 7, save: 500, log: 25, n: 400, reserve: 48, cmpw: .4, cp: .10,
   backend: "auto", data: "data", brain: "brain.json", out: "model_free.json", model: "model_free.json", resume: "", teacher: false };
 for (let i = 1; i < argv.length; i++) {
   const a = argv[i];
@@ -100,13 +100,14 @@ function makeGen(o) {
 
 /* ---------- 평가 ---------- */
 function evaluate(o, D, n = opt.n) {
-  const gen = makeGen(o), R = rng(99), res = {}, fails = [];
+  const gen = makeGen(o), R = rng(99), res = {}, fails = [], nf = {};
   const run = (name, rows, kindOf) => {
     const s = res[name] = {};
     for (const e of rows) {
       const f = s[e.fam] = s[e.fam] || { n: 0, verdict: 0, ground: 0, exact: 0 }, a = gen(e.q), gold = kindOf ? kindOf(e) : null, last = x => x.split("\n").pop();
       f.n++; if (a === e.a) f.exact++; const vOk = gold ? verdict(a, gold) : a === e.a; if (vOk) f.verdict++; if (vOk && last(a) === last(e.a)) f.ground++; // ground: 판정이 맞고 ⇒ 결론 줄(또는 한 줄 답 전체)까지 같다 = 우연히 맞힌 게 아님
-      if (a !== e.a && fails.length < 12 && (name !== "brain" || fails.length < 4)) fails.push({ set: name, q: e.q, gold: e.a.split("\n")[0], got: a.split("\n")[0], pass: gold ? verdict(a, gold) : false });
+      const key = name + "/" + e.fam; nf[key] = nf[key] || 0; // 틀린 예는 (평가 묶음, 유형)마다 3개까지, 답 전체(여러 줄)를 남긴다
+      if (a !== e.a && fails.length < 40 && nf[key] < 3) { nf[key]++; fails.push({ set: name, fam: e.fam, q: e.q, gold: e.a, got: a, pass: gold ? verdict(a, gold) : false }); }
     }
   };
   const sample = (a, k) => { const c = [...a], out = []; while (out.length < k && c.length) out.push(c.splice(Math.floor(R() * c.length), 1)[0]); return out; };
@@ -117,12 +118,12 @@ function evaluate(o, D, n = opt.n) {
   return { res, tot, fails };
 }
 function printEval(r) {
-  const p = x => (100 * x).toFixed(1).padStart(5) + "%";
+  const p = x => (100 * x).toFixed(1).padStart(5) + "%", ind = (t, pad) => String(t).replace(/\n/g, "\n" + pad);
   for (const [name, s] of Object.entries(r.res)) {
     console.log(`\n[${name}]  판정 ${p(r.tot[name].verdict)} · 판정+결론줄 ${p(r.tot[name].ground)} · 완전일치 ${p(r.tot[name].exact)}  (n=${r.tot[name].n})`);
     for (const [f, v] of Object.entries(s)) console.log(`  ${f.padEnd(5)} n=${String(v.n).padStart(3)}  판정 ${p(v.verdict / v.n)}  판정+결론줄 ${p(v.ground / v.n)}  완전일치 ${p(v.exact / v.n)}`);
   }
-  if (r.fails.length) { console.log("\n틀린 예 (일부):"); for (const f of r.fails) console.log(`  [${f.set}] ${f.q}\n    정답: ${f.gold}\n    모델: ${f.got}${f.pass ? "  (판정만 맞음)" : ""}`); }
+  if (r.fails.length) { console.log("\n틀린 예 (일부, 답 전체):"); for (const f of r.fails) console.log(`  [${f.set} · ${f.fam}] ${f.q}\n    정답: ${ind(f.gold, "          ")}\n    모델: ${ind(f.got, "          ")}${f.pass ? "\n    (판정은 맞고 뒷줄이 다름)" : ""}`); }
 }
 
 /* ---------- 학습 ---------- */
@@ -142,14 +143,18 @@ async function train() {
   const syl = tok.vocab.filter(t => t.length === 1 && /[가-힣]/.test(t)); // 글자 복사 과제용 음절(평가 전용 글자 포함 — 임베딩이 학습되게)
   const copyEx = () => { const w = [...Array(1 + (R() < .4))].map(() => [...Array(2 + (R() < .5))].map(() => R.pick(syl)).join("")).join(" "); return enc({ q: R.pick(["따라 해: ", "이렇게 말해: ", "반복해: "]) + w, a: w, fam: "copy" }); };
   const aug = q => { let s = q; if (s.length > 3 && R() < .12) { const i = 1 + Math.floor(R() * (s.length - 2)); s = s.slice(0, i) + s.slice(i + 1); } return R.pick(PRE) + s + R.pick(SUF); };
-  const draw = () => { // 배치 하나는 한 종류에서만 뽑는다(길이가 비슷해 패딩 낭비가 적다)
+  // 추론 문제는 유형별 비중을 둔다: cmp(정렬이 필요해 가장 어렵다)를 --cmpw, 나머지 셋은 균등 분배
+  const live = FAMS.filter(f => byFam[f].length), fw = f => f === "cmp" ? opt.cmpw : (1 - opt.cmpw) / 3, tw = live.reduce((a, f) => a + fw(f), 0);
+  const pickFam = () => { let r = R() * tw; for (const f of live) { r -= fw(f); if (r < 0) return f; } return live[live.length - 1]; };
+  const draw = () => { // 배치 하나는 한 종류(추론/brain/모름/복사)에서만 뽑는다
     const aq = rows => () => { const e = R.pick(rows); return enc({ q: aug(e.q), a: e.a, fam: e.fam }); };
-    const r = R(), one = r < .78 ? () => R.pick(byFam[R.pick(FAMS)]) : r < .90 ? aq(D.bq) : r < .94 ? aq(D.oq) : copyEx;
+    const pr = 1 - .14 - opt.cp, r = R(), one = r < pr ? () => R.pick(byFam[pickFam()]) : r < pr + .10 ? aq(D.bq) : r < pr + .14 ? aq(D.oq) : copyEx;
     return [...Array(opt.B)].map(one).filter(e => e.ids.length <= T);
   };
   if (!m) { if (tf.disposeVariables) tf.disposeVariables(); m = new FLM(tok.size, { D: opt.D, H: opt.H, L: opt.L, T }); }
   console.log(`tfjs ${tf.version.tfjs} backend=${tf.getBackend()} | V=${tok.size} T=${T} D=${m.D} H=${m.H} L=${m.L} 파라미터=${m.nParams.toLocaleString()}`);
   console.log(`학습 ${D.tr.length} · brain ${D.bq.length} · OOD ${D.oq.length} · 평가 ${D.ev.length} | T 초과로 제외 ${dropped} | 평가 전용 글자 ${extra.length}개를 어휘·복사과제에 포함`);
+  console.log(`배치 구성: 추론 ${(100 * (1 - .14 - opt.cp)).toFixed(0)}% (cmp ${(100 * opt.cmpw).toFixed(0)}%) · brain 10% · OOD 4% · 복사 ${(100 * opt.cp).toFixed(0)}% | 유형별 문제 수 ${FAMS.map(f => `${f} ${byFam[f].length}`).join(" · ")}`);
 
   const save = (steps, loss) => fs.writeFileSync(opt.out, JSON.stringify({ kind: "free-v1", tok: tok.toJSON(), lm: m.toJSON(), steps, loss, opt: { ...opt, T }, made: new Date().toISOString() }));
   let avg = null;
@@ -166,7 +171,7 @@ async function train() {
   }
   save(opt.steps, avg); console.log(`저장: ${opt.out} (${(fs.statSync(opt.out).size / 1e6).toFixed(1)}MB)`);
   const o = JSON.parse(fs.readFileSync(opt.out, "utf8")), r = evaluate(o, D); printEval(r);
-  fs.mkdirSync(opt.data, { recursive: true }); fs.writeFileSync(`${opt.data}/free_eval.json`, JSON.stringify({ tot: r.tot, res: r.res, steps: opt.steps, loss: avg }, null, 1));
+  fs.mkdirSync(opt.data, { recursive: true }); fs.writeFileSync(`${opt.data}/free_eval.json`, JSON.stringify({ tot: r.tot, res: r.res, steps: opt.steps, loss: avg, fails: r.fails }, null, 1));
 }
 
 /* ---------- 실행 ---------- */
