@@ -47,6 +47,12 @@ const THINGS = [
 ];
 const HOLD_THINGS = ["우산", "열쇠", "지갑", "리모컨", "카메라", "양산"];
 
+// 무작위 이름: 2글자 조합. 외운 이름이 아니라 '문장 속 단어를 그대로 읽어 쓰는' 연습을 시키려고 섞는다.
+// 조사처럼 보이는 글자(도, 보, 다 등)와 평가 전용 이름은 뺀다.
+const SYL = [..."민준서윤예현주원지호건우진선훈승재태동성유연정영상병대한광종수아하채소율린나미순혜세슬기희석규찬빈솔결담휘강모리별"];
+const RAND_P = .5; // 학습 데이터에서 무작위 이름을 쓰는 비율
+const randName = (R, avoid) => { for (;;) { const n = R.pick(SYL) + R.pick(SYL); if (n[0] !== n[1] && !HOLD_NAMES.includes(n) && !avoid.includes(n)) return n; } };
+
 const FLY = ["펭귄", "타조", "에뮤"];
 const PROPS = [
   ["새", "날 수 있다", "날 수 없다", "날 수 있어", FLY], ["물고기", "헤엄칠 수 있다", "헤엄칠 수 없다", "헤엄칠 수 있어", []],
@@ -204,13 +210,13 @@ const NEFFECT = [
 
 // 원인/결과를 하나씩 뽑는다. 30%는 사람이 주어인 문장. hold=true면 평가 전용 단어만 쓴다.
 function pickCond(R, hold) {
-  const nm = hold ? HOLD_NAMES : NAMES, side = x => !!x[3] === hold;
+  const side = x => !!x[3] === hold, pickN = () => hold ? R.pick(HOLD_NAMES) : R.chance(RAND_P * .8) ? randName(R, []) : R.pick(NAMES);
   const cause = () => {
-    if (R.chance(.3)) { const v = R.pick(NCAUSE.filter(side)), n = R.pick(nm); return [`${iga(n)} ${v[0]}`, `${iga(n)} ${v[1]}`, `${iga(n)} ${v[2]}`]; }
+    if (R.chance(.3)) { const v = R.pick(NCAUSE.filter(side)), n = pickN(); return [`${iga(n)} ${v[0]}`, `${iga(n)} ${v[1]}`, `${iga(n)} ${v[2]}`]; }
     return R.pick(CAUSE.filter(side));
   };
   const effect = () => {
-    if (R.chance(.3)) { const v = R.pick(NEFFECT.filter(side)), n = R.pick(nm); return [`${iga(n)} ${v[0]}`, `${iga(n)} ${v[1]}`, `${iga(n)} ${v[2]}`]; }
+    if (R.chance(.3)) { const v = R.pick(NEFFECT.filter(side)), n = pickN(); return [`${iga(n)} ${v[0]}`, `${iga(n)} ${v[1]}`, `${iga(n)} ${v[2]}`]; }
     return R.pick(EFFECT.filter(side));
   };
   const c = cause(); let e = effect();
@@ -247,7 +253,8 @@ function make(R, hold) {
     return { fam, kind: mode, F, Q: S(`${eun(l)} ${P[3]}?`, `${iga(l)} ${P[3]}?`) };
   }
   if (fam === "cmp") {
-    const D = R.pick(DIM), pool = D[4] === "p" ? nm : th, n = Math.min(R.int(3, 4), pool.length), E = R.shuf(pool).slice(0, n), F = [];
+    const D = R.pick(DIM), pool = D[4] === "p" ? nm : th, n = Math.min(R.int(3, 4), pool.length), E = [], F = [];
+    while (E.length < n) { const w = !hold && R.chance(RAND_P) ? randName(R, E) : R.pick(pool); if (!E.includes(w)) E.push(w); }
     for (let i = 0; i < n - 1; i++) { const hi = E[i], lo = E[i + 1]; F.push(S(`${lo}보다 ${iga(hi)} ${D[0]}.`, `${eun(hi)} ${lo}보다 ${D[0]}.`, `${eun(lo)} ${hi}보다 ${D[1]}.`, `${lo}보다 ${iga(hi)} 더 ${D[0]}.`)); }
     const mode = R.pick(["top", "bot", "pair", "pair"]);
     if (mode === "top") return { fam, kind: "top:" + E[0], F, Q: S(`누가 제일 ${D[2]}?`, `누가 가장 ${D[2]}?`, `${D[4] === "p" ? "누가" : "뭐가"} 제일 ${D[2]}?`) };
@@ -290,4 +297,4 @@ if (require.main === module) {
   fs.writeFileSync("data/reason_stats.json", JSON.stringify({ train: tr.st, eval: ev.st, n: { train: tr.out.length, eval: ev.out.length }, sec: (Date.now() - t0) / 1000 }, null, 1));
   console.log("train", tr.out.length, "eval", ev.out.length, `${((Date.now() - t0) / 1000).toFixed(1)}s`); console.log(JSON.stringify(tr.st, null, 1)); console.log("eval", JSON.stringify(ev.st));
 }
-module.exports = { build };
+module.exports = { build, make, render, rng };
