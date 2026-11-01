@@ -1,0 +1,254 @@
+{
+ "tot": {
+  "hold-out(새 이름·사물)": {
+   "n": 400,
+   "verdict": 0.8075,
+   "ground": 0.325,
+   "exact": 0.3075
+  },
+  "train 샘플(본 문제)": {
+   "n": 200,
+   "verdict": 0.95,
+   "ground": 0.9,
+   "exact": 0.9
+  },
+  "brain 암기": {
+   "n": 64,
+   "verdict": 0.953125,
+   "ground": 0.953125,
+   "exact": 0.953125
+  },
+  "모름(OOD)": {
+   "n": 16,
+   "verdict": 1,
+   "ground": 1,
+   "exact": 1
+  }
+ },
+ "res": {
+  "hold-out(새 이름·사물)": {
+   "isa": {
+    "n": 132,
+    "verdict": 128,
+    "ground": 62,
+    "exact": 61
+   },
+   "prop": {
+    "n": 97,
+    "verdict": 97,
+    "ground": 50,
+    "exact": 50
+   },
+   "cmp": {
+    "n": 119,
+    "verdict": 46,
+    "ground": 11,
+    "exact": 11
+   },
+   "cond": {
+    "n": 52,
+    "verdict": 52,
+    "ground": 7,
+    "exact": 1
+   }
+  },
+  "train 샘플(본 문제)": {
+   "isa": {
+    "n": 62,
+    "verdict": 62,
+    "ground": 62,
+    "exact": 62
+   },
+   "cmp": {
+    "n": 57,
+    "verdict": 48,
+    "ground": 38,
+    "exact": 38
+   },
+   "cond": {
+    "n": 39,
+    "verdict": 39,
+    "ground": 39,
+    "exact": 39
+   },
+   "prop": {
+    "n": 42,
+    "verdict": 41,
+    "ground": 41,
+    "exact": 41
+   }
+  },
+  "brain 암기": {
+   "brain": {
+    "n": 64,
+    "verdict": 61,
+    "ground": 61,
+    "exact": 61
+   }
+  },
+  "모름(OOD)": {
+   "ood": {
+    "n": 16,
+    "verdict": 16,
+    "ground": 16,
+    "exact": 16
+   }
+  }
+ },
+ "steps": 30000,
+ "loss": 0.05027860086211458,
+ "fails": [
+  {
+   "set": "hold-out(새 이름·사물)",
+   "fam": "prop",
+   "q": "붕어는 물고기에 속한다. 물고기들은 헤엄칠 수 있다. 붕어가 헤엄칠 수 있어?",
+   "gold": "응, 이어서 생각하면 그래!\n• 붕어는 물고기다\n• 물고기는 헤엄칠 수 있다\n⇒ 붕어는 헤엄칠 수 있다",
+   "got": "응, 이어서 생각하면 그래!\n• 붕 시어는 물고기다\n• 물고기는 헤엄칠 수 있다\n⇒ 붕 시어는 헤엄칠 수 있다",
+   "pass": true
+  },
+  {
+   "set": "hold-out(새 이름·사물)",
+   "fam": "cond",
+   "q": "만약 가뭄이 들면 무지개가 잠긴다. 가뭄이 든다. 무지개가 잠길까?",
+   "gold": "응, 이어서 생각하면 그래!\n• 가뭄이 든다\n• 가뭄이 들면 무지개가 잠긴다\n⇒ 무지개가 잠긴다",
+   "got": "응, 이어서 생각하면 그래!\n• 가뭄이 들이 들른다\n• 가뭄이 시들면 무지개가 잠에서 깬다\n⇒ 무지개가 잠에서 깬다",
+   "pass": true
+  },
+  {
+   "set": "hold-out(새 이름·사물)",
+   "fam": "isa",
+   "q": "경비행기는 항공기다. 항공기는 탈것이에요. 경비행기는 나무가 아니다. 경비행기가 나무야?",
+   "gold": "아니야, 알려준 건 반대야.\n• 경비행기는 나무가 아니다",
+   "got": "아니야, 알려준 건 반대야.\n• 경비행은 나무가 아니다",
+   "pass": true
+  },
+  {
+   "set": "hold-out(새 이름·사물)",
+   "fam": "cmp",
+   "q": "시우보다 하람이 빠르다. 시우는 시후보다 빠르다. 시후가 시우보다 빨라?",
+   "gold": "아니야, 오히려 시우 > 시후 이야.",
+   "got": "응, 맞아! 하람 > 시송 (속도)",
+   "pass": false
+  },
+  {
+   "set": "hold-out(새 이름·사물)",
+   "fam": "cmp",
+   "q": "서연보다 도윤이 무겁다. 서연은 시후보다 무겁다. 시후는 도윤보다 무거워?",
+   "gold": "아니야, 오히려 도윤 > 서연 > 시후 이야.",
+   "got": "아니야, 오히려 시윤 > 시전 이야.",
+   "pass": true
+  },
+  {
+   "set": "hold-out(새 이름·사물)",
+   "fam": "prop",
+   "q": "새들은 날 수 있다. 홍학은 새다. 오이는 채소다. 그럼 홍학이 날 수 있어?",
+   "gold": "응, 이어서 생각하면 그래!\n• 홍학은 새다\n• 새는 날 수 있다\n⇒ 홍학은 날 수 있다",
+   "got": "응, 이어서 생각하면 그래!\n• 이는 새다\n• 새는 날 수 있다\n⇒ 이는 날 수 있다",
+   "pass": true
+  },
+  {
+   "set": "hold-out(새 이름·사물)",
+   "fam": "cond",
+   "q": "아윤이 모자를 벗는다. 만약 아윤이 모자를 벗으면 공기가 맑아진다. 그럼 공기가 맑아질까?",
+   "gold": "응, 이어서 생각하면 그래!\n• 아윤이 모자를 벗는다\n• 아윤이 모자를 벗으면 공기가 맑아진다\n⇒ 공기가 맑아진다",
+   "got": "응, 이어서 생각하면 그래!\n• 아윤이 모자든다\n• 아윤이 모자라면 공기가 어진다\n⇒ 아기가 깨진다",
+   "pass": true
+  },
+  {
+   "set": "hold-out(새 이름·사물)",
+   "fam": "isa",
+   "q": "물고기는 동물이다. 동물은 생물이야. 쏘가리는 물고기다. 쏘가리는 생물인가요?",
+   "gold": "응, 이어서 생각하면 그래!\n• 쏘가리는 물고기다\n• 물고기는 동물이다\n• 동물은 생물이다\n⇒ 쏘가리는 생물이다",
+   "got": "응, 이어서 생각하면 그래!\n• 쏘 포유류는 동물이다\n• 동물은 생물이다\n⇒ 포유류는 생물이다",
+   "pass": true
+  },
+  {
+   "set": "hold-out(새 이름·사물)",
+   "fam": "cmp",
+   "q": "리모컨은 열쇠보다 싸다. 열쇠는 리모컨보다 비싸?",
+   "gold": "응, 맞아! 열쇠 > 리모컨 (가격)",
+   "got": "응, 맞아! 리모 > 리모 (가격)",
+   "pass": true
+  },
+  {
+   "set": "hold-out(새 이름·사물)",
+   "fam": "isa",
+   "q": "헬리콥터가 항공기다. 식물은 생물이에요. 잣나무는 나무에 속한다. 나무는 식물이다. 잣나무는 생물일까?",
+   "gold": "응, 이어서 생각하면 그래!\n• 잣나무는 나무다\n• 나무는 식물이다\n• 식물은 생물이다\n⇒ 잣나무는 생물이다",
+   "got": "응, 이어서 생각하면 그래!\n• 나무는 나무다\n• 나무는 식물이다\n• 식물은 생물이다\n⇒ 나무는 생물이다",
+   "pass": true
+  },
+  {
+   "set": "hold-out(새 이름·사물)",
+   "fam": "prop",
+   "q": "나무들은 뿌리가 있다. 잣나무는 나무다. 자, 잣나무가 뿌리가 있어?",
+   "gold": "응, 이어서 생각하면 그래!\n• 잣나무는 나무다\n• 나무는 뿌리가 있다\n⇒ 잣나무는 뿌리가 있다",
+   "got": "응, 이어서 생각하면 그래!\n• 잣나무는 나무다\n• 나무는 뿌리가 있다\n⇒ 잣새는 뿌리가 있다",
+   "pass": true
+  },
+  {
+   "set": "hold-out(새 이름·사물)",
+   "fam": "cond",
+   "q": "만약 가뭄이 들면 도로가 얼어붙는다. 도로가 얼어붙지 않는다. 자, 가뭄이 들까?",
+   "gold": "아니야, 이어서 생각하면 반대야!\n• 도로가 얼어붙지 않는다\n• 가뭄이 들면 도로가 얼어붙는다\n⇒ 가뭄이 들다 (아님)",
+   "got": "아니야, 이어서 생각하면 반대야!\n• 도로가 자라지 않는다\n• 가뭄이 시라가 들면 도로가 붙는다\n⇒ 가뭄이 들다 (아님)",
+   "pass": true
+  },
+  {
+   "set": "train 샘플(본 문제)",
+   "fam": "cmp",
+   "q": "책보다 가위가 길다. 책은 그릇보다 길다. 가위보다 노트가 더 길다. 누가 가장 짧아?",
+   "gold": "그릇! (노트 > 가위 > 책 > 그릇)",
+   "got": "그릇! (가위 > 책 > 그릇 > 고트)",
+   "pass": true
+  },
+  {
+   "set": "train 샘플(본 문제)",
+   "fam": "prop",
+   "q": "가지가 채소다. 나무는 뿌리가 있다. 가지가 뿌리가 있어?",
+   "gold": "내가 아는 것만으로는 알 수 없어.",
+   "got": "응, 이어서 생각하면 그래!\n• 가지는 나무다\n• 나무는 뿌리가 있다\n⇒ 가지는 뿌리가 있다",
+   "pass": false
+  },
+  {
+   "set": "train 샘플(본 문제)",
+   "fam": "cmp",
+   "q": "장갑은 유느보다 싸다. 형귄은 장갑보다 싸다. 비누는 형귄보다 싸다. 자, 장갑은 형귄보다 비싸?",
+   "gold": "응, 맞아! 장갑 > 형귄 (가격)",
+   "got": "아니야, 오히려 귄귄 > 장갑 이야.",
+   "pass": false
+  },
+  {
+   "set": "train 샘플(본 문제)",
+   "fam": "cmp",
+   "q": "거울보다 캥석이 많다. 양말보다 거울이 더 많다. 캥석이 거울보다 많아?",
+   "gold": "응, 맞아! 캥석 > 거울 (양)",
+   "got": "아니야, 오히려 거울 > 거울 이야.",
+   "pass": false
+  },
+  {
+   "set": "brain 암기",
+   "fam": "brain",
+   "q": "what is a language model",
+   "gold": "A language model splits text into tokens and uses patterns it has learned to pick the most fitting response. I use a tiny version of that idea: token similarity scores.",
+   "got": "A language model splits text into tokens and uses patterns it has learned to pick the most fitting response. I use a tiny version of that idea: token similarity",
+   "pass": false
+  },
+  {
+   "set": "brain 암기",
+   "fam": "brain",
+   "q": "what is an llm",
+   "gold": "A language model splits text into tokens and uses patterns it has learned to pick the most fitting response. I use a tiny version of that idea: token similarity scores.",
+   "got": "A language model splits text into tokens and uses patterns it has learned to pick the most fitting response. I use a tiny version of that idea: token similarity",
+   "pass": false
+  },
+  {
+   "set": "brain 암기",
+   "fam": "brain",
+   "q": "how do language models work",
+   "gold": "A language model splits text into tokens and uses patterns it has learned to pick the most fitting response. I use a tiny version of that idea: token similarity scores.",
+   "got": "A language model splits text into tokens and uses patterns it has learned to pick the most fitting response. I use a tiny version of that idea: token similarity",
+   "pass": false
+  }
+ ]
+}

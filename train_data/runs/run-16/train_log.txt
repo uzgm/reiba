@@ -1,0 +1,1352 @@
+2026-11-01 12:35:26.562367: I tensorflow/core/util/util.cc:169] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-11-01 12:35:26.581205: I tensorflow/core/platform/cpu_feature_guard.cc:193] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 AVX512F AVX512_VNNI AVX512_BF16 AVX_VNNI FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+tfjs 4.22.0 backend=tensorflow | V=882 T=207 D=128 H=4 L=4 파라미터=928,384
+학습 60000 · brain 64 · OOD 16 · 평가 400 | T 초과로 제외 0 | 평가 전용 글자 25개를 어휘·복사과제에 포함
+배치 구성: 추론 76% (cmp 40%) · brain 10% · OOD 4% · 복사 10% | 유형별 문제 수 isa 17788 · prop 12517 · cmp 20315 · cond 9380
+step 25/30000  loss 3.2629  lr 3.7e-4  1.31 step/s  남은 시간 381분
+step 50/30000  loss 2.9819  lr 7.5e-4  2.30 step/s  남은 시간 217분
+step 75/30000  loss 2.5246  lr 1.1e-3  3.08 step/s  남은 시간 162분
+step 100/30000  loss 2.1918  lr 1.5e-3  3.74 step/s  남은 시간 133분
+step 125/30000  loss 2.0216  lr 1.5e-3  4.30 step/s  남은 시간 116분
+step 150/30000  loss 2.0835  lr 1.5e-3  4.78 step/s  남은 시간 104분
+step 175/30000  loss 1.9391  lr 1.5e-3  5.22 step/s  남은 시간 95분
+step 200/30000  loss 1.7744  lr 1.5e-3  5.56 step/s  남은 시간 89분
+step 225/30000  loss 1.7232  lr 1.5e-3  5.89 step/s  남은 시간 84분
+step 250/30000  loss 1.5591  lr 1.5e-3  6.14 step/s  남은 시간 81분
+step 275/30000  loss 1.6708  lr 1.5e-3  6.33 step/s  남은 시간 78분
+step 300/30000  loss 1.5285  lr 1.5e-3  6.46 step/s  남은 시간 77분
+step 325/30000  loss 1.4832  lr 1.5e-3  6.65 step/s  남은 시간 74분
+step 350/30000  loss 1.3699  lr 1.5e-3  6.80 step/s  남은 시간 73분
+step 375/30000  loss 1.2528  lr 1.5e-3  6.98 step/s  남은 시간 71분
+step 400/30000  loss 1.5330  lr 1.5e-3  7.08 step/s  남은 시간 70분
+step 425/30000  loss 1.2758  lr 1.5e-3  7.23 step/s  남은 시간 68분
+step 450/30000  loss 1.4248  lr 1.5e-3  7.34 step/s  남은 시간 67분
+step 475/30000  loss 1.2808  lr 1.5e-3  7.40 step/s  남은 시간 66분
+step 500/30000  loss 1.2908  lr 1.5e-3  7.44 step/s  남은 시간 66분
+step 525/30000  loss 1.3632  lr 1.5e-3  7.50 step/s  남은 시간 65분
+step 550/30000  loss 1.4164  lr 1.5e-3  7.57 step/s  남은 시간 65분
+step 575/30000  loss 1.3343  lr 1.5e-3  7.63 step/s  남은 시간 64분
+step 600/30000  loss 1.1937  lr 1.5e-3  7.72 step/s  남은 시간 63분
+step 625/30000  loss 1.0875  lr 1.5e-3  7.80 step/s  남은 시간 63분
+step 650/30000  loss 1.1377  lr 1.5e-3  7.90 step/s  남은 시간 62분
+step 675/30000  loss 1.1517  lr 1.5e-3  7.97 step/s  남은 시간 61분
+step 700/30000  loss 1.1566  lr 1.5e-3  8.05 step/s  남은 시간 61분
+step 725/30000  loss 1.0692  lr 1.5e-3  8.13 step/s  남은 시간 60분
+step 750/30000  loss 1.1026  lr 1.5e-3  8.18 step/s  남은 시간 60분
+step 775/30000  loss 1.1422  lr 1.5e-3  8.24 step/s  남은 시간 59분
+step 800/30000  loss 1.2348  lr 1.5e-3  8.27 step/s  남은 시간 59분
+step 825/30000  loss 1.1674  lr 1.5e-3  8.29 step/s  남은 시간 59분
+step 850/30000  loss 0.9959  lr 1.5e-3  8.37 step/s  남은 시간 58분
+step 875/30000  loss 0.9851  lr 1.5e-3  8.42 step/s  남은 시간 58분
+step 900/30000  loss 1.0492  lr 1.5e-3  8.47 step/s  남은 시간 57분
+step 925/30000  loss 1.1007  lr 1.5e-3  8.50 step/s  남은 시간 57분
+step 950/30000  loss 1.0728  lr 1.5e-3  8.52 step/s  남은 시간 57분
+step 975/30000  loss 1.0699  lr 1.5e-3  8.56 step/s  남은 시간 56분
+step 1000/30000  loss 0.9420  lr 1.5e-3  8.59 step/s  남은 시간 56분
+step 1025/30000  loss 0.9707  lr 1.5e-3  8.61 step/s  남은 시간 56분
+step 1050/30000  loss 1.0002  lr 1.5e-3  8.63 step/s  남은 시간 56분
+step 1075/30000  loss 1.0429  lr 1.5e-3  8.65 step/s  남은 시간 56분
+step 1100/30000  loss 0.9432  lr 1.5e-3  8.68 step/s  남은 시간 56분
+step 1125/30000  loss 0.9026  lr 1.5e-3  8.70 step/s  남은 시간 55분
+step 1150/30000  loss 0.9327  lr 1.5e-3  8.72 step/s  남은 시간 55분
+step 1175/30000  loss 0.9905  lr 1.5e-3  8.75 step/s  남은 시간 55분
+step 1200/30000  loss 0.9649  lr 1.5e-3  8.78 step/s  남은 시간 55분
+step 1225/30000  loss 0.9624  lr 1.5e-3  8.82 step/s  남은 시간 54분
+step 1250/30000  loss 1.0107  lr 1.5e-3  8.82 step/s  남은 시간 54분
+step 1275/30000  loss 0.9440  lr 1.5e-3  8.85 step/s  남은 시간 54분
+step 1300/30000  loss 0.8673  lr 1.5e-3  8.87 step/s  남은 시간 54분
+step 1325/30000  loss 0.8047  lr 1.5e-3  8.89 step/s  남은 시간 54분
+step 1350/30000  loss 0.8637  lr 1.5e-3  8.90 step/s  남은 시간 54분
+step 1375/30000  loss 0.8596  lr 1.5e-3  8.91 step/s  남은 시간 54분
+step 1400/30000  loss 0.8946  lr 1.5e-3  8.94 step/s  남은 시간 53분
+step 1425/30000  loss 0.9618  lr 1.5e-3  8.96 step/s  남은 시간 53분
+step 1450/30000  loss 0.8611  lr 1.5e-3  8.97 step/s  남은 시간 53분
+step 1475/30000  loss 0.8393  lr 1.5e-3  8.99 step/s  남은 시간 53분
+step 1500/30000  loss 0.8405  lr 1.5e-3  9.03 step/s  남은 시간 53분
+step 1525/30000  loss 0.8011  lr 1.5e-3  9.03 step/s  남은 시간 53분
+step 1550/30000  loss 0.7671  lr 1.5e-3  9.06 step/s  남은 시간 52분
+step 1575/30000  loss 0.9293  lr 1.5e-3  9.06 step/s  남은 시간 52분
+step 1600/30000  loss 0.8026  lr 1.5e-3  9.08 step/s  남은 시간 52분
+step 1625/30000  loss 0.8213  lr 1.5e-3  9.10 step/s  남은 시간 52분
+step 1650/30000  loss 0.8873  lr 1.5e-3  9.12 step/s  남은 시간 52분
+step 1675/30000  loss 0.8260  lr 1.5e-3  9.13 step/s  남은 시간 52분
+step 1700/30000  loss 0.8188  lr 1.5e-3  9.14 step/s  남은 시간 52분
+step 1725/30000  loss 0.8214  lr 1.5e-3  9.16 step/s  남은 시간 51분
+step 1750/30000  loss 0.7335  lr 1.5e-3  9.17 step/s  남은 시간 51분
+step 1775/30000  loss 0.7154  lr 1.5e-3  9.17 step/s  남은 시간 51분
+step 1800/30000  loss 0.7623  lr 1.5e-3  9.19 step/s  남은 시간 51분
+step 1825/30000  loss 0.7641  lr 1.5e-3  9.18 step/s  남은 시간 51분
+step 1850/30000  loss 0.7766  lr 1.5e-3  9.20 step/s  남은 시간 51분
+step 1875/30000  loss 0.7061  lr 1.5e-3  9.21 step/s  남은 시간 51분
+step 1900/30000  loss 0.7170  lr 1.5e-3  9.22 step/s  남은 시간 51분
+step 1925/30000  loss 0.7465  lr 1.5e-3  9.23 step/s  남은 시간 51분
+step 1950/30000  loss 0.7223  lr 1.5e-3  9.21 step/s  남은 시간 51분
+step 1975/30000  loss 0.7553  lr 1.5e-3  9.23 step/s  남은 시간 51분
+step 2000/30000  loss 0.6287  lr 1.5e-3  9.23 step/s  남은 시간 51분
+step 2025/30000  loss 0.6881  lr 1.5e-3  9.22 step/s  남은 시간 51분
+step 2050/30000  loss 0.6901  lr 1.5e-3  9.22 step/s  남은 시간 51분
+step 2075/30000  loss 0.6866  lr 1.5e-3  9.23 step/s  남은 시간 50분
+step 2100/30000  loss 0.7243  lr 1.5e-3  9.25 step/s  남은 시간 50분
+step 2125/30000  loss 0.7887  lr 1.5e-3  9.25 step/s  남은 시간 50분
+step 2150/30000  loss 0.7757  lr 1.5e-3  9.25 step/s  남은 시간 50분
+step 2175/30000  loss 0.7257  lr 1.5e-3  9.26 step/s  남은 시간 50분
+step 2200/30000  loss 0.7100  lr 1.5e-3  9.25 step/s  남은 시간 50분
+step 2225/30000  loss 0.6931  lr 1.5e-3  9.26 step/s  남은 시간 50분
+step 2250/30000  loss 0.6783  lr 1.5e-3  9.27 step/s  남은 시간 50분
+step 2275/30000  loss 0.7384  lr 1.5e-3  9.29 step/s  남은 시간 50분
+step 2300/30000  loss 0.6331  lr 1.5e-3  9.28 step/s  남은 시간 50분
+step 2325/30000  loss 0.6635  lr 1.5e-3  9.29 step/s  남은 시간 50분
+step 2350/30000  loss 0.6389  lr 1.5e-3  9.29 step/s  남은 시간 50분
+step 2375/30000  loss 0.6222  lr 1.5e-3  9.29 step/s  남은 시간 50분
+step 2400/30000  loss 0.6502  lr 1.5e-3  9.31 step/s  남은 시간 49분
+step 2425/30000  loss 0.6976  lr 1.5e-3  9.31 step/s  남은 시간 49분
+step 2450/30000  loss 0.7402  lr 1.5e-3  9.33 step/s  남은 시간 49분
+step 2475/30000  loss 0.7443  lr 1.5e-3  9.35 step/s  남은 시간 49분
+step 2500/30000  loss 0.7329  lr 1.5e-3  9.36 step/s  남은 시간 49분
+step 2525/30000  loss 0.6494  lr 1.5e-3  9.37 step/s  남은 시간 49분
+step 2550/30000  loss 0.5739  lr 1.5e-3  9.37 step/s  남은 시간 49분
+step 2575/30000  loss 0.6355  lr 1.5e-3  9.39 step/s  남은 시간 49분
+step 2600/30000  loss 0.6635  lr 1.5e-3  9.39 step/s  남은 시간 49분
+step 2625/30000  loss 0.5318  lr 1.5e-3  9.39 step/s  남은 시간 49분
+step 2650/30000  loss 0.5562  lr 1.5e-3  9.40 step/s  남은 시간 49분
+step 2675/30000  loss 0.5399  lr 1.5e-3  9.40 step/s  남은 시간 48분
+step 2700/30000  loss 0.5552  lr 1.5e-3  9.40 step/s  남은 시간 48분
+step 2725/30000  loss 0.5657  lr 1.5e-3  9.41 step/s  남은 시간 48분
+step 2750/30000  loss 0.5881  lr 1.5e-3  9.42 step/s  남은 시간 48분
+step 2775/30000  loss 0.5598  lr 1.5e-3  9.42 step/s  남은 시간 48분
+step 2800/30000  loss 0.5852  lr 1.5e-3  9.43 step/s  남은 시간 48분
+step 2825/30000  loss 0.5273  lr 1.5e-3  9.43 step/s  남은 시간 48분
+step 2850/30000  loss 0.5516  lr 1.5e-3  9.44 step/s  남은 시간 48분
+step 2875/30000  loss 0.6137  lr 1.5e-3  9.45 step/s  남은 시간 48분
+step 2900/30000  loss 0.5538  lr 1.5e-3  9.45 step/s  남은 시간 48분
+step 2925/30000  loss 0.5090  lr 1.5e-3  9.45 step/s  남은 시간 48분
+step 2950/30000  loss 0.5532  lr 1.5e-3  9.46 step/s  남은 시간 48분
+step 2975/30000  loss 0.5602  lr 1.5e-3  9.46 step/s  남은 시간 48분
+step 3000/30000  loss 0.5378  lr 1.5e-3  9.46 step/s  남은 시간 48분
+step 3025/30000  loss 0.5224  lr 1.5e-3  9.46 step/s  남은 시간 48분
+step 3050/30000  loss 0.5427  lr 1.5e-3  9.46 step/s  남은 시간 47분
+step 3075/30000  loss 0.5475  lr 1.5e-3  9.46 step/s  남은 시간 47분
+step 3100/30000  loss 0.4706  lr 1.5e-3  9.46 step/s  남은 시간 47분
+step 3125/30000  loss 0.5165  lr 1.5e-3  9.47 step/s  남은 시간 47분
+step 3150/30000  loss 0.5415  lr 1.5e-3  9.47 step/s  남은 시간 47분
+step 3175/30000  loss 0.5409  lr 1.5e-3  9.48 step/s  남은 시간 47분
+step 3200/30000  loss 0.5993  lr 1.5e-3  9.49 step/s  남은 시간 47분
+step 3225/30000  loss 0.5749  lr 1.5e-3  9.49 step/s  남은 시간 47분
+step 3250/30000  loss 0.5636  lr 1.5e-3  9.49 step/s  남은 시간 47분
+step 3275/30000  loss 0.5035  lr 1.5e-3  9.50 step/s  남은 시간 47분
+step 3300/30000  loss 0.4690  lr 1.5e-3  9.50 step/s  남은 시간 47분
+step 3325/30000  loss 0.4811  lr 1.5e-3  9.51 step/s  남은 시간 47분
+step 3350/30000  loss 0.5525  lr 1.5e-3  9.51 step/s  남은 시간 47분
+step 3375/30000  loss 0.4892  lr 1.5e-3  9.52 step/s  남은 시간 47분
+step 3400/30000  loss 0.4460  lr 1.5e-3  9.52 step/s  남은 시간 47분
+step 3425/30000  loss 0.4555  lr 1.5e-3  9.51 step/s  남은 시간 47분
+step 3450/30000  loss 0.4909  lr 1.5e-3  9.52 step/s  남은 시간 46분
+step 3475/30000  loss 0.4817  lr 1.5e-3  9.51 step/s  남은 시간 46분
+step 3500/30000  loss 0.4712  lr 1.5e-3  9.50 step/s  남은 시간 46분
+step 3525/30000  loss 0.4901  lr 1.5e-3  9.50 step/s  남은 시간 46분
+step 3550/30000  loss 0.4796  lr 1.5e-3  9.50 step/s  남은 시간 46분
+step 3575/30000  loss 0.4702  lr 1.5e-3  9.50 step/s  남은 시간 46분
+step 3600/30000  loss 0.4778  lr 1.5e-3  9.50 step/s  남은 시간 46분
+step 3625/30000  loss 0.4652  lr 1.5e-3  9.50 step/s  남은 시간 46분
+step 3650/30000  loss 0.5017  lr 1.5e-3  9.51 step/s  남은 시간 46분
+step 3675/30000  loss 0.5222  lr 1.5e-3  9.51 step/s  남은 시간 46분
+step 3700/30000  loss 0.4723  lr 1.4e-3  9.51 step/s  남은 시간 46분
+step 3725/30000  loss 0.4649  lr 1.4e-3  9.51 step/s  남은 시간 46분
+step 3750/30000  loss 0.4402  lr 1.4e-3  9.52 step/s  남은 시간 46분
+step 3775/30000  loss 0.4973  lr 1.4e-3  9.52 step/s  남은 시간 46분
+step 3800/30000  loss 0.4895  lr 1.4e-3  9.53 step/s  남은 시간 46분
+step 3825/30000  loss 0.4137  lr 1.4e-3  9.53 step/s  남은 시간 46분
+step 3850/30000  loss 0.3914  lr 1.4e-3  9.53 step/s  남은 시간 46분
+step 3875/30000  loss 0.4280  lr 1.4e-3  9.54 step/s  남은 시간 46분
+step 3900/30000  loss 0.4512  lr 1.4e-3  9.54 step/s  남은 시간 46분
+step 3925/30000  loss 0.4484  lr 1.4e-3  9.54 step/s  남은 시간 46분
+step 3950/30000  loss 0.4439  lr 1.4e-3  9.54 step/s  남은 시간 45분
+step 3975/30000  loss 0.3824  lr 1.4e-3  9.55 step/s  남은 시간 45분
+step 4000/30000  loss 0.4211  lr 1.4e-3  9.55 step/s  남은 시간 45분
+step 4025/30000  loss 0.4309  lr 1.4e-3  9.55 step/s  남은 시간 45분
+step 4050/30000  loss 0.5302  lr 1.4e-3  9.56 step/s  남은 시간 45분
+step 4075/30000  loss 0.4673  lr 1.4e-3  9.57 step/s  남은 시간 45분
+step 4100/30000  loss 0.4302  lr 1.4e-3  9.57 step/s  남은 시간 45분
+step 4125/30000  loss 0.4980  lr 1.4e-3  9.58 step/s  남은 시간 45분
+step 4150/30000  loss 0.4363  lr 1.4e-3  9.58 step/s  남은 시간 45분
+step 4175/30000  loss 0.4512  lr 1.4e-3  9.59 step/s  남은 시간 45분
+step 4200/30000  loss 0.3962  lr 1.4e-3  9.60 step/s  남은 시간 45분
+step 4225/30000  loss 0.3767  lr 1.4e-3  9.59 step/s  남은 시간 45분
+step 4250/30000  loss 0.3831  lr 1.4e-3  9.59 step/s  남은 시간 45분
+step 4275/30000  loss 0.3645  lr 1.4e-3  9.60 step/s  남은 시간 45분
+step 4300/30000  loss 0.4049  lr 1.4e-3  9.60 step/s  남은 시간 45분
+step 4325/30000  loss 0.4183  lr 1.4e-3  9.60 step/s  남은 시간 45분
+step 4350/30000  loss 0.3961  lr 1.4e-3  9.61 step/s  남은 시간 44분
+step 4375/30000  loss 0.4374  lr 1.4e-3  9.62 step/s  남은 시간 44분
+step 4400/30000  loss 0.4192  lr 1.4e-3  9.62 step/s  남은 시간 44분
+step 4425/30000  loss 0.3857  lr 1.4e-3  9.61 step/s  남은 시간 44분
+step 4450/30000  loss 0.4205  lr 1.4e-3  9.62 step/s  남은 시간 44분
+step 4475/30000  loss 0.3456  lr 1.4e-3  9.62 step/s  남은 시간 44분
+step 4500/30000  loss 0.3588  lr 1.4e-3  9.63 step/s  남은 시간 44분
+step 4525/30000  loss 0.3668  lr 1.4e-3  9.62 step/s  남은 시간 44분
+step 4550/30000  loss 0.3203  lr 1.4e-3  9.62 step/s  남은 시간 44분
+step 4575/30000  loss 0.3834  lr 1.4e-3  9.62 step/s  남은 시간 44분
+step 4600/30000  loss 0.3043  lr 1.4e-3  9.62 step/s  남은 시간 44분
+step 4625/30000  loss 0.3651  lr 1.4e-3  9.62 step/s  남은 시간 44분
+step 4650/30000  loss 0.3587  lr 1.4e-3  9.63 step/s  남은 시간 44분
+step 4675/30000  loss 0.3743  lr 1.4e-3  9.62 step/s  남은 시간 44분
+step 4700/30000  loss 0.3611  lr 1.4e-3  9.63 step/s  남은 시간 44분
+step 4725/30000  loss 0.3555  lr 1.4e-3  9.63 step/s  남은 시간 44분
+step 4750/30000  loss 0.3736  lr 1.4e-3  9.62 step/s  남은 시간 44분
+step 4775/30000  loss 0.3947  lr 1.4e-3  9.63 step/s  남은 시간 44분
+step 4800/30000  loss 0.3758  lr 1.4e-3  9.63 step/s  남은 시간 44분
+step 4825/30000  loss 0.3419  lr 1.4e-3  9.63 step/s  남은 시간 44분
+step 4850/30000  loss 0.3553  lr 1.4e-3  9.64 step/s  남은 시간 44분
+step 4875/30000  loss 0.3913  lr 1.4e-3  9.64 step/s  남은 시간 43분
+step 4900/30000  loss 0.3573  lr 1.4e-3  9.64 step/s  남은 시간 43분
+step 4925/30000  loss 0.3459  lr 1.4e-3  9.64 step/s  남은 시간 43분
+step 4950/30000  loss 0.3968  lr 1.4e-3  9.65 step/s  남은 시간 43분
+step 4975/30000  loss 0.3989  lr 1.4e-3  9.66 step/s  남은 시간 43분
+step 5000/30000  loss 0.3537  lr 1.4e-3  9.65 step/s  남은 시간 43분
+step 5025/30000  loss 0.3521  lr 1.4e-3  9.65 step/s  남은 시간 43분
+step 5050/30000  loss 0.3362  lr 1.4e-3  9.66 step/s  남은 시간 43분
+step 5075/30000  loss 0.3418  lr 1.4e-3  9.66 step/s  남은 시간 43분
+step 5100/30000  loss 0.3413  lr 1.4e-3  9.67 step/s  남은 시간 43분
+step 5125/30000  loss 0.3397  lr 1.4e-3  9.67 step/s  남은 시간 43분
+step 5150/30000  loss 0.3209  lr 1.4e-3  9.67 step/s  남은 시간 43분
+step 5175/30000  loss 0.4057  lr 1.4e-3  9.67 step/s  남은 시간 43분
+step 5200/30000  loss 0.3481  lr 1.4e-3  9.68 step/s  남은 시간 43분
+step 5225/30000  loss 0.3629  lr 1.4e-3  9.68 step/s  남은 시간 43분
+step 5250/30000  loss 0.3101  lr 1.4e-3  9.68 step/s  남은 시간 43분
+step 5275/30000  loss 0.3154  lr 1.4e-3  9.69 step/s  남은 시간 43분
+step 5300/30000  loss 0.3362  lr 1.4e-3  9.69 step/s  남은 시간 42분
+step 5325/30000  loss 0.3443  lr 1.4e-3  9.69 step/s  남은 시간 42분
+step 5350/30000  loss 0.3150  lr 1.4e-3  9.69 step/s  남은 시간 42분
+step 5375/30000  loss 0.3273  lr 1.4e-3  9.70 step/s  남은 시간 42분
+step 5400/30000  loss 0.3335  lr 1.4e-3  9.70 step/s  남은 시간 42분
+step 5425/30000  loss 0.3002  lr 1.4e-3  9.70 step/s  남은 시간 42분
+step 5450/30000  loss 0.2982  lr 1.4e-3  9.70 step/s  남은 시간 42분
+step 5475/30000  loss 0.3359  lr 1.4e-3  9.71 step/s  남은 시간 42분
+step 5500/30000  loss 0.3232  lr 1.4e-3  9.71 step/s  남은 시간 42분
+step 5525/30000  loss 0.3321  lr 1.4e-3  9.71 step/s  남은 시간 42분
+step 5550/30000  loss 0.3423  lr 1.4e-3  9.71 step/s  남은 시간 42분
+step 5575/30000  loss 0.3229  lr 1.4e-3  9.72 step/s  남은 시간 42분
+step 5600/30000  loss 0.3311  lr 1.4e-3  9.72 step/s  남은 시간 42분
+step 5625/30000  loss 0.3302  lr 1.4e-3  9.73 step/s  남은 시간 42분
+step 5650/30000  loss 0.4005  lr 1.4e-3  9.74 step/s  남은 시간 42분
+step 5675/30000  loss 0.3527  lr 1.4e-3  9.74 step/s  남은 시간 42분
+step 5700/30000  loss 0.3339  lr 1.4e-3  9.74 step/s  남은 시간 42분
+step 5725/30000  loss 0.3319  lr 1.4e-3  9.74 step/s  남은 시간 42분
+step 5750/30000  loss 0.3452  lr 1.4e-3  9.74 step/s  남은 시간 41분
+step 5775/30000  loss 0.3244  lr 1.4e-3  9.74 step/s  남은 시간 41분
+step 5800/30000  loss 0.3037  lr 1.4e-3  9.75 step/s  남은 시간 41분
+step 5825/30000  loss 0.3198  lr 1.4e-3  9.75 step/s  남은 시간 41분
+step 5850/30000  loss 0.3250  lr 1.4e-3  9.75 step/s  남은 시간 41분
+step 5875/30000  loss 0.3424  lr 1.4e-3  9.76 step/s  남은 시간 41분
+step 5900/30000  loss 0.3503  lr 1.4e-3  9.76 step/s  남은 시간 41분
+step 5925/30000  loss 0.3007  lr 1.4e-3  9.76 step/s  남은 시간 41분
+step 5950/30000  loss 0.2682  lr 1.4e-3  9.76 step/s  남은 시간 41분
+step 5975/30000  loss 0.2898  lr 1.4e-3  9.76 step/s  남은 시간 41분
+step 6000/30000  loss 0.2939  lr 1.4e-3  9.76 step/s  남은 시간 41분
+step 6025/30000  loss 0.2833  lr 1.4e-3  9.75 step/s  남은 시간 41분
+step 6050/30000  loss 0.2940  lr 1.4e-3  9.75 step/s  남은 시간 41분
+step 6075/30000  loss 0.2889  lr 1.4e-3  9.75 step/s  남은 시간 41분
+step 6100/30000  loss 0.3088  lr 1.4e-3  9.76 step/s  남은 시간 41분
+step 6125/30000  loss 0.3092  lr 1.4e-3  9.76 step/s  남은 시간 41분
+step 6150/30000  loss 0.2354  lr 1.4e-3  9.75 step/s  남은 시간 41분
+step 6175/30000  loss 0.2431  lr 1.4e-3  9.76 step/s  남은 시간 41분
+step 6200/30000  loss 0.2354  lr 1.4e-3  9.76 step/s  남은 시간 41분
+step 6225/30000  loss 0.2497  lr 1.4e-3  9.76 step/s  남은 시간 41분
+step 6250/30000  loss 0.2614  lr 1.4e-3  9.76 step/s  남은 시간 41분
+step 6275/30000  loss 0.2534  lr 1.4e-3  9.76 step/s  남은 시간 41분
+step 6300/30000  loss 0.2515  lr 1.4e-3  9.76 step/s  남은 시간 40분
+step 6325/30000  loss 0.2649  lr 1.4e-3  9.77 step/s  남은 시간 40분
+step 6350/30000  loss 0.2754  lr 1.4e-3  9.77 step/s  남은 시간 40분
+step 6375/30000  loss 0.3315  lr 1.4e-3  9.77 step/s  남은 시간 40분
+step 6400/30000  loss 0.2732  lr 1.4e-3  9.77 step/s  남은 시간 40분
+step 6425/30000  loss 0.2456  lr 1.4e-3  9.77 step/s  남은 시간 40분
+step 6450/30000  loss 0.2475  lr 1.4e-3  9.77 step/s  남은 시간 40분
+step 6475/30000  loss 0.2657  lr 1.4e-3  9.77 step/s  남은 시간 40분
+step 6500/30000  loss 0.2752  lr 1.3e-3  9.78 step/s  남은 시간 40분
+step 6525/30000  loss 0.2989  lr 1.3e-3  9.78 step/s  남은 시간 40분
+step 6550/30000  loss 0.2335  lr 1.3e-3  9.77 step/s  남은 시간 40분
+step 6575/30000  loss 0.2392  lr 1.3e-3  9.78 step/s  남은 시간 40분
+step 6600/30000  loss 0.2457  lr 1.3e-3  9.78 step/s  남은 시간 40분
+step 6625/30000  loss 0.2455  lr 1.3e-3  9.78 step/s  남은 시간 40분
+step 6650/30000  loss 0.2519  lr 1.3e-3  9.78 step/s  남은 시간 40분
+step 6675/30000  loss 0.2880  lr 1.3e-3  9.78 step/s  남은 시간 40분
+step 6700/30000  loss 0.2429  lr 1.3e-3  9.78 step/s  남은 시간 40분
+step 6725/30000  loss 0.2979  lr 1.3e-3  9.78 step/s  남은 시간 40분
+step 6750/30000  loss 0.3177  lr 1.3e-3  9.78 step/s  남은 시간 40분
+step 6775/30000  loss 0.3044  lr 1.3e-3  9.79 step/s  남은 시간 40분
+step 6800/30000  loss 0.3042  lr 1.3e-3  9.79 step/s  남은 시간 40분
+step 6825/30000  loss 0.3347  lr 1.3e-3  9.79 step/s  남은 시간 39분
+step 6850/30000  loss 0.2580  lr 1.3e-3  9.79 step/s  남은 시간 39분
+step 6875/30000  loss 0.2755  lr 1.3e-3  9.79 step/s  남은 시간 39분
+step 6900/30000  loss 0.2716  lr 1.3e-3  9.79 step/s  남은 시간 39분
+step 6925/30000  loss 0.2580  lr 1.3e-3  9.80 step/s  남은 시간 39분
+step 6950/30000  loss 0.2541  lr 1.3e-3  9.80 step/s  남은 시간 39분
+step 6975/30000  loss 0.2268  lr 1.3e-3  9.80 step/s  남은 시간 39분
+step 7000/30000  loss 0.2121  lr 1.3e-3  9.80 step/s  남은 시간 39분
+step 7025/30000  loss 0.2396  lr 1.3e-3  9.80 step/s  남은 시간 39분
+step 7050/30000  loss 0.2455  lr 1.3e-3  9.80 step/s  남은 시간 39분
+step 7075/30000  loss 0.2624  lr 1.3e-3  9.81 step/s  남은 시간 39분
+step 7100/30000  loss 0.2461  lr 1.3e-3  9.81 step/s  남은 시간 39분
+step 7125/30000  loss 0.2489  lr 1.3e-3  9.81 step/s  남은 시간 39분
+step 7150/30000  loss 0.2704  lr 1.3e-3  9.81 step/s  남은 시간 39분
+step 7175/30000  loss 0.2230  lr 1.3e-3  9.81 step/s  남은 시간 39분
+step 7200/30000  loss 0.2468  lr 1.3e-3  9.80 step/s  남은 시간 39분
+step 7225/30000  loss 0.2791  lr 1.3e-3  9.81 step/s  남은 시간 39분
+step 7250/30000  loss 0.2221  lr 1.3e-3  9.81 step/s  남은 시간 39분
+step 7275/30000  loss 0.2346  lr 1.3e-3  9.81 step/s  남은 시간 39분
+step 7300/30000  loss 0.2053  lr 1.3e-3  9.82 step/s  남은 시간 39분
+step 7325/30000  loss 0.2293  lr 1.3e-3  9.81 step/s  남은 시간 39분
+step 7350/30000  loss 0.2638  lr 1.3e-3  9.82 step/s  남은 시간 38분
+step 7375/30000  loss 0.2349  lr 1.3e-3  9.82 step/s  남은 시간 38분
+step 7400/30000  loss 0.2177  lr 1.3e-3  9.82 step/s  남은 시간 38분
+step 7425/30000  loss 0.2375  lr 1.3e-3  9.82 step/s  남은 시간 38분
+step 7450/30000  loss 0.2476  lr 1.3e-3  9.82 step/s  남은 시간 38분
+step 7475/30000  loss 0.2640  lr 1.3e-3  9.82 step/s  남은 시간 38분
+step 7500/30000  loss 0.2558  lr 1.3e-3  9.82 step/s  남은 시간 38분
+step 7525/30000  loss 0.2578  lr 1.3e-3  9.82 step/s  남은 시간 38분
+step 7550/30000  loss 0.2269  lr 1.3e-3  9.82 step/s  남은 시간 38분
+step 7575/30000  loss 0.2225  lr 1.3e-3  9.81 step/s  남은 시간 38분
+step 7600/30000  loss 0.2586  lr 1.3e-3  9.82 step/s  남은 시간 38분
+step 7625/30000  loss 0.2483  lr 1.3e-3  9.82 step/s  남은 시간 38분
+step 7650/30000  loss 0.2781  lr 1.3e-3  9.82 step/s  남은 시간 38분
+step 7675/30000  loss 0.2251  lr 1.3e-3  9.81 step/s  남은 시간 38분
+step 7700/30000  loss 0.2601  lr 1.3e-3  9.82 step/s  남은 시간 38분
+step 7725/30000  loss 0.2184  lr 1.3e-3  9.82 step/s  남은 시간 38분
+step 7750/30000  loss 0.2039  lr 1.3e-3  9.81 step/s  남은 시간 38분
+step 7775/30000  loss 0.2426  lr 1.3e-3  9.82 step/s  남은 시간 38분
+step 7800/30000  loss 0.2122  lr 1.3e-3  9.81 step/s  남은 시간 38분
+step 7825/30000  loss 0.2021  lr 1.3e-3  9.81 step/s  남은 시간 38분
+step 7850/30000  loss 0.1781  lr 1.3e-3  9.81 step/s  남은 시간 38분
+step 7875/30000  loss 0.2143  lr 1.3e-3  9.81 step/s  남은 시간 38분
+step 7900/30000  loss 0.2141  lr 1.3e-3  9.81 step/s  남은 시간 38분
+step 7925/30000  loss 0.2001  lr 1.3e-3  9.81 step/s  남은 시간 38분
+step 7950/30000  loss 0.2025  lr 1.3e-3  9.81 step/s  남은 시간 37분
+step 7975/30000  loss 0.1802  lr 1.3e-3  9.81 step/s  남은 시간 37분
+step 8000/30000  loss 0.1822  lr 1.3e-3  9.80 step/s  남은 시간 37분
+step 8025/30000  loss 0.1903  lr 1.3e-3  9.80 step/s  남은 시간 37분
+step 8050/30000  loss 0.2103  lr 1.3e-3  9.80 step/s  남은 시간 37분
+step 8075/30000  loss 0.1937  lr 1.3e-3  9.79 step/s  남은 시간 37분
+step 8100/30000  loss 0.2001  lr 1.3e-3  9.79 step/s  남은 시간 37분
+step 8125/30000  loss 0.2083  lr 1.3e-3  9.79 step/s  남은 시간 37분
+step 8150/30000  loss 0.1827  lr 1.3e-3  9.79 step/s  남은 시간 37분
+step 8175/30000  loss 0.1995  lr 1.3e-3  9.79 step/s  남은 시간 37분
+step 8200/30000  loss 0.2062  lr 1.3e-3  9.79 step/s  남은 시간 37분
+step 8225/30000  loss 0.2332  lr 1.3e-3  9.79 step/s  남은 시간 37분
+step 8250/30000  loss 0.2227  lr 1.3e-3  9.79 step/s  남은 시간 37분
+step 8275/30000  loss 0.2152  lr 1.3e-3  9.79 step/s  남은 시간 37분
+step 8300/30000  loss 0.2192  lr 1.3e-3  9.79 step/s  남은 시간 37분
+step 8325/30000  loss 0.1959  lr 1.3e-3  9.80 step/s  남은 시간 37분
+step 8350/30000  loss 0.1972  lr 1.3e-3  9.80 step/s  남은 시간 37분
+step 8375/30000  loss 0.2152  lr 1.3e-3  9.80 step/s  남은 시간 37분
+step 8400/30000  loss 0.1895  lr 1.3e-3  9.80 step/s  남은 시간 37분
+step 8425/30000  loss 0.1864  lr 1.3e-3  9.80 step/s  남은 시간 37분
+step 8450/30000  loss 0.1640  lr 1.3e-3  9.80 step/s  남은 시간 37분
+step 8475/30000  loss 0.1950  lr 1.3e-3  9.80 step/s  남은 시간 37분
+step 8500/30000  loss 0.2115  lr 1.2e-3  9.80 step/s  남은 시간 37분
+step 8525/30000  loss 0.2183  lr 1.2e-3  9.80 step/s  남은 시간 37분
+step 8550/30000  loss 0.2353  lr 1.2e-3  9.80 step/s  남은 시간 36분
+step 8575/30000  loss 0.1991  lr 1.2e-3  9.80 step/s  남은 시간 36분
+step 8600/30000  loss 0.1857  lr 1.2e-3  9.79 step/s  남은 시간 36분
+step 8625/30000  loss 0.1670  lr 1.2e-3  9.79 step/s  남은 시간 36분
+step 8650/30000  loss 0.1763  lr 1.2e-3  9.79 step/s  남은 시간 36분
+step 8675/30000  loss 0.1980  lr 1.2e-3  9.79 step/s  남은 시간 36분
+step 8700/30000  loss 0.1717  lr 1.2e-3  9.78 step/s  남은 시간 36분
+step 8725/30000  loss 0.1603  lr 1.2e-3  9.78 step/s  남은 시간 36분
+step 8750/30000  loss 0.1981  lr 1.2e-3  9.78 step/s  남은 시간 36분
+step 8775/30000  loss 0.2297  lr 1.2e-3  9.78 step/s  남은 시간 36분
+step 8800/30000  loss 0.1946  lr 1.2e-3  9.78 step/s  남은 시간 36분
+step 8825/30000  loss 0.2292  lr 1.2e-3  9.79 step/s  남은 시간 36분
+step 8850/30000  loss 0.2084  lr 1.2e-3  9.79 step/s  남은 시간 36분
+step 8875/30000  loss 0.1718  lr 1.2e-3  9.78 step/s  남은 시간 36분
+step 8900/30000  loss 0.1760  lr 1.2e-3  9.78 step/s  남은 시간 36분
+step 8925/30000  loss 0.1857  lr 1.2e-3  9.77 step/s  남은 시간 36분
+step 8950/30000  loss 0.2197  lr 1.2e-3  9.78 step/s  남은 시간 36분
+step 8975/30000  loss 0.1885  lr 1.2e-3  9.78 step/s  남은 시간 36분
+step 9000/30000  loss 0.1929  lr 1.2e-3  9.78 step/s  남은 시간 36분
+step 9025/30000  loss 0.2044  lr 1.2e-3  9.78 step/s  남은 시간 36분
+step 9050/30000  loss 0.1759  lr 1.2e-3  9.77 step/s  남은 시간 36분
+step 9075/30000  loss 0.1705  lr 1.2e-3  9.78 step/s  남은 시간 36분
+step 9100/30000  loss 0.1895  lr 1.2e-3  9.78 step/s  남은 시간 36분
+step 9125/30000  loss 0.1992  lr 1.2e-3  9.78 step/s  남은 시간 36분
+step 9150/30000  loss 0.1870  lr 1.2e-3  9.78 step/s  남은 시간 36분
+step 9175/30000  loss 0.1875  lr 1.2e-3  9.78 step/s  남은 시간 35분
+step 9200/30000  loss 0.1767  lr 1.2e-3  9.78 step/s  남은 시간 35분
+step 9225/30000  loss 0.1803  lr 1.2e-3  9.78 step/s  남은 시간 35분
+step 9250/30000  loss 0.1670  lr 1.2e-3  9.78 step/s  남은 시간 35분
+step 9275/30000  loss 0.1646  lr 1.2e-3  9.78 step/s  남은 시간 35분
+step 9300/30000  loss 0.1614  lr 1.2e-3  9.78 step/s  남은 시간 35분
+step 9325/30000  loss 0.1897  lr 1.2e-3  9.78 step/s  남은 시간 35분
+step 9350/30000  loss 0.2064  lr 1.2e-3  9.78 step/s  남은 시간 35분
+step 9375/30000  loss 0.1865  lr 1.2e-3  9.79 step/s  남은 시간 35분
+step 9400/30000  loss 0.1638  lr 1.2e-3  9.79 step/s  남은 시간 35분
+step 9425/30000  loss 0.1502  lr 1.2e-3  9.79 step/s  남은 시간 35분
+step 9450/30000  loss 0.1745  lr 1.2e-3  9.78 step/s  남은 시간 35분
+step 9475/30000  loss 0.1533  lr 1.2e-3  9.78 step/s  남은 시간 35분
+step 9500/30000  loss 0.1602  lr 1.2e-3  9.77 step/s  남은 시간 35분
+step 9525/30000  loss 0.1603  lr 1.2e-3  9.77 step/s  남은 시간 35분
+step 9550/30000  loss 0.1796  lr 1.2e-3  9.77 step/s  남은 시간 35분
+step 9575/30000  loss 0.2241  lr 1.2e-3  9.77 step/s  남은 시간 35분
+step 9600/30000  loss 0.2017  lr 1.2e-3  9.77 step/s  남은 시간 35분
+step 9625/30000  loss 0.1785  lr 1.2e-3  9.77 step/s  남은 시간 35분
+step 9650/30000  loss 0.1927  lr 1.2e-3  9.77 step/s  남은 시간 35분
+step 9675/30000  loss 0.1834  lr 1.2e-3  9.77 step/s  남은 시간 35분
+step 9700/30000  loss 0.1663  lr 1.2e-3  9.78 step/s  남은 시간 35분
+step 9725/30000  loss 0.1646  lr 1.2e-3  9.77 step/s  남은 시간 35분
+step 9750/30000  loss 0.2010  lr 1.2e-3  9.77 step/s  남은 시간 35분
+step 9775/30000  loss 0.1710  lr 1.2e-3  9.78 step/s  남은 시간 34분
+step 9800/30000  loss 0.1744  lr 1.2e-3  9.77 step/s  남은 시간 34분
+step 9825/30000  loss 0.1713  lr 1.2e-3  9.77 step/s  남은 시간 34분
+step 9850/30000  loss 0.1705  lr 1.2e-3  9.77 step/s  남은 시간 34분
+step 9875/30000  loss 0.1772  lr 1.2e-3  9.77 step/s  남은 시간 34분
+step 9900/30000  loss 0.1981  lr 1.2e-3  9.77 step/s  남은 시간 34분
+step 9925/30000  loss 0.1838  lr 1.2e-3  9.77 step/s  남은 시간 34분
+step 9950/30000  loss 0.1613  lr 1.2e-3  9.77 step/s  남은 시간 34분
+step 9975/30000  loss 0.1697  lr 1.2e-3  9.77 step/s  남은 시간 34분
+step 10000/30000  loss 0.1865  lr 1.2e-3  9.77 step/s  남은 시간 34분
+step 10025/30000  loss 0.1727  lr 1.2e-3  9.77 step/s  남은 시간 34분
+step 10050/30000  loss 0.1587  lr 1.2e-3  9.76 step/s  남은 시간 34분
+step 10075/30000  loss 0.1515  lr 1.2e-3  9.76 step/s  남은 시간 34분
+step 10100/30000  loss 0.1567  lr 1.2e-3  9.76 step/s  남은 시간 34분
+step 10125/30000  loss 0.1539  lr 1.2e-3  9.76 step/s  남은 시간 34분
+step 10150/30000  loss 0.1519  lr 1.2e-3  9.76 step/s  남은 시간 34분
+step 10175/30000  loss 0.1548  lr 1.2e-3  9.76 step/s  남은 시간 34분
+step 10200/30000  loss 0.1571  lr 1.2e-3  9.75 step/s  남은 시간 34분
+step 10225/30000  loss 0.1715  lr 1.1e-3  9.76 step/s  남은 시간 34분
+step 10250/30000  loss 0.1356  lr 1.1e-3  9.75 step/s  남은 시간 34분
+step 10275/30000  loss 0.1609  lr 1.1e-3  9.75 step/s  남은 시간 34분
+step 10300/30000  loss 0.1704  lr 1.1e-3  9.75 step/s  남은 시간 34분
+step 10325/30000  loss 0.1503  lr 1.1e-3  9.75 step/s  남은 시간 34분
+step 10350/30000  loss 0.1803  lr 1.1e-3  9.75 step/s  남은 시간 34분
+step 10375/30000  loss 0.1687  lr 1.1e-3  9.75 step/s  남은 시간 34분
+step 10400/30000  loss 0.1531  lr 1.1e-3  9.75 step/s  남은 시간 34분
+step 10425/30000  loss 0.1477  lr 1.1e-3  9.75 step/s  남은 시간 33분
+step 10450/30000  loss 0.1552  lr 1.1e-3  9.74 step/s  남은 시간 33분
+step 10475/30000  loss 0.1578  lr 1.1e-3  9.74 step/s  남은 시간 33분
+step 10500/30000  loss 0.1501  lr 1.1e-3  9.74 step/s  남은 시간 33분
+step 10525/30000  loss 0.1620  lr 1.1e-3  9.74 step/s  남은 시간 33분
+step 10550/30000  loss 0.1687  lr 1.1e-3  9.74 step/s  남은 시간 33분
+step 10575/30000  loss 0.1659  lr 1.1e-3  9.74 step/s  남은 시간 33분
+step 10600/30000  loss 0.2033  lr 1.1e-3  9.74 step/s  남은 시간 33분
+step 10625/30000  loss 0.1721  lr 1.1e-3  9.73 step/s  남은 시간 33분
+step 10650/30000  loss 0.1729  lr 1.1e-3  9.73 step/s  남은 시간 33분
+step 10675/30000  loss 0.1576  lr 1.1e-3  9.73 step/s  남은 시간 33분
+step 10700/30000  loss 0.1518  lr 1.1e-3  9.72 step/s  남은 시간 33분
+step 10725/30000  loss 0.1721  lr 1.1e-3  9.72 step/s  남은 시간 33분
+step 10750/30000  loss 0.1843  lr 1.1e-3  9.73 step/s  남은 시간 33분
+step 10775/30000  loss 0.1702  lr 1.1e-3  9.73 step/s  남은 시간 33분
+step 10800/30000  loss 0.1621  lr 1.1e-3  9.72 step/s  남은 시간 33분
+step 10825/30000  loss 0.1619  lr 1.1e-3  9.73 step/s  남은 시간 33분
+step 10850/30000  loss 0.1633  lr 1.1e-3  9.73 step/s  남은 시간 33분
+step 10875/30000  loss 0.1411  lr 1.1e-3  9.73 step/s  남은 시간 33분
+step 10900/30000  loss 0.1335  lr 1.1e-3  9.73 step/s  남은 시간 33분
+step 10925/30000  loss 0.1464  lr 1.1e-3  9.73 step/s  남은 시간 33분
+step 10950/30000  loss 0.1618  lr 1.1e-3  9.72 step/s  남은 시간 33분
+step 10975/30000  loss 0.1549  lr 1.1e-3  9.72 step/s  남은 시간 33분
+step 11000/30000  loss 0.1522  lr 1.1e-3  9.73 step/s  남은 시간 33분
+step 11025/30000  loss 0.1508  lr 1.1e-3  9.72 step/s  남은 시간 33분
+step 11050/30000  loss 0.1327  lr 1.1e-3  9.72 step/s  남은 시간 32분
+step 11075/30000  loss 0.1534  lr 1.1e-3  9.72 step/s  남은 시간 32분
+step 11100/30000  loss 0.1642  lr 1.1e-3  9.72 step/s  남은 시간 32분
+step 11125/30000  loss 0.1481  lr 1.1e-3  9.72 step/s  남은 시간 32분
+step 11150/30000  loss 0.1481  lr 1.1e-3  9.72 step/s  남은 시간 32분
+step 11175/30000  loss 0.1309  lr 1.1e-3  9.71 step/s  남은 시간 32분
+step 11200/30000  loss 0.1466  lr 1.1e-3  9.72 step/s  남은 시간 32분
+step 11225/30000  loss 0.1421  lr 1.1e-3  9.71 step/s  남은 시간 32분
+step 11250/30000  loss 0.1483  lr 1.1e-3  9.72 step/s  남은 시간 32분
+step 11275/30000  loss 0.1269  lr 1.1e-3  9.71 step/s  남은 시간 32분
+step 11300/30000  loss 0.1234  lr 1.1e-3  9.71 step/s  남은 시간 32분
+step 11325/30000  loss 0.1452  lr 1.1e-3  9.71 step/s  남은 시간 32분
+step 11350/30000  loss 0.1512  lr 1.1e-3  9.71 step/s  남은 시간 32분
+step 11375/30000  loss 0.1450  lr 1.1e-3  9.71 step/s  남은 시간 32분
+step 11400/30000  loss 0.1314  lr 1.1e-3  9.71 step/s  남은 시간 32분
+step 11425/30000  loss 0.1281  lr 1.1e-3  9.71 step/s  남은 시간 32분
+step 11450/30000  loss 0.1200  lr 1.1e-3  9.71 step/s  남은 시간 32분
+step 11475/30000  loss 0.1414  lr 1.1e-3  9.70 step/s  남은 시간 32분
+step 11500/30000  loss 0.1429  lr 1.1e-3  9.70 step/s  남은 시간 32분
+step 11525/30000  loss 0.1366  lr 1.1e-3  9.70 step/s  남은 시간 32분
+step 11550/30000  loss 0.1547  lr 1.1e-3  9.70 step/s  남은 시간 32분
+step 11575/30000  loss 0.1483  lr 1.1e-3  9.70 step/s  남은 시간 32분
+step 11600/30000  loss 0.1419  lr 1.1e-3  9.70 step/s  남은 시간 32분
+step 11625/30000  loss 0.1545  lr 1.1e-3  9.70 step/s  남은 시간 32분
+step 11650/30000  loss 0.1617  lr 1.1e-3  9.70 step/s  남은 시간 32분
+step 11675/30000  loss 0.1628  lr 1.1e-3  9.70 step/s  남은 시간 31분
+step 11700/30000  loss 0.1430  lr 1.1e-3  9.70 step/s  남은 시간 31분
+step 11725/30000  loss 0.1502  lr 1.1e-3  9.70 step/s  남은 시간 31분
+step 11750/30000  loss 0.1391  lr 1.1e-3  9.71 step/s  남은 시간 31분
+step 11775/30000  loss 0.1405  lr 1.0e-3  9.70 step/s  남은 시간 31분
+step 11800/30000  loss 0.1548  lr 1.0e-3  9.71 step/s  남은 시간 31분
+step 11825/30000  loss 0.1377  lr 1.0e-3  9.70 step/s  남은 시간 31분
+step 11850/30000  loss 0.1638  lr 1.0e-3  9.71 step/s  남은 시간 31분
+step 11875/30000  loss 0.1607  lr 1.0e-3  9.71 step/s  남은 시간 31분
+step 11900/30000  loss 0.1595  lr 1.0e-3  9.71 step/s  남은 시간 31분
+step 11925/30000  loss 0.1500  lr 1.0e-3  9.71 step/s  남은 시간 31분
+step 11950/30000  loss 0.1486  lr 1.0e-3  9.71 step/s  남은 시간 31분
+step 11975/30000  loss 0.1415  lr 1.0e-3  9.71 step/s  남은 시간 31분
+step 12000/30000  loss 0.1619  lr 1.0e-3  9.71 step/s  남은 시간 31분
+step 12025/30000  loss 0.1559  lr 1.0e-3  9.71 step/s  남은 시간 31분
+step 12050/30000  loss 0.1511  lr 1.0e-3  9.71 step/s  남은 시간 31분
+step 12075/30000  loss 0.1391  lr 1.0e-3  9.71 step/s  남은 시간 31분
+step 12100/30000  loss 0.1251  lr 1.0e-3  9.70 step/s  남은 시간 31분
+step 12125/30000  loss 0.1510  lr 1.0e-3  9.71 step/s  남은 시간 31분
+step 12150/30000  loss 0.1404  lr 1.0e-3  9.70 step/s  남은 시간 31분
+step 12175/30000  loss 0.1224  lr 1.0e-3  9.70 step/s  남은 시간 31분
+step 12200/30000  loss 0.1378  lr 1.0e-3  9.70 step/s  남은 시간 31분
+step 12225/30000  loss 0.1345  lr 1.0e-3  9.70 step/s  남은 시간 31분
+step 12250/30000  loss 0.1273  lr 1.0e-3  9.70 step/s  남은 시간 31분
+step 12275/30000  loss 0.1447  lr 1.0e-3  9.70 step/s  남은 시간 30분
+step 12300/30000  loss 0.1284  lr 1.0e-3  9.70 step/s  남은 시간 30분
+step 12325/30000  loss 0.1403  lr 1.0e-3  9.69 step/s  남은 시간 30분
+step 12350/30000  loss 0.1357  lr 1.0e-3  9.69 step/s  남은 시간 30분
+step 12375/30000  loss 0.1533  lr 1.0e-3  9.69 step/s  남은 시간 30분
+step 12400/30000  loss 0.1367  lr 1.0e-3  9.69 step/s  남은 시간 30분
+step 12425/30000  loss 0.1297  lr 1.0e-3  9.69 step/s  남은 시간 30분
+step 12450/30000  loss 0.1195  lr 1.0e-3  9.69 step/s  남은 시간 30분
+step 12475/30000  loss 0.1152  lr 1.0e-3  9.69 step/s  남은 시간 30분
+step 12500/30000  loss 0.1225  lr 1.0e-3  9.68 step/s  남은 시간 30분
+step 12525/30000  loss 0.0959  lr 1.0e-3  9.68 step/s  남은 시간 30분
+step 12550/30000  loss 0.1234  lr 1.0e-3  9.68 step/s  남은 시간 30분
+step 12575/30000  loss 0.1394  lr 9.9e-4  9.68 step/s  남은 시간 30분
+step 12600/30000  loss 0.1326  lr 9.9e-4  9.68 step/s  남은 시간 30분
+step 12625/30000  loss 0.1466  lr 9.9e-4  9.68 step/s  남은 시간 30분
+step 12650/30000  loss 0.1336  lr 9.9e-4  9.68 step/s  남은 시간 30분
+step 12675/30000  loss 0.1257  lr 9.9e-4  9.67 step/s  남은 시간 30분
+step 12700/30000  loss 0.1234  lr 9.9e-4  9.67 step/s  남은 시간 30분
+step 12725/30000  loss 0.1201  lr 9.8e-4  9.67 step/s  남은 시간 30분
+step 12750/30000  loss 0.1147  lr 9.8e-4  9.67 step/s  남은 시간 30분
+step 12775/30000  loss 0.1223  lr 9.8e-4  9.67 step/s  남은 시간 30분
+step 12800/30000  loss 0.1272  lr 9.8e-4  9.67 step/s  남은 시간 30분
+step 12825/30000  loss 0.1435  lr 9.8e-4  9.67 step/s  남은 시간 30분
+step 12850/30000  loss 0.1350  lr 9.8e-4  9.66 step/s  남은 시간 30분
+step 12875/30000  loss 0.1302  lr 9.7e-4  9.66 step/s  남은 시간 30분
+step 12900/30000  loss 0.1356  lr 9.7e-4  9.66 step/s  남은 시간 29분
+step 12925/30000  loss 0.1401  lr 9.7e-4  9.66 step/s  남은 시간 29분
+step 12950/30000  loss 0.1333  lr 9.7e-4  9.66 step/s  남은 시간 29분
+step 12975/30000  loss 0.1287  lr 9.7e-4  9.66 step/s  남은 시간 29분
+step 13000/30000  loss 0.1253  lr 9.7e-4  9.66 step/s  남은 시간 29분
+step 13025/30000  loss 0.1388  lr 9.6e-4  9.66 step/s  남은 시간 29분
+step 13050/30000  loss 0.1252  lr 9.6e-4  9.66 step/s  남은 시간 29분
+step 13075/30000  loss 0.1339  lr 9.6e-4  9.66 step/s  남은 시간 29분
+step 13100/30000  loss 0.1487  lr 9.6e-4  9.66 step/s  남은 시간 29분
+step 13125/30000  loss 0.1299  lr 9.6e-4  9.66 step/s  남은 시간 29분
+step 13150/30000  loss 0.1228  lr 9.5e-4  9.66 step/s  남은 시간 29분
+step 13175/30000  loss 0.1191  lr 9.5e-4  9.66 step/s  남은 시간 29분
+step 13200/30000  loss 0.1493  lr 9.5e-4  9.66 step/s  남은 시간 29분
+step 13225/30000  loss 0.1346  lr 9.5e-4  9.66 step/s  남은 시간 29분
+step 13250/30000  loss 0.1282  lr 9.5e-4  9.66 step/s  남은 시간 29분
+step 13275/30000  loss 0.1226  lr 9.5e-4  9.66 step/s  남은 시간 29분
+step 13300/30000  loss 0.1089  lr 9.4e-4  9.65 step/s  남은 시간 29분
+step 13325/30000  loss 0.1147  lr 9.4e-4  9.65 step/s  남은 시간 29분
+step 13350/30000  loss 0.1205  lr 9.4e-4  9.65 step/s  남은 시간 29분
+step 13375/30000  loss 0.1193  lr 9.4e-4  9.66 step/s  남은 시간 29분
+step 13400/30000  loss 0.1236  lr 9.4e-4  9.66 step/s  남은 시간 29분
+step 13425/30000  loss 0.1268  lr 9.4e-4  9.65 step/s  남은 시간 29분
+step 13450/30000  loss 0.1154  lr 9.3e-4  9.65 step/s  남은 시간 29분
+step 13475/30000  loss 0.1208  lr 9.3e-4  9.65 step/s  남은 시간 29분
+step 13500/30000  loss 0.1258  lr 9.3e-4  9.65 step/s  남은 시간 28분
+step 13525/30000  loss 0.1276  lr 9.3e-4  9.65 step/s  남은 시간 28분
+step 13550/30000  loss 0.1217  lr 9.3e-4  9.65 step/s  남은 시간 28분
+step 13575/30000  loss 0.1205  lr 9.3e-4  9.65 step/s  남은 시간 28분
+step 13600/30000  loss 0.1192  lr 9.2e-4  9.65 step/s  남은 시간 28분
+step 13625/30000  loss 0.1054  lr 9.2e-4  9.65 step/s  남은 시간 28분
+step 13650/30000  loss 0.1190  lr 9.2e-4  9.65 step/s  남은 시간 28분
+step 13675/30000  loss 0.1143  lr 9.2e-4  9.65 step/s  남은 시간 28분
+step 13700/30000  loss 0.1230  lr 9.2e-4  9.65 step/s  남은 시간 28분
+step 13725/30000  loss 0.1210  lr 9.1e-4  9.65 step/s  남은 시간 28분
+step 13750/30000  loss 0.1219  lr 9.1e-4  9.65 step/s  남은 시간 28분
+step 13775/30000  loss 0.1291  lr 9.1e-4  9.65 step/s  남은 시간 28분
+step 13800/30000  loss 0.1156  lr 9.1e-4  9.65 step/s  남은 시간 28분
+step 13825/30000  loss 0.1103  lr 9.1e-4  9.65 step/s  남은 시간 28분
+step 13850/30000  loss 0.1135  lr 9.1e-4  9.65 step/s  남은 시간 28분
+step 13875/30000  loss 0.1063  lr 9.0e-4  9.65 step/s  남은 시간 28분
+step 13900/30000  loss 0.0996  lr 9.0e-4  9.65 step/s  남은 시간 28분
+step 13925/30000  loss 0.0894  lr 9.0e-4  9.65 step/s  남은 시간 28분
+step 13950/30000  loss 0.0925  lr 9.0e-4  9.65 step/s  남은 시간 28분
+step 13975/30000  loss 0.1058  lr 9.0e-4  9.64 step/s  남은 시간 28분
+step 14000/30000  loss 0.1195  lr 9.0e-4  9.64 step/s  남은 시간 28분
+step 14025/30000  loss 0.1321  lr 8.9e-4  9.64 step/s  남은 시간 28분
+step 14050/30000  loss 0.1323  lr 8.9e-4  9.65 step/s  남은 시간 28분
+step 14075/30000  loss 0.1197  lr 8.9e-4  9.64 step/s  남은 시간 28분
+step 14100/30000  loss 0.1066  lr 8.9e-4  9.65 step/s  남은 시간 27분
+step 14125/30000  loss 0.1112  lr 8.9e-4  9.65 step/s  남은 시간 27분
+step 14150/30000  loss 0.1135  lr 8.9e-4  9.65 step/s  남은 시간 27분
+step 14175/30000  loss 0.1215  lr 8.8e-4  9.65 step/s  남은 시간 27분
+step 14200/30000  loss 0.1181  lr 8.8e-4  9.65 step/s  남은 시간 27분
+step 14225/30000  loss 0.0988  lr 8.8e-4  9.65 step/s  남은 시간 27분
+step 14250/30000  loss 0.1081  lr 8.8e-4  9.65 step/s  남은 시간 27분
+step 14275/30000  loss 0.1011  lr 8.8e-4  9.65 step/s  남은 시간 27분
+step 14300/30000  loss 0.1166  lr 8.7e-4  9.65 step/s  남은 시간 27분
+step 14325/30000  loss 0.1030  lr 8.7e-4  9.65 step/s  남은 시간 27분
+step 14350/30000  loss 0.1182  lr 8.7e-4  9.65 step/s  남은 시간 27분
+step 14375/30000  loss 0.1057  lr 8.7e-4  9.65 step/s  남은 시간 27분
+step 14400/30000  loss 0.1088  lr 8.7e-4  9.65 step/s  남은 시간 27분
+step 14425/30000  loss 0.1110  lr 8.7e-4  9.65 step/s  남은 시간 27분
+step 14450/30000  loss 0.1075  lr 8.6e-4  9.65 step/s  남은 시간 27분
+step 14475/30000  loss 0.1137  lr 8.6e-4  9.65 step/s  남은 시간 27분
+step 14500/30000  loss 0.1145  lr 8.6e-4  9.65 step/s  남은 시간 27분
+step 14525/30000  loss 0.0943  lr 8.6e-4  9.65 step/s  남은 시간 27분
+step 14550/30000  loss 0.1007  lr 8.6e-4  9.65 step/s  남은 시간 27분
+step 14575/30000  loss 0.1017  lr 8.6e-4  9.65 step/s  남은 시간 27분
+step 14600/30000  loss 0.1087  lr 8.5e-4  9.65 step/s  남은 시간 27분
+step 14625/30000  loss 0.1057  lr 8.5e-4  9.65 step/s  남은 시간 27분
+step 14650/30000  loss 0.0981  lr 8.5e-4  9.65 step/s  남은 시간 27분
+step 14675/30000  loss 0.1164  lr 8.5e-4  9.65 step/s  남은 시간 26분
+step 14700/30000  loss 0.1143  lr 8.5e-4  9.65 step/s  남은 시간 26분
+step 14725/30000  loss 0.1214  lr 8.4e-4  9.65 step/s  남은 시간 26분
+step 14750/30000  loss 0.1228  lr 8.4e-4  9.65 step/s  남은 시간 26분
+step 14775/30000  loss 0.1169  lr 8.4e-4  9.65 step/s  남은 시간 26분
+step 14800/30000  loss 0.1055  lr 8.4e-4  9.65 step/s  남은 시간 26분
+step 14825/30000  loss 0.0974  lr 8.4e-4  9.65 step/s  남은 시간 26분
+step 14850/30000  loss 0.1111  lr 8.4e-4  9.65 step/s  남은 시간 26분
+step 14875/30000  loss 0.1110  lr 8.3e-4  9.65 step/s  남은 시간 26분
+step 14900/30000  loss 0.1162  lr 8.3e-4  9.65 step/s  남은 시간 26분
+step 14925/30000  loss 0.1144  lr 8.3e-4  9.65 step/s  남은 시간 26분
+step 14950/30000  loss 0.1177  lr 8.3e-4  9.65 step/s  남은 시간 26분
+step 14975/30000  loss 0.1183  lr 8.3e-4  9.65 step/s  남은 시간 26분
+step 15000/30000  loss 0.1098  lr 8.3e-4  9.65 step/s  남은 시간 26분
+step 15025/30000  loss 0.1103  lr 8.2e-4  9.65 step/s  남은 시간 26분
+step 15050/30000  loss 0.0957  lr 8.2e-4  9.64 step/s  남은 시간 26분
+step 15075/30000  loss 0.1036  lr 8.2e-4  9.64 step/s  남은 시간 26분
+step 15100/30000  loss 0.0959  lr 8.2e-4  9.64 step/s  남은 시간 26분
+step 15125/30000  loss 0.1005  lr 8.2e-4  9.64 step/s  남은 시간 26분
+step 15150/30000  loss 0.0970  lr 8.1e-4  9.64 step/s  남은 시간 26분
+step 15175/30000  loss 0.0922  lr 8.1e-4  9.64 step/s  남은 시간 26분
+step 15200/30000  loss 0.1014  lr 8.1e-4  9.64 step/s  남은 시간 26분
+step 15225/30000  loss 0.1053  lr 8.1e-4  9.64 step/s  남은 시간 26분
+step 15250/30000  loss 0.1009  lr 8.1e-4  9.64 step/s  남은 시간 26분
+step 15275/30000  loss 0.0869  lr 8.1e-4  9.64 step/s  남은 시간 25분
+step 15300/30000  loss 0.1099  lr 8.0e-4  9.64 step/s  남은 시간 25분
+step 15325/30000  loss 0.1021  lr 8.0e-4  9.64 step/s  남은 시간 25분
+step 15350/30000  loss 0.0879  lr 8.0e-4  9.64 step/s  남은 시간 25분
+step 15375/30000  loss 0.0910  lr 8.0e-4  9.64 step/s  남은 시간 25분
+step 15400/30000  loss 0.0917  lr 8.0e-4  9.63 step/s  남은 시간 25분
+step 15425/30000  loss 0.1042  lr 7.9e-4  9.64 step/s  남은 시간 25분
+step 15450/30000  loss 0.0891  lr 7.9e-4  9.63 step/s  남은 시간 25분
+step 15475/30000  loss 0.0947  lr 7.9e-4  9.63 step/s  남은 시간 25분
+step 15500/30000  loss 0.0837  lr 7.9e-4  9.63 step/s  남은 시간 25분
+step 15525/30000  loss 0.1000  lr 7.9e-4  9.63 step/s  남은 시간 25분
+step 15550/30000  loss 0.1059  lr 7.9e-4  9.63 step/s  남은 시간 25분
+step 15575/30000  loss 0.1015  lr 7.8e-4  9.63 step/s  남은 시간 25분
+step 15600/30000  loss 0.1081  lr 7.8e-4  9.63 step/s  남은 시간 25분
+step 15625/30000  loss 0.1474  lr 7.8e-4  9.63 step/s  남은 시간 25분
+step 15650/30000  loss 0.1276  lr 7.8e-4  9.63 step/s  남은 시간 25분
+step 15675/30000  loss 0.1120  lr 7.8e-4  9.64 step/s  남은 시간 25분
+step 15700/30000  loss 0.1251  lr 7.8e-4  9.64 step/s  남은 시간 25분
+step 15725/30000  loss 0.1108  lr 7.7e-4  9.64 step/s  남은 시간 25분
+step 15750/30000  loss 0.1072  lr 7.7e-4  9.64 step/s  남은 시간 25분
+step 15775/30000  loss 0.1098  lr 7.7e-4  9.64 step/s  남은 시간 25분
+step 15800/30000  loss 0.0980  lr 7.7e-4  9.64 step/s  남은 시간 25분
+step 15825/30000  loss 0.0886  lr 7.7e-4  9.64 step/s  남은 시간 25분
+step 15850/30000  loss 0.1001  lr 7.6e-4  9.64 step/s  남은 시간 24분
+step 15875/30000  loss 0.1045  lr 7.6e-4  9.64 step/s  남은 시간 24분
+step 15900/30000  loss 0.1006  lr 7.6e-4  9.64 step/s  남은 시간 24분
+step 15925/30000  loss 0.1007  lr 7.6e-4  9.64 step/s  남은 시간 24분
+step 15950/30000  loss 0.1109  lr 7.6e-4  9.64 step/s  남은 시간 24분
+step 15975/30000  loss 0.0954  lr 7.6e-4  9.64 step/s  남은 시간 24분
+step 16000/30000  loss 0.0986  lr 7.5e-4  9.64 step/s  남은 시간 24분
+step 16025/30000  loss 0.0941  lr 7.5e-4  9.64 step/s  남은 시간 24분
+step 16050/30000  loss 0.0981  lr 7.5e-4  9.64 step/s  남은 시간 24분
+step 16075/30000  loss 0.1025  lr 7.5e-4  9.64 step/s  남은 시간 24분
+step 16100/30000  loss 0.1002  lr 7.5e-4  9.64 step/s  남은 시간 24분
+step 16125/30000  loss 0.0992  lr 7.5e-4  9.64 step/s  남은 시간 24분
+step 16150/30000  loss 0.0989  lr 7.4e-4  9.64 step/s  남은 시간 24분
+step 16175/30000  loss 0.0924  lr 7.4e-4  9.64 step/s  남은 시간 24분
+step 16200/30000  loss 0.0987  lr 7.4e-4  9.64 step/s  남은 시간 24분
+step 16225/30000  loss 0.0882  lr 7.4e-4  9.64 step/s  남은 시간 24분
+step 16250/30000  loss 0.0938  lr 7.4e-4  9.64 step/s  남은 시간 24분
+step 16275/30000  loss 0.0950  lr 7.4e-4  9.64 step/s  남은 시간 24분
+step 16300/30000  loss 0.0875  lr 7.3e-4  9.64 step/s  남은 시간 24분
+step 16325/30000  loss 0.0966  lr 7.3e-4  9.64 step/s  남은 시간 24분
+step 16350/30000  loss 0.0966  lr 7.3e-4  9.64 step/s  남은 시간 24분
+step 16375/30000  loss 0.0894  lr 7.3e-4  9.64 step/s  남은 시간 24분
+step 16400/30000  loss 0.0889  lr 7.3e-4  9.64 step/s  남은 시간 24분
+step 16425/30000  loss 0.0943  lr 7.2e-4  9.64 step/s  남은 시간 23분
+step 16450/30000  loss 0.0992  lr 7.2e-4  9.64 step/s  남은 시간 23분
+step 16475/30000  loss 0.0918  lr 7.2e-4  9.64 step/s  남은 시간 23분
+step 16500/30000  loss 0.0853  lr 7.2e-4  9.64 step/s  남은 시간 23분
+step 16525/30000  loss 0.0840  lr 7.2e-4  9.64 step/s  남은 시간 23분
+step 16550/30000  loss 0.0766  lr 7.2e-4  9.64 step/s  남은 시간 23분
+step 16575/30000  loss 0.0790  lr 7.1e-4  9.64 step/s  남은 시간 23분
+step 16600/30000  loss 0.0931  lr 7.1e-4  9.64 step/s  남은 시간 23분
+step 16625/30000  loss 0.0880  lr 7.1e-4  9.64 step/s  남은 시간 23분
+step 16650/30000  loss 0.0824  lr 7.1e-4  9.64 step/s  남은 시간 23분
+step 16675/30000  loss 0.0925  lr 7.1e-4  9.64 step/s  남은 시간 23분
+step 16700/30000  loss 0.0915  lr 7.1e-4  9.64 step/s  남은 시간 23분
+step 16725/30000  loss 0.0910  lr 7.0e-4  9.64 step/s  남은 시간 23분
+step 16750/30000  loss 0.0943  lr 7.0e-4  9.64 step/s  남은 시간 23분
+step 16775/30000  loss 0.0857  lr 7.0e-4  9.64 step/s  남은 시간 23분
+step 16800/30000  loss 0.0855  lr 7.0e-4  9.64 step/s  남은 시간 23분
+step 16825/30000  loss 0.0904  lr 7.0e-4  9.65 step/s  남은 시간 23분
+step 16850/30000  loss 0.0873  lr 7.0e-4  9.65 step/s  남은 시간 23분
+step 16875/30000  loss 0.0955  lr 6.9e-4  9.65 step/s  남은 시간 23분
+step 16900/30000  loss 0.0899  lr 6.9e-4  9.65 step/s  남은 시간 23분
+step 16925/30000  loss 0.0926  lr 6.9e-4  9.65 step/s  남은 시간 23분
+step 16950/30000  loss 0.0968  lr 6.9e-4  9.65 step/s  남은 시간 23분
+step 16975/30000  loss 0.0859  lr 6.9e-4  9.65 step/s  남은 시간 22분
+step 17000/30000  loss 0.0874  lr 6.8e-4  9.65 step/s  남은 시간 22분
+step 17025/30000  loss 0.1003  lr 6.8e-4  9.65 step/s  남은 시간 22분
+step 17050/30000  loss 0.0943  lr 6.8e-4  9.65 step/s  남은 시간 22분
+step 17075/30000  loss 0.1001  lr 6.8e-4  9.65 step/s  남은 시간 22분
+step 17100/30000  loss 0.0943  lr 6.8e-4  9.65 step/s  남은 시간 22분
+step 17125/30000  loss 0.0972  lr 6.8e-4  9.65 step/s  남은 시간 22분
+step 17150/30000  loss 0.0902  lr 6.7e-4  9.65 step/s  남은 시간 22분
+step 17175/30000  loss 0.0880  lr 6.7e-4  9.66 step/s  남은 시간 22분
+step 17200/30000  loss 0.0877  lr 6.7e-4  9.66 step/s  남은 시간 22분
+step 17225/30000  loss 0.0867  lr 6.7e-4  9.66 step/s  남은 시간 22분
+step 17250/30000  loss 0.0864  lr 6.7e-4  9.66 step/s  남은 시간 22분
+step 17275/30000  loss 0.0895  lr 6.7e-4  9.66 step/s  남은 시간 22분
+step 17300/30000  loss 0.0831  lr 6.6e-4  9.66 step/s  남은 시간 22분
+step 17325/30000  loss 0.0800  lr 6.6e-4  9.66 step/s  남은 시간 22분
+step 17350/30000  loss 0.0774  lr 6.6e-4  9.66 step/s  남은 시간 22분
+step 17375/30000  loss 0.0807  lr 6.6e-4  9.66 step/s  남은 시간 22분
+step 17400/30000  loss 0.0934  lr 6.6e-4  9.66 step/s  남은 시간 22분
+step 17425/30000  loss 0.0858  lr 6.6e-4  9.66 step/s  남은 시간 22분
+step 17450/30000  loss 0.0899  lr 6.5e-4  9.66 step/s  남은 시간 22분
+step 17475/30000  loss 0.0796  lr 6.5e-4  9.66 step/s  남은 시간 22분
+step 17500/30000  loss 0.0880  lr 6.5e-4  9.66 step/s  남은 시간 22분
+step 17525/30000  loss 0.0907  lr 6.5e-4  9.66 step/s  남은 시간 22분
+step 17550/30000  loss 0.0823  lr 6.5e-4  9.66 step/s  남은 시간 21분
+step 17575/30000  loss 0.0742  lr 6.5e-4  9.66 step/s  남은 시간 21분
+step 17600/30000  loss 0.0746  lr 6.4e-4  9.67 step/s  남은 시간 21분
+step 17625/30000  loss 0.0770  lr 6.4e-4  9.67 step/s  남은 시간 21분
+step 17650/30000  loss 0.0843  lr 6.4e-4  9.67 step/s  남은 시간 21분
+step 17675/30000  loss 0.0817  lr 6.4e-4  9.67 step/s  남은 시간 21분
+step 17700/30000  loss 0.0821  lr 6.4e-4  9.67 step/s  남은 시간 21분
+step 17725/30000  loss 0.0831  lr 6.3e-4  9.67 step/s  남은 시간 21분
+step 17750/30000  loss 0.0846  lr 6.3e-4  9.67 step/s  남은 시간 21분
+step 17775/30000  loss 0.0811  lr 6.3e-4  9.67 step/s  남은 시간 21분
+step 17800/30000  loss 0.0801  lr 6.3e-4  9.67 step/s  남은 시간 21분
+step 17825/30000  loss 0.0859  lr 6.3e-4  9.67 step/s  남은 시간 21분
+step 17850/30000  loss 0.0890  lr 6.3e-4  9.68 step/s  남은 시간 21분
+step 17875/30000  loss 0.0836  lr 6.2e-4  9.68 step/s  남은 시간 21분
+step 17900/30000  loss 0.0796  lr 6.2e-4  9.68 step/s  남은 시간 21분
+step 17925/30000  loss 0.0908  lr 6.2e-4  9.68 step/s  남은 시간 21분
+step 17950/30000  loss 0.0826  lr 6.2e-4  9.68 step/s  남은 시간 21분
+step 17975/30000  loss 0.0826  lr 6.2e-4  9.68 step/s  남은 시간 21분
+step 18000/30000  loss 0.0729  lr 6.2e-4  9.68 step/s  남은 시간 21분
+step 18025/30000  loss 0.0742  lr 6.1e-4  9.68 step/s  남은 시간 21분
+step 18050/30000  loss 0.0770  lr 6.1e-4  9.68 step/s  남은 시간 21분
+step 18075/30000  loss 0.0843  lr 6.1e-4  9.68 step/s  남은 시간 21분
+step 18100/30000  loss 0.0854  lr 6.1e-4  9.68 step/s  남은 시간 20분
+step 18125/30000  loss 0.0904  lr 6.1e-4  9.68 step/s  남은 시간 20분
+step 18150/30000  loss 0.0992  lr 6.1e-4  9.68 step/s  남은 시간 20분
+step 18175/30000  loss 0.0836  lr 6.0e-4  9.68 step/s  남은 시간 20분
+step 18200/30000  loss 0.0859  lr 6.0e-4  9.69 step/s  남은 시간 20분
+step 18225/30000  loss 0.0762  lr 6.0e-4  9.69 step/s  남은 시간 20분
+step 18250/30000  loss 0.0746  lr 6.0e-4  9.69 step/s  남은 시간 20분
+step 18275/30000  loss 0.0767  lr 6.0e-4  9.69 step/s  남은 시간 20분
+step 18300/30000  loss 0.0780  lr 6.0e-4  9.69 step/s  남은 시간 20분
+step 18325/30000  loss 0.0795  lr 5.9e-4  9.69 step/s  남은 시간 20분
+step 18350/30000  loss 0.0788  lr 5.9e-4  9.69 step/s  남은 시간 20분
+step 18375/30000  loss 0.0840  lr 5.9e-4  9.69 step/s  남은 시간 20분
+step 18400/30000  loss 0.0752  lr 5.9e-4  9.69 step/s  남은 시간 20분
+step 18425/30000  loss 0.0764  lr 5.9e-4  9.69 step/s  남은 시간 20분
+step 18450/30000  loss 0.0723  lr 5.9e-4  9.69 step/s  남은 시간 20분
+step 18475/30000  loss 0.0819  lr 5.8e-4  9.69 step/s  남은 시간 20분
+step 18500/30000  loss 0.0745  lr 5.8e-4  9.69 step/s  남은 시간 20분
+step 18525/30000  loss 0.0751  lr 5.8e-4  9.69 step/s  남은 시간 20분
+step 18550/30000  loss 0.0803  lr 5.8e-4  9.69 step/s  남은 시간 20분
+step 18575/30000  loss 0.0796  lr 5.8e-4  9.69 step/s  남은 시간 20분
+step 18600/30000  loss 0.0783  lr 5.8e-4  9.69 step/s  남은 시간 20분
+step 18625/30000  loss 0.0756  lr 5.7e-4  9.69 step/s  남은 시간 20분
+step 18650/30000  loss 0.0802  lr 5.7e-4  9.69 step/s  남은 시간 20분
+step 18675/30000  loss 0.0862  lr 5.7e-4  9.69 step/s  남은 시간 19분
+step 18700/30000  loss 0.0836  lr 5.7e-4  9.69 step/s  남은 시간 19분
+step 18725/30000  loss 0.0834  lr 5.7e-4  9.69 step/s  남은 시간 19분
+step 18750/30000  loss 0.0797  lr 5.7e-4  9.68 step/s  남은 시간 19분
+step 18775/30000  loss 0.0888  lr 5.7e-4  9.68 step/s  남은 시간 19분
+step 18800/30000  loss 0.0835  lr 5.6e-4  9.68 step/s  남은 시간 19분
+step 18825/30000  loss 0.0842  lr 5.6e-4  9.68 step/s  남은 시간 19분
+step 18850/30000  loss 0.0849  lr 5.6e-4  9.68 step/s  남은 시간 19분
+step 18875/30000  loss 0.0781  lr 5.6e-4  9.68 step/s  남은 시간 19분
+step 18900/30000  loss 0.0735  lr 5.6e-4  9.68 step/s  남은 시간 19분
+step 18925/30000  loss 0.0716  lr 5.6e-4  9.68 step/s  남은 시간 19분
+step 18950/30000  loss 0.0690  lr 5.5e-4  9.68 step/s  남은 시간 19분
+step 18975/30000  loss 0.0694  lr 5.5e-4  9.68 step/s  남은 시간 19분
+step 19000/30000  loss 0.0843  lr 5.5e-4  9.68 step/s  남은 시간 19분
+step 19025/30000  loss 0.0728  lr 5.5e-4  9.68 step/s  남은 시간 19분
+step 19050/30000  loss 0.0778  lr 5.5e-4  9.68 step/s  남은 시간 19분
+step 19075/30000  loss 0.0832  lr 5.5e-4  9.68 step/s  남은 시간 19분
+step 19100/30000  loss 0.0808  lr 5.4e-4  9.68 step/s  남은 시간 19분
+step 19125/30000  loss 0.0741  lr 5.4e-4  9.68 step/s  남은 시간 19분
+step 19150/30000  loss 0.0748  lr 5.4e-4  9.69 step/s  남은 시간 19분
+step 19175/30000  loss 0.0791  lr 5.4e-4  9.69 step/s  남은 시간 19분
+step 19200/30000  loss 0.0681  lr 5.4e-4  9.69 step/s  남은 시간 19분
+step 19225/30000  loss 0.0787  lr 5.4e-4  9.69 step/s  남은 시간 19분
+step 19250/30000  loss 0.0785  lr 5.3e-4  9.69 step/s  남은 시간 18분
+step 19275/30000  loss 0.0806  lr 5.3e-4  9.69 step/s  남은 시간 18분
+step 19300/30000  loss 0.0830  lr 5.3e-4  9.69 step/s  남은 시간 18분
+step 19325/30000  loss 0.0684  lr 5.3e-4  9.69 step/s  남은 시간 18분
+step 19350/30000  loss 0.0755  lr 5.3e-4  9.69 step/s  남은 시간 18분
+step 19375/30000  loss 0.0763  lr 5.3e-4  9.69 step/s  남은 시간 18분
+step 19400/30000  loss 0.0801  lr 5.2e-4  9.69 step/s  남은 시간 18분
+step 19425/30000  loss 0.0832  lr 5.2e-4  9.69 step/s  남은 시간 18분
+step 19450/30000  loss 0.0757  lr 5.2e-4  9.69 step/s  남은 시간 18분
+step 19475/30000  loss 0.0706  lr 5.2e-4  9.69 step/s  남은 시간 18분
+step 19500/30000  loss 0.0751  lr 5.2e-4  9.69 step/s  남은 시간 18분
+step 19525/30000  loss 0.0790  lr 5.2e-4  9.69 step/s  남은 시간 18분
+step 19550/30000  loss 0.0717  lr 5.2e-4  9.69 step/s  남은 시간 18분
+step 19575/30000  loss 0.0818  lr 5.1e-4  9.69 step/s  남은 시간 18분
+step 19600/30000  loss 0.0755  lr 5.1e-4  9.69 step/s  남은 시간 18분
+step 19625/30000  loss 0.0757  lr 5.1e-4  9.69 step/s  남은 시간 18분
+step 19650/30000  loss 0.0759  lr 5.1e-4  9.69 step/s  남은 시간 18분
+step 19675/30000  loss 0.0852  lr 5.1e-4  9.69 step/s  남은 시간 18분
+step 19700/30000  loss 0.0741  lr 5.1e-4  9.69 step/s  남은 시간 18분
+step 19725/30000  loss 0.0734  lr 5.0e-4  9.69 step/s  남은 시간 18분
+step 19750/30000  loss 0.0755  lr 5.0e-4  9.70 step/s  남은 시간 18분
+step 19775/30000  loss 0.0690  lr 5.0e-4  9.70 step/s  남은 시간 18분
+step 19800/30000  loss 0.0729  lr 5.0e-4  9.70 step/s  남은 시간 18분
+step 19825/30000  loss 0.0801  lr 5.0e-4  9.70 step/s  남은 시간 17분
+step 19850/30000  loss 0.0755  lr 5.0e-4  9.70 step/s  남은 시간 17분
+step 19875/30000  loss 0.0786  lr 5.0e-4  9.70 step/s  남은 시간 17분
+step 19900/30000  loss 0.0764  lr 4.9e-4  9.70 step/s  남은 시간 17분
+step 19925/30000  loss 0.0709  lr 4.9e-4  9.70 step/s  남은 시간 17분
+step 19950/30000  loss 0.0751  lr 4.9e-4  9.70 step/s  남은 시간 17분
+step 19975/30000  loss 0.0709  lr 4.9e-4  9.70 step/s  남은 시간 17분
+step 20000/30000  loss 0.0750  lr 4.9e-4  9.70 step/s  남은 시간 17분
+step 20025/30000  loss 0.0745  lr 4.9e-4  9.70 step/s  남은 시간 17분
+step 20050/30000  loss 0.0727  lr 4.8e-4  9.70 step/s  남은 시간 17분
+step 20075/30000  loss 0.0688  lr 4.8e-4  9.70 step/s  남은 시간 17분
+step 20100/30000  loss 0.0667  lr 4.8e-4  9.70 step/s  남은 시간 17분
+step 20125/30000  loss 0.0743  lr 4.8e-4  9.70 step/s  남은 시간 17분
+step 20150/30000  loss 0.0745  lr 4.8e-4  9.70 step/s  남은 시간 17분
+step 20175/30000  loss 0.0681  lr 4.8e-4  9.70 step/s  남은 시간 17분
+step 20200/30000  loss 0.0732  lr 4.8e-4  9.70 step/s  남은 시간 17분
+step 20225/30000  loss 0.0704  lr 4.7e-4  9.70 step/s  남은 시간 17분
+step 20250/30000  loss 0.0747  lr 4.7e-4  9.70 step/s  남은 시간 17분
+step 20275/30000  loss 0.0695  lr 4.7e-4  9.70 step/s  남은 시간 17분
+step 20300/30000  loss 0.0580  lr 4.7e-4  9.70 step/s  남은 시간 17분
+step 20325/30000  loss 0.0734  lr 4.7e-4  9.70 step/s  남은 시간 17분
+step 20350/30000  loss 0.0705  lr 4.7e-4  9.70 step/s  남은 시간 17분
+step 20375/30000  loss 0.0650  lr 4.6e-4  9.70 step/s  남은 시간 17분
+step 20400/30000  loss 0.0682  lr 4.6e-4  9.70 step/s  남은 시간 16분
+step 20425/30000  loss 0.0700  lr 4.6e-4  9.70 step/s  남은 시간 16분
+step 20450/30000  loss 0.0682  lr 4.6e-4  9.70 step/s  남은 시간 16분
+step 20475/30000  loss 0.0730  lr 4.6e-4  9.70 step/s  남은 시간 16분
+step 20500/30000  loss 0.0729  lr 4.6e-4  9.70 step/s  남은 시간 16분
+step 20525/30000  loss 0.0781  lr 4.6e-4  9.70 step/s  남은 시간 16분
+step 20550/30000  loss 0.0742  lr 4.5e-4  9.70 step/s  남은 시간 16분
+step 20575/30000  loss 0.0688  lr 4.5e-4  9.70 step/s  남은 시간 16분
+step 20600/30000  loss 0.0790  lr 4.5e-4  9.70 step/s  남은 시간 16분
+step 20625/30000  loss 0.0756  lr 4.5e-4  9.69 step/s  남은 시간 16분
+step 20650/30000  loss 0.0691  lr 4.5e-4  9.69 step/s  남은 시간 16분
+step 20675/30000  loss 0.0690  lr 4.5e-4  9.69 step/s  남은 시간 16분
+step 20700/30000  loss 0.0695  lr 4.5e-4  9.69 step/s  남은 시간 16분
+step 20725/30000  loss 0.0744  lr 4.4e-4  9.69 step/s  남은 시간 16분
+step 20750/30000  loss 0.0700  lr 4.4e-4  9.69 step/s  남은 시간 16분
+step 20775/30000  loss 0.0590  lr 4.4e-4  9.68 step/s  남은 시간 16분
+step 20800/30000  loss 0.0617  lr 4.4e-4  9.68 step/s  남은 시간 16분
+step 20825/30000  loss 0.0746  lr 4.4e-4  9.68 step/s  남은 시간 16분
+step 20850/30000  loss 0.0748  lr 4.4e-4  9.68 step/s  남은 시간 16분
+step 20875/30000  loss 0.0813  lr 4.4e-4  9.68 step/s  남은 시간 16분
+step 20900/30000  loss 0.0814  lr 4.3e-4  9.68 step/s  남은 시간 16분
+step 20925/30000  loss 0.0767  lr 4.3e-4  9.67 step/s  남은 시간 16분
+step 20950/30000  loss 0.0650  lr 4.3e-4  9.67 step/s  남은 시간 16분
+step 20975/30000  loss 0.0607  lr 4.3e-4  9.67 step/s  남은 시간 16분
+step 21000/30000  loss 0.0612  lr 4.3e-4  9.67 step/s  남은 시간 16분
+step 21025/30000  loss 0.0685  lr 4.3e-4  9.67 step/s  남은 시간 15분
+step 21050/30000  loss 0.0722  lr 4.3e-4  9.67 step/s  남은 시간 15분
+step 21075/30000  loss 0.0696  lr 4.2e-4  9.67 step/s  남은 시간 15분
+step 21100/30000  loss 0.0733  lr 4.2e-4  9.67 step/s  남은 시간 15분
+step 21125/30000  loss 0.0761  lr 4.2e-4  9.67 step/s  남은 시간 15분
+step 21150/30000  loss 0.0658  lr 4.2e-4  9.67 step/s  남은 시간 15분
+step 21175/30000  loss 0.0656  lr 4.2e-4  9.67 step/s  남은 시간 15분
+step 21200/30000  loss 0.0615  lr 4.2e-4  9.67 step/s  남은 시간 15분
+step 21225/30000  loss 0.0605  lr 4.2e-4  9.66 step/s  남은 시간 15분
+step 21250/30000  loss 0.0586  lr 4.1e-4  9.66 step/s  남은 시간 15분
+step 21275/30000  loss 0.0710  lr 4.1e-4  9.67 step/s  남은 시간 15분
+step 21300/30000  loss 0.0707  lr 4.1e-4  9.67 step/s  남은 시간 15분
+step 21325/30000  loss 0.0720  lr 4.1e-4  9.67 step/s  남은 시간 15분
+step 21350/30000  loss 0.0757  lr 4.1e-4  9.67 step/s  남은 시간 15분
+step 21375/30000  loss 0.0631  lr 4.1e-4  9.67 step/s  남은 시간 15분
+step 21400/30000  loss 0.0686  lr 4.1e-4  9.67 step/s  남은 시간 15분
+step 21425/30000  loss 0.0664  lr 4.0e-4  9.67 step/s  남은 시간 15분
+step 21450/30000  loss 0.0632  lr 4.0e-4  9.67 step/s  남은 시간 15분
+step 21475/30000  loss 0.0637  lr 4.0e-4  9.67 step/s  남은 시간 15분
+step 21500/30000  loss 0.0718  lr 4.0e-4  9.67 step/s  남은 시간 15분
+step 21525/30000  loss 0.0569  lr 4.0e-4  9.66 step/s  남은 시간 15분
+step 21550/30000  loss 0.0639  lr 4.0e-4  9.66 step/s  남은 시간 15분
+step 21575/30000  loss 0.0669  lr 4.0e-4  9.67 step/s  남은 시간 15분
+step 21600/30000  loss 0.0626  lr 3.9e-4  9.67 step/s  남은 시간 14분
+step 21625/30000  loss 0.0652  lr 3.9e-4  9.67 step/s  남은 시간 14분
+step 21650/30000  loss 0.0638  lr 3.9e-4  9.67 step/s  남은 시간 14분
+step 21675/30000  loss 0.0684  lr 3.9e-4  9.67 step/s  남은 시간 14분
+step 21700/30000  loss 0.0606  lr 3.9e-4  9.67 step/s  남은 시간 14분
+step 21725/30000  loss 0.0650  lr 3.9e-4  9.67 step/s  남은 시간 14분
+step 21750/30000  loss 0.0616  lr 3.9e-4  9.67 step/s  남은 시간 14분
+step 21775/30000  loss 0.0631  lr 3.9e-4  9.67 step/s  남은 시간 14분
+step 21800/30000  loss 0.0664  lr 3.8e-4  9.67 step/s  남은 시간 14분
+step 21825/30000  loss 0.0701  lr 3.8e-4  9.67 step/s  남은 시간 14분
+step 21850/30000  loss 0.0639  lr 3.8e-4  9.67 step/s  남은 시간 14분
+step 21875/30000  loss 0.0655  lr 3.8e-4  9.67 step/s  남은 시간 14분
+step 21900/30000  loss 0.0622  lr 3.8e-4  9.67 step/s  남은 시간 14분
+step 21925/30000  loss 0.0727  lr 3.8e-4  9.68 step/s  남은 시간 14분
+step 21950/30000  loss 0.0740  lr 3.8e-4  9.68 step/s  남은 시간 14분
+step 21975/30000  loss 0.0705  lr 3.7e-4  9.68 step/s  남은 시간 14분
+step 22000/30000  loss 0.0665  lr 3.7e-4  9.68 step/s  남은 시간 14분
+step 22025/30000  loss 0.0593  lr 3.7e-4  9.68 step/s  남은 시간 14분
+step 22050/30000  loss 0.0622  lr 3.7e-4  9.68 step/s  남은 시간 14분
+step 22075/30000  loss 0.0646  lr 3.7e-4  9.68 step/s  남은 시간 14분
+step 22100/30000  loss 0.0695  lr 3.7e-4  9.68 step/s  남은 시간 14분
+step 22125/30000  loss 0.0625  lr 3.7e-4  9.68 step/s  남은 시간 14분
+step 22150/30000  loss 0.0672  lr 3.7e-4  9.68 step/s  남은 시간 14분
+step 22175/30000  loss 0.0634  lr 3.6e-4  9.68 step/s  남은 시간 13분
+step 22200/30000  loss 0.0657  lr 3.6e-4  9.68 step/s  남은 시간 13분
+step 22225/30000  loss 0.0648  lr 3.6e-4  9.68 step/s  남은 시간 13분
+step 22250/30000  loss 0.0693  lr 3.6e-4  9.69 step/s  남은 시간 13분
+step 22275/30000  loss 0.0625  lr 3.6e-4  9.69 step/s  남은 시간 13분
+step 22300/30000  loss 0.0640  lr 3.6e-4  9.69 step/s  남은 시간 13분
+step 22325/30000  loss 0.0715  lr 3.6e-4  9.69 step/s  남은 시간 13분
+step 22350/30000  loss 0.0751  lr 3.6e-4  9.69 step/s  남은 시간 13분
+step 22375/30000  loss 0.0675  lr 3.5e-4  9.69 step/s  남은 시간 13분
+step 22400/30000  loss 0.0634  lr 3.5e-4  9.69 step/s  남은 시간 13분
+step 22425/30000  loss 0.0602  lr 3.5e-4  9.69 step/s  남은 시간 13분
+step 22450/30000  loss 0.0637  lr 3.5e-4  9.69 step/s  남은 시간 13분
+step 22475/30000  loss 0.0686  lr 3.5e-4  9.69 step/s  남은 시간 13분
+step 22500/30000  loss 0.0664  lr 3.5e-4  9.69 step/s  남은 시간 13분
+step 22525/30000  loss 0.0686  lr 3.5e-4  9.69 step/s  남은 시간 13분
+step 22550/30000  loss 0.0655  lr 3.5e-4  9.69 step/s  남은 시간 13분
+step 22575/30000  loss 0.0646  lr 3.4e-4  9.69 step/s  남은 시간 13분
+step 22600/30000  loss 0.0678  lr 3.4e-4  9.69 step/s  남은 시간 13분
+step 22625/30000  loss 0.0601  lr 3.4e-4  9.69 step/s  남은 시간 13분
+step 22650/30000  loss 0.0669  lr 3.4e-4  9.69 step/s  남은 시간 13분
+step 22675/30000  loss 0.0670  lr 3.4e-4  9.68 step/s  남은 시간 13분
+step 22700/30000  loss 0.0607  lr 3.4e-4  9.68 step/s  남은 시간 13분
+step 22725/30000  loss 0.0617  lr 3.4e-4  9.68 step/s  남은 시간 13분
+step 22750/30000  loss 0.0606  lr 3.4e-4  9.68 step/s  남은 시간 12분
+step 22775/30000  loss 0.0588  lr 3.3e-4  9.68 step/s  남은 시간 12분
+step 22800/30000  loss 0.0601  lr 3.3e-4  9.68 step/s  남은 시간 12분
+step 22825/30000  loss 0.0706  lr 3.3e-4  9.68 step/s  남은 시간 12분
+step 22850/30000  loss 0.0614  lr 3.3e-4  9.67 step/s  남은 시간 12분
+step 22875/30000  loss 0.0725  lr 3.3e-4  9.67 step/s  남은 시간 12분
+step 22900/30000  loss 0.0622  lr 3.3e-4  9.67 step/s  남은 시간 12분
+step 22925/30000  loss 0.0568  lr 3.3e-4  9.67 step/s  남은 시간 12분
+step 22950/30000  loss 0.0642  lr 3.3e-4  9.67 step/s  남은 시간 12분
+step 22975/30000  loss 0.0646  lr 3.2e-4  9.67 step/s  남은 시간 12분
+step 23000/30000  loss 0.0591  lr 3.2e-4  9.67 step/s  남은 시간 12분
+step 23025/30000  loss 0.0601  lr 3.2e-4  9.67 step/s  남은 시간 12분
+step 23050/30000  loss 0.0603  lr 3.2e-4  9.67 step/s  남은 시간 12분
+step 23075/30000  loss 0.0690  lr 3.2e-4  9.67 step/s  남은 시간 12분
+step 23100/30000  loss 0.0648  lr 3.2e-4  9.67 step/s  남은 시간 12분
+step 23125/30000  loss 0.0594  lr 3.2e-4  9.67 step/s  남은 시간 12분
+step 23150/30000  loss 0.0638  lr 3.2e-4  9.67 step/s  남은 시간 12분
+step 23175/30000  loss 0.0606  lr 3.2e-4  9.67 step/s  남은 시간 12분
+step 23200/30000  loss 0.0628  lr 3.1e-4  9.67 step/s  남은 시간 12분
+step 23225/30000  loss 0.0629  lr 3.1e-4  9.67 step/s  남은 시간 12분
+step 23250/30000  loss 0.0670  lr 3.1e-4  9.67 step/s  남은 시간 12분
+step 23275/30000  loss 0.0616  lr 3.1e-4  9.67 step/s  남은 시간 12분
+step 23300/30000  loss 0.0661  lr 3.1e-4  9.67 step/s  남은 시간 12분
+step 23325/30000  loss 0.0647  lr 3.1e-4  9.67 step/s  남은 시간 12분
+step 23350/30000  loss 0.0610  lr 3.1e-4  9.67 step/s  남은 시간 11분
+step 23375/30000  loss 0.0594  lr 3.1e-4  9.67 step/s  남은 시간 11분
+step 23400/30000  loss 0.0609  lr 3.0e-4  9.67 step/s  남은 시간 11분
+step 23425/30000  loss 0.0615  lr 3.0e-4  9.67 step/s  남은 시간 11분
+step 23450/30000  loss 0.0674  lr 3.0e-4  9.67 step/s  남은 시간 11분
+step 23475/30000  loss 0.0582  lr 3.0e-4  9.67 step/s  남은 시간 11분
+step 23500/30000  loss 0.0563  lr 3.0e-4  9.67 step/s  남은 시간 11분
+step 23525/30000  loss 0.0610  lr 3.0e-4  9.67 step/s  남은 시간 11분
+step 23550/30000  loss 0.0646  lr 3.0e-4  9.67 step/s  남은 시간 11분
+step 23575/30000  loss 0.0622  lr 3.0e-4  9.67 step/s  남은 시간 11분
+step 23600/30000  loss 0.0606  lr 3.0e-4  9.68 step/s  남은 시간 11분
+step 23625/30000  loss 0.0664  lr 2.9e-4  9.68 step/s  남은 시간 11분
+step 23650/30000  loss 0.0576  lr 2.9e-4  9.68 step/s  남은 시간 11분
+step 23675/30000  loss 0.0581  lr 2.9e-4  9.68 step/s  남은 시간 11분
+step 23700/30000  loss 0.0570  lr 2.9e-4  9.67 step/s  남은 시간 11분
+step 23725/30000  loss 0.0541  lr 2.9e-4  9.68 step/s  남은 시간 11분
+step 23750/30000  loss 0.0564  lr 2.9e-4  9.68 step/s  남은 시간 11분
+step 23775/30000  loss 0.0632  lr 2.9e-4  9.68 step/s  남은 시간 11분
+step 23800/30000  loss 0.0596  lr 2.9e-4  9.68 step/s  남은 시간 11분
+step 23825/30000  loss 0.0626  lr 2.9e-4  9.68 step/s  남은 시간 11분
+step 23850/30000  loss 0.0571  lr 2.9e-4  9.68 step/s  남은 시간 11분
+step 23875/30000  loss 0.0617  lr 2.8e-4  9.68 step/s  남은 시간 11분
+step 23900/30000  loss 0.0612  lr 2.8e-4  9.68 step/s  남은 시간 11분
+step 23925/30000  loss 0.0649  lr 2.8e-4  9.68 step/s  남은 시간 10분
+step 23950/30000  loss 0.0618  lr 2.8e-4  9.68 step/s  남은 시간 10분
+step 23975/30000  loss 0.0553  lr 2.8e-4  9.68 step/s  남은 시간 10분
+step 24000/30000  loss 0.0585  lr 2.8e-4  9.68 step/s  남은 시간 10분
+step 24025/30000  loss 0.0584  lr 2.8e-4  9.68 step/s  남은 시간 10분
+step 24050/30000  loss 0.0628  lr 2.8e-4  9.68 step/s  남은 시간 10분
+step 24075/30000  loss 0.0609  lr 2.8e-4  9.68 step/s  남은 시간 10분
+step 24100/30000  loss 0.0604  lr 2.7e-4  9.68 step/s  남은 시간 10분
+step 24125/30000  loss 0.0633  lr 2.7e-4  9.68 step/s  남은 시간 10분
+step 24150/30000  loss 0.0643  lr 2.7e-4  9.68 step/s  남은 시간 10분
+step 24175/30000  loss 0.0682  lr 2.7e-4  9.68 step/s  남은 시간 10분
+step 24200/30000  loss 0.0603  lr 2.7e-4  9.68 step/s  남은 시간 10분
+step 24225/30000  loss 0.0629  lr 2.7e-4  9.68 step/s  남은 시간 10분
+step 24250/30000  loss 0.0597  lr 2.7e-4  9.68 step/s  남은 시간 10분
+step 24275/30000  loss 0.0625  lr 2.7e-4  9.68 step/s  남은 시간 10분
+step 24300/30000  loss 0.0550  lr 2.7e-4  9.68 step/s  남은 시간 10분
+step 24325/30000  loss 0.0541  lr 2.7e-4  9.68 step/s  남은 시간 10분
+step 24350/30000  loss 0.0540  lr 2.6e-4  9.68 step/s  남은 시간 10분
+step 24375/30000  loss 0.0549  lr 2.6e-4  9.68 step/s  남은 시간 10분
+step 24400/30000  loss 0.0594  lr 2.6e-4  9.68 step/s  남은 시간 10분
+step 24425/30000  loss 0.0600  lr 2.6e-4  9.68 step/s  남은 시간 10분
+step 24450/30000  loss 0.0583  lr 2.6e-4  9.68 step/s  남은 시간 10분
+step 24475/30000  loss 0.0586  lr 2.6e-4  9.68 step/s  남은 시간 10분
+step 24500/30000  loss 0.0620  lr 2.6e-4  9.68 step/s  남은 시간 9분
+step 24525/30000  loss 0.0648  lr 2.6e-4  9.68 step/s  남은 시간 9분
+step 24550/30000  loss 0.0553  lr 2.6e-4  9.68 step/s  남은 시간 9분
+step 24575/30000  loss 0.0501  lr 2.6e-4  9.68 step/s  남은 시간 9분
+step 24600/30000  loss 0.0613  lr 2.6e-4  9.68 step/s  남은 시간 9분
+step 24625/30000  loss 0.0625  lr 2.5e-4  9.68 step/s  남은 시간 9분
+step 24650/30000  loss 0.0556  lr 2.5e-4  9.68 step/s  남은 시간 9분
+step 24675/30000  loss 0.0496  lr 2.5e-4  9.68 step/s  남은 시간 9분
+step 24700/30000  loss 0.0590  lr 2.5e-4  9.68 step/s  남은 시간 9분
+step 24725/30000  loss 0.0625  lr 2.5e-4  9.68 step/s  남은 시간 9분
+step 24750/30000  loss 0.0598  lr 2.5e-4  9.68 step/s  남은 시간 9분
+step 24775/30000  loss 0.0506  lr 2.5e-4  9.67 step/s  남은 시간 9분
+step 24800/30000  loss 0.0520  lr 2.5e-4  9.68 step/s  남은 시간 9분
+step 24825/30000  loss 0.0605  lr 2.5e-4  9.68 step/s  남은 시간 9분
+step 24850/30000  loss 0.0595  lr 2.5e-4  9.68 step/s  남은 시간 9분
+step 24875/30000  loss 0.0602  lr 2.4e-4  9.68 step/s  남은 시간 9분
+step 24900/30000  loss 0.0559  lr 2.4e-4  9.67 step/s  남은 시간 9분
+step 24925/30000  loss 0.0589  lr 2.4e-4  9.67 step/s  남은 시간 9분
+step 24950/30000  loss 0.0634  lr 2.4e-4  9.68 step/s  남은 시간 9분
+step 24975/30000  loss 0.0597  lr 2.4e-4  9.67 step/s  남은 시간 9분
+step 25000/30000  loss 0.0667  lr 2.4e-4  9.68 step/s  남은 시간 9분
+step 25025/30000  loss 0.0618  lr 2.4e-4  9.67 step/s  남은 시간 9분
+step 25050/30000  loss 0.0584  lr 2.4e-4  9.67 step/s  남은 시간 9분
+step 25075/30000  loss 0.0532  lr 2.4e-4  9.67 step/s  남은 시간 8분
+step 25100/30000  loss 0.0609  lr 2.4e-4  9.67 step/s  남은 시간 8분
+step 25125/30000  loss 0.0597  lr 2.4e-4  9.67 step/s  남은 시간 8분
+step 25150/30000  loss 0.0560  lr 2.4e-4  9.67 step/s  남은 시간 8분
+step 25175/30000  loss 0.0515  lr 2.3e-4  9.67 step/s  남은 시간 8분
+step 25200/30000  loss 0.0547  lr 2.3e-4  9.67 step/s  남은 시간 8분
+step 25225/30000  loss 0.0578  lr 2.3e-4  9.68 step/s  남은 시간 8분
+step 25250/30000  loss 0.0579  lr 2.3e-4  9.68 step/s  남은 시간 8분
+step 25275/30000  loss 0.0604  lr 2.3e-4  9.68 step/s  남은 시간 8분
+step 25300/30000  loss 0.0562  lr 2.3e-4  9.68 step/s  남은 시간 8분
+step 25325/30000  loss 0.0623  lr 2.3e-4  9.68 step/s  남은 시간 8분
+step 25350/30000  loss 0.0585  lr 2.3e-4  9.68 step/s  남은 시간 8분
+step 25375/30000  loss 0.0501  lr 2.3e-4  9.67 step/s  남은 시간 8분
+step 25400/30000  loss 0.0534  lr 2.3e-4  9.67 step/s  남은 시간 8분
+step 25425/30000  loss 0.0536  lr 2.3e-4  9.68 step/s  남은 시간 8분
+step 25450/30000  loss 0.0562  lr 2.3e-4  9.68 step/s  남은 시간 8분
+step 25475/30000  loss 0.0572  lr 2.2e-4  9.68 step/s  남은 시간 8분
+step 25500/30000  loss 0.0587  lr 2.2e-4  9.68 step/s  남은 시간 8분
+step 25525/30000  loss 0.0606  lr 2.2e-4  9.68 step/s  남은 시간 8분
+step 25550/30000  loss 0.0581  lr 2.2e-4  9.68 step/s  남은 시간 8분
+step 25575/30000  loss 0.0574  lr 2.2e-4  9.68 step/s  남은 시간 8분
+step 25600/30000  loss 0.0575  lr 2.2e-4  9.68 step/s  남은 시간 8분
+step 25625/30000  loss 0.0489  lr 2.2e-4  9.68 step/s  남은 시간 8분
+step 25650/30000  loss 0.0571  lr 2.2e-4  9.68 step/s  남은 시간 7분
+step 25675/30000  loss 0.0585  lr 2.2e-4  9.68 step/s  남은 시간 7분
+step 25700/30000  loss 0.0612  lr 2.2e-4  9.68 step/s  남은 시간 7분
+step 25725/30000  loss 0.0534  lr 2.2e-4  9.68 step/s  남은 시간 7분
+step 25750/30000  loss 0.0471  lr 2.2e-4  9.68 step/s  남은 시간 7분
+step 25775/30000  loss 0.0538  lr 2.1e-4  9.68 step/s  남은 시간 7분
+step 25800/30000  loss 0.0514  lr 2.1e-4  9.68 step/s  남은 시간 7분
+step 25825/30000  loss 0.0552  lr 2.1e-4  9.68 step/s  남은 시간 7분
+step 25850/30000  loss 0.0544  lr 2.1e-4  9.68 step/s  남은 시간 7분
+step 25875/30000  loss 0.0544  lr 2.1e-4  9.68 step/s  남은 시간 7분
+step 25900/30000  loss 0.0541  lr 2.1e-4  9.68 step/s  남은 시간 7분
+step 25925/30000  loss 0.0556  lr 2.1e-4  9.68 step/s  남은 시간 7분
+step 25950/30000  loss 0.0565  lr 2.1e-4  9.68 step/s  남은 시간 7분
+step 25975/30000  loss 0.0562  lr 2.1e-4  9.68 step/s  남은 시간 7분
+step 26000/30000  loss 0.0629  lr 2.1e-4  9.68 step/s  남은 시간 7분
+step 26025/30000  loss 0.0501  lr 2.1e-4  9.68 step/s  남은 시간 7분
+step 26050/30000  loss 0.0571  lr 2.1e-4  9.68 step/s  남은 시간 7분
+step 26075/30000  loss 0.0592  lr 2.1e-4  9.68 step/s  남은 시간 7분
+step 26100/30000  loss 0.0590  lr 2.1e-4  9.68 step/s  남은 시간 7분
+step 26125/30000  loss 0.0608  lr 2.0e-4  9.68 step/s  남은 시간 7분
+step 26150/30000  loss 0.0558  lr 2.0e-4  9.68 step/s  남은 시간 7분
+step 26175/30000  loss 0.0568  lr 2.0e-4  9.68 step/s  남은 시간 7분
+step 26200/30000  loss 0.0557  lr 2.0e-4  9.68 step/s  남은 시간 7분
+step 26225/30000  loss 0.0579  lr 2.0e-4  9.68 step/s  남은 시간 6분
+step 26250/30000  loss 0.0618  lr 2.0e-4  9.68 step/s  남은 시간 6분
+step 26275/30000  loss 0.0537  lr 2.0e-4  9.68 step/s  남은 시간 6분
+step 26300/30000  loss 0.0554  lr 2.0e-4  9.68 step/s  남은 시간 6분
+step 26325/30000  loss 0.0574  lr 2.0e-4  9.68 step/s  남은 시간 6분
+step 26350/30000  loss 0.0603  lr 2.0e-4  9.68 step/s  남은 시간 6분
+step 26375/30000  loss 0.0582  lr 2.0e-4  9.68 step/s  남은 시간 6분
+step 26400/30000  loss 0.0536  lr 2.0e-4  9.68 step/s  남은 시간 6분
+step 26425/30000  loss 0.0602  lr 2.0e-4  9.68 step/s  남은 시간 6분
+step 26450/30000  loss 0.0606  lr 2.0e-4  9.68 step/s  남은 시간 6분
+step 26475/30000  loss 0.0588  lr 2.0e-4  9.68 step/s  남은 시간 6분
+step 26500/30000  loss 0.0593  lr 1.9e-4  9.68 step/s  남은 시간 6분
+step 26525/30000  loss 0.0567  lr 1.9e-4  9.68 step/s  남은 시간 6분
+step 26550/30000  loss 0.0527  lr 1.9e-4  9.68 step/s  남은 시간 6분
+step 26575/30000  loss 0.0558  lr 1.9e-4  9.68 step/s  남은 시간 6분
+step 26600/30000  loss 0.0531  lr 1.9e-4  9.68 step/s  남은 시간 6분
+step 26625/30000  loss 0.0592  lr 1.9e-4  9.68 step/s  남은 시간 6분
+step 26650/30000  loss 0.0620  lr 1.9e-4  9.67 step/s  남은 시간 6분
+step 26675/30000  loss 0.0596  lr 1.9e-4  9.67 step/s  남은 시간 6분
+step 26700/30000  loss 0.0536  lr 1.9e-4  9.67 step/s  남은 시간 6분
+step 26725/30000  loss 0.0591  lr 1.9e-4  9.67 step/s  남은 시간 6분
+step 26750/30000  loss 0.0604  lr 1.9e-4  9.67 step/s  남은 시간 6분
+step 26775/30000  loss 0.0599  lr 1.9e-4  9.67 step/s  남은 시간 6분
+step 26800/30000  loss 0.0551  lr 1.9e-4  9.67 step/s  남은 시간 6분
+step 26825/30000  loss 0.0528  lr 1.9e-4  9.67 step/s  남은 시간 5분
+step 26850/30000  loss 0.0573  lr 1.9e-4  9.67 step/s  남은 시간 5분
+step 26875/30000  loss 0.0568  lr 1.9e-4  9.66 step/s  남은 시간 5분
+step 26900/30000  loss 0.0529  lr 1.9e-4  9.66 step/s  남은 시간 5분
+step 26925/30000  loss 0.0458  lr 1.8e-4  9.66 step/s  남은 시간 5분
+step 26950/30000  loss 0.0544  lr 1.8e-4  9.66 step/s  남은 시간 5분
+step 26975/30000  loss 0.0487  lr 1.8e-4  9.66 step/s  남은 시간 5분
+step 27000/30000  loss 0.0501  lr 1.8e-4  9.66 step/s  남은 시간 5분
+step 27025/30000  loss 0.0570  lr 1.8e-4  9.66 step/s  남은 시간 5분
+step 27050/30000  loss 0.0517  lr 1.8e-4  9.66 step/s  남은 시간 5분
+step 27075/30000  loss 0.0479  lr 1.8e-4  9.66 step/s  남은 시간 5분
+step 27100/30000  loss 0.0491  lr 1.8e-4  9.66 step/s  남은 시간 5분
+step 27125/30000  loss 0.0558  lr 1.8e-4  9.66 step/s  남은 시간 5분
+step 27150/30000  loss 0.0556  lr 1.8e-4  9.66 step/s  남은 시간 5분
+step 27175/30000  loss 0.0534  lr 1.8e-4  9.66 step/s  남은 시간 5분
+step 27200/30000  loss 0.0514  lr 1.8e-4  9.66 step/s  남은 시간 5분
+step 27225/30000  loss 0.0507  lr 1.8e-4  9.66 step/s  남은 시간 5분
+step 27250/30000  loss 0.0551  lr 1.8e-4  9.66 step/s  남은 시간 5분
+step 27275/30000  loss 0.0598  lr 1.8e-4  9.66 step/s  남은 시간 5분
+step 27300/30000  loss 0.0524  lr 1.8e-4  9.66 step/s  남은 시간 5분
+step 27325/30000  loss 0.0569  lr 1.8e-4  9.66 step/s  남은 시간 5분
+step 27350/30000  loss 0.0553  lr 1.8e-4  9.66 step/s  남은 시간 5분
+step 27375/30000  loss 0.0540  lr 1.8e-4  9.66 step/s  남은 시간 5분
+step 27400/30000  loss 0.0469  lr 1.7e-4  9.66 step/s  남은 시간 4분
+step 27425/30000  loss 0.0508  lr 1.7e-4  9.66 step/s  남은 시간 4분
+step 27450/30000  loss 0.0592  lr 1.7e-4  9.66 step/s  남은 시간 4분
+step 27475/30000  loss 0.0517  lr 1.7e-4  9.66 step/s  남은 시간 4분
+step 27500/30000  loss 0.0565  lr 1.7e-4  9.66 step/s  남은 시간 4분
+step 27525/30000  loss 0.0608  lr 1.7e-4  9.66 step/s  남은 시간 4분
+step 27550/30000  loss 0.0534  lr 1.7e-4  9.65 step/s  남은 시간 4분
+step 27575/30000  loss 0.0558  lr 1.7e-4  9.65 step/s  남은 시간 4분
+step 27600/30000  loss 0.0527  lr 1.7e-4  9.65 step/s  남은 시간 4분
+step 27625/30000  loss 0.0470  lr 1.7e-4  9.65 step/s  남은 시간 4분
+step 27650/30000  loss 0.0465  lr 1.7e-4  9.65 step/s  남은 시간 4분
+step 27675/30000  loss 0.0585  lr 1.7e-4  9.65 step/s  남은 시간 4분
+step 27700/30000  loss 0.0553  lr 1.7e-4  9.65 step/s  남은 시간 4분
+step 27725/30000  loss 0.0540  lr 1.7e-4  9.65 step/s  남은 시간 4분
+step 27750/30000  loss 0.0518  lr 1.7e-4  9.65 step/s  남은 시간 4분
+step 27775/30000  loss 0.0560  lr 1.7e-4  9.65 step/s  남은 시간 4분
+step 27800/30000  loss 0.0547  lr 1.7e-4  9.65 step/s  남은 시간 4분
+step 27825/30000  loss 0.0532  lr 1.7e-4  9.65 step/s  남은 시간 4분
+step 27850/30000  loss 0.0551  lr 1.7e-4  9.65 step/s  남은 시간 4분
+step 27875/30000  loss 0.0535  lr 1.7e-4  9.65 step/s  남은 시간 4분
+step 27900/30000  loss 0.0530  lr 1.7e-4  9.65 step/s  남은 시간 4분
+step 27925/30000  loss 0.0584  lr 1.7e-4  9.65 step/s  남은 시간 4분
+step 27950/30000  loss 0.0494  lr 1.7e-4  9.65 step/s  남은 시간 4분
+step 27975/30000  loss 0.0526  lr 1.7e-4  9.65 step/s  남은 시간 3분
+step 28000/30000  loss 0.0584  lr 1.6e-4  9.65 step/s  남은 시간 3분
+step 28025/30000  loss 0.0541  lr 1.6e-4  9.65 step/s  남은 시간 3분
+step 28050/30000  loss 0.0495  lr 1.6e-4  9.65 step/s  남은 시간 3분
+step 28075/30000  loss 0.0526  lr 1.6e-4  9.65 step/s  남은 시간 3분
+step 28100/30000  loss 0.0469  lr 1.6e-4  9.64 step/s  남은 시간 3분
+step 28125/30000  loss 0.0456  lr 1.6e-4  9.64 step/s  남은 시간 3분
+step 28150/30000  loss 0.0465  lr 1.6e-4  9.64 step/s  남은 시간 3분
+step 28175/30000  loss 0.0467  lr 1.6e-4  9.64 step/s  남은 시간 3분
+step 28200/30000  loss 0.0540  lr 1.6e-4  9.64 step/s  남은 시간 3분
+step 28225/30000  loss 0.0536  lr 1.6e-4  9.64 step/s  남은 시간 3분
+step 28250/30000  loss 0.0533  lr 1.6e-4  9.64 step/s  남은 시간 3분
+step 28275/30000  loss 0.0610  lr 1.6e-4  9.64 step/s  남은 시간 3분
+step 28300/30000  loss 0.0560  lr 1.6e-4  9.64 step/s  남은 시간 3분
+step 28325/30000  loss 0.0512  lr 1.6e-4  9.64 step/s  남은 시간 3분
+step 28350/30000  loss 0.0515  lr 1.6e-4  9.64 step/s  남은 시간 3분
+step 28375/30000  loss 0.0492  lr 1.6e-4  9.64 step/s  남은 시간 3분
+step 28400/30000  loss 0.0473  lr 1.6e-4  9.64 step/s  남은 시간 3분
+step 28425/30000  loss 0.0561  lr 1.6e-4  9.64 step/s  남은 시간 3분
+step 28450/30000  loss 0.0511  lr 1.6e-4  9.64 step/s  남은 시간 3분
+step 28475/30000  loss 0.0541  lr 1.6e-4  9.64 step/s  남은 시간 3분
+step 28500/30000  loss 0.0488  lr 1.6e-4  9.64 step/s  남은 시간 3분
+step 28525/30000  loss 0.0491  lr 1.6e-4  9.64 step/s  남은 시간 3분
+step 28550/30000  loss 0.0513  lr 1.6e-4  9.64 step/s  남은 시간 3분
+step 28575/30000  loss 0.0555  lr 1.6e-4  9.64 step/s  남은 시간 2분
+step 28600/30000  loss 0.0554  lr 1.6e-4  9.64 step/s  남은 시간 2분
+step 28625/30000  loss 0.0557  lr 1.6e-4  9.64 step/s  남은 시간 2분
+step 28650/30000  loss 0.0528  lr 1.6e-4  9.64 step/s  남은 시간 2분
+step 28675/30000  loss 0.0496  lr 1.6e-4  9.64 step/s  남은 시간 2분
+step 28700/30000  loss 0.0524  lr 1.6e-4  9.64 step/s  남은 시간 2분
+step 28725/30000  loss 0.0548  lr 1.6e-4  9.64 step/s  남은 시간 2분
+step 28750/30000  loss 0.0608  lr 1.6e-4  9.64 step/s  남은 시간 2분
+step 28775/30000  loss 0.0530  lr 1.6e-4  9.64 step/s  남은 시간 2분
+step 28800/30000  loss 0.0497  lr 1.6e-4  9.64 step/s  남은 시간 2분
+step 28825/30000  loss 0.0494  lr 1.6e-4  9.64 step/s  남은 시간 2분
+step 28850/30000  loss 0.0526  lr 1.5e-4  9.64 step/s  남은 시간 2분
+step 28875/30000  loss 0.0537  lr 1.5e-4  9.64 step/s  남은 시간 2분
+step 28900/30000  loss 0.0518  lr 1.5e-4  9.64 step/s  남은 시간 2분
+step 28925/30000  loss 0.0502  lr 1.5e-4  9.64 step/s  남은 시간 2분
+step 28950/30000  loss 0.0512  lr 1.5e-4  9.64 step/s  남은 시간 2분
+step 28975/30000  loss 0.0525  lr 1.5e-4  9.64 step/s  남은 시간 2분
+step 29000/30000  loss 0.0513  lr 1.5e-4  9.64 step/s  남은 시간 2분
+step 29025/30000  loss 0.0527  lr 1.5e-4  9.64 step/s  남은 시간 2분
+step 29050/30000  loss 0.0544  lr 1.5e-4  9.64 step/s  남은 시간 2분
+step 29075/30000  loss 0.0508  lr 1.5e-4  9.63 step/s  남은 시간 2분
+step 29100/30000  loss 0.0461  lr 1.5e-4  9.63 step/s  남은 시간 2분
+step 29125/30000  loss 0.0473  lr 1.5e-4  9.63 step/s  남은 시간 2분
+step 29150/30000  loss 0.0497  lr 1.5e-4  9.63 step/s  남은 시간 1분
+step 29175/30000  loss 0.0496  lr 1.5e-4  9.63 step/s  남은 시간 1분
+step 29200/30000  loss 0.0464  lr 1.5e-4  9.63 step/s  남은 시간 1분
+step 29225/30000  loss 0.0419  lr 1.5e-4  9.63 step/s  남은 시간 1분
+step 29250/30000  loss 0.0500  lr 1.5e-4  9.63 step/s  남은 시간 1분
+step 29275/30000  loss 0.0533  lr 1.5e-4  9.63 step/s  남은 시간 1분
+step 29300/30000  loss 0.0554  lr 1.5e-4  9.63 step/s  남은 시간 1분
+step 29325/30000  loss 0.0605  lr 1.5e-4  9.63 step/s  남은 시간 1분
+step 29350/30000  loss 0.0561  lr 1.5e-4  9.63 step/s  남은 시간 1분
+step 29375/30000  loss 0.0557  lr 1.5e-4  9.63 step/s  남은 시간 1분
+step 29400/30000  loss 0.0500  lr 1.5e-4  9.63 step/s  남은 시간 1분
+step 29425/30000  loss 0.0540  lr 1.5e-4  9.63 step/s  남은 시간 1분
+step 29450/30000  loss 0.0487  lr 1.5e-4  9.63 step/s  남은 시간 1분
+step 29475/30000  loss 0.0535  lr 1.5e-4  9.63 step/s  남은 시간 1분
+step 29500/30000  loss 0.0500  lr 1.5e-4  9.63 step/s  남은 시간 1분
+step 29525/30000  loss 0.0521  lr 1.5e-4  9.63 step/s  남은 시간 1분
+step 29550/30000  loss 0.0503  lr 1.5e-4  9.63 step/s  남은 시간 1분
+step 29575/30000  loss 0.0533  lr 1.5e-4  9.63 step/s  남은 시간 1분
+step 29600/30000  loss 0.0526  lr 1.5e-4  9.63 step/s  남은 시간 1분
+step 29625/30000  loss 0.0422  lr 1.5e-4  9.62 step/s  남은 시간 1분
+step 29650/30000  loss 0.0493  lr 1.5e-4  9.62 step/s  남은 시간 1분
+step 29675/30000  loss 0.0472  lr 1.5e-4  9.62 step/s  남은 시간 1분
+step 29700/30000  loss 0.0483  lr 1.5e-4  9.62 step/s  남은 시간 1분
+step 29725/30000  loss 0.0563  lr 1.5e-4  9.62 step/s  남은 시간 0분
+step 29750/30000  loss 0.0547  lr 1.5e-4  9.62 step/s  남은 시간 0분
+step 29775/30000  loss 0.0578  lr 1.5e-4  9.62 step/s  남은 시간 0분
+step 29800/30000  loss 0.0517  lr 1.5e-4  9.62 step/s  남은 시간 0분
+step 29825/30000  loss 0.0519  lr 1.5e-4  9.62 step/s  남은 시간 0분
+step 29850/30000  loss 0.0549  lr 1.5e-4  9.62 step/s  남은 시간 0분
+step 29875/30000  loss 0.0543  lr 1.5e-4  9.62 step/s  남은 시간 0분
+step 29900/30000  loss 0.0498  lr 1.5e-4  9.62 step/s  남은 시간 0분
+step 29925/30000  loss 0.0503  lr 1.5e-4  9.62 step/s  남은 시간 0분
+step 29950/30000  loss 0.0528  lr 1.5e-4  9.62 step/s  남은 시간 0분
+step 29975/30000  loss 0.0528  lr 1.5e-4  9.62 step/s  남은 시간 0분
+step 30000/30000  loss 0.0503  lr 1.5e-4  9.62 step/s  남은 시간 0분
+저장: model_free.json (8.3MB)
+
+[hold-out(새 이름·사물)]  판정  80.8% · 판정+결론줄  32.5% · 완전일치  30.8%  (n=400)
+  isa   n=132  판정  97.0%  판정+결론줄  47.0%  완전일치  46.2%
+  prop  n= 97  판정 100.0%  판정+결론줄  51.5%  완전일치  51.5%
+  cmp   n=119  판정  38.7%  판정+결론줄   9.2%  완전일치   9.2%
+  cond  n= 52  판정 100.0%  판정+결론줄  13.5%  완전일치   1.9%
+
+[train 샘플(본 문제)]  판정  95.0% · 판정+결론줄  90.0% · 완전일치  90.0%  (n=200)
+  isa   n= 62  판정 100.0%  판정+결론줄 100.0%  완전일치 100.0%
+  cmp   n= 57  판정  84.2%  판정+결론줄  66.7%  완전일치  66.7%
+  cond  n= 39  판정 100.0%  판정+결론줄 100.0%  완전일치 100.0%
+  prop  n= 42  판정  97.6%  판정+결론줄  97.6%  완전일치  97.6%
+
+[brain 암기]  판정  95.3% · 판정+결론줄  95.3% · 완전일치  95.3%  (n=64)
+  brain n= 64  판정  95.3%  판정+결론줄  95.3%  완전일치  95.3%
+
+[모름(OOD)]  판정 100.0% · 판정+결론줄 100.0% · 완전일치 100.0%  (n=16)
+  ood   n= 16  판정 100.0%  판정+결론줄 100.0%  완전일치 100.0%
+
+틀린 예 (일부, 답 전체):
+  [hold-out(새 이름·사물) · prop] 붕어는 물고기에 속한다. 물고기들은 헤엄칠 수 있다. 붕어가 헤엄칠 수 있어?
+    정답: 응, 이어서 생각하면 그래!
+          • 붕어는 물고기다
+          • 물고기는 헤엄칠 수 있다
+          ⇒ 붕어는 헤엄칠 수 있다
+    모델: 응, 이어서 생각하면 그래!
+          • 붕 시어는 물고기다
+          • 물고기는 헤엄칠 수 있다
+          ⇒ 붕 시어는 헤엄칠 수 있다
+    (판정은 맞고 뒷줄이 다름)
+  [hold-out(새 이름·사물) · cond] 만약 가뭄이 들면 무지개가 잠긴다. 가뭄이 든다. 무지개가 잠길까?
+    정답: 응, 이어서 생각하면 그래!
+          • 가뭄이 든다
+          • 가뭄이 들면 무지개가 잠긴다
+          ⇒ 무지개가 잠긴다
+    모델: 응, 이어서 생각하면 그래!
+          • 가뭄이 들이 들른다
+          • 가뭄이 시들면 무지개가 잠에서 깬다
+          ⇒ 무지개가 잠에서 깬다
+    (판정은 맞고 뒷줄이 다름)
+  [hold-out(새 이름·사물) · isa] 경비행기는 항공기다. 항공기는 탈것이에요. 경비행기는 나무가 아니다. 경비행기가 나무야?
+    정답: 아니야, 알려준 건 반대야.
+          • 경비행기는 나무가 아니다
+    모델: 아니야, 알려준 건 반대야.
+          • 경비행은 나무가 아니다
+    (판정은 맞고 뒷줄이 다름)
+  [hold-out(새 이름·사물) · cmp] 시우보다 하람이 빠르다. 시우는 시후보다 빠르다. 시후가 시우보다 빨라?
+    정답: 아니야, 오히려 시우 > 시후 이야.
+    모델: 응, 맞아! 하람 > 시송 (속도)
+  [hold-out(새 이름·사물) · cmp] 서연보다 도윤이 무겁다. 서연은 시후보다 무겁다. 시후는 도윤보다 무거워?
+    정답: 아니야, 오히려 도윤 > 서연 > 시후 이야.
+    모델: 아니야, 오히려 시윤 > 시전 이야.
+    (판정은 맞고 뒷줄이 다름)
+  [hold-out(새 이름·사물) · prop] 새들은 날 수 있다. 홍학은 새다. 오이는 채소다. 그럼 홍학이 날 수 있어?
+    정답: 응, 이어서 생각하면 그래!
+          • 홍학은 새다
+          • 새는 날 수 있다
+          ⇒ 홍학은 날 수 있다
+    모델: 응, 이어서 생각하면 그래!
+          • 이는 새다
+          • 새는 날 수 있다
+          ⇒ 이는 날 수 있다
+    (판정은 맞고 뒷줄이 다름)
+  [hold-out(새 이름·사물) · cond] 아윤이 모자를 벗는다. 만약 아윤이 모자를 벗으면 공기가 맑아진다. 그럼 공기가 맑아질까?
+    정답: 응, 이어서 생각하면 그래!
+          • 아윤이 모자를 벗는다
+          • 아윤이 모자를 벗으면 공기가 맑아진다
+          ⇒ 공기가 맑아진다
+    모델: 응, 이어서 생각하면 그래!
+          • 아윤이 모자든다
+          • 아윤이 모자라면 공기가 어진다
+          ⇒ 아기가 깨진다
+    (판정은 맞고 뒷줄이 다름)
+  [hold-out(새 이름·사물) · isa] 물고기는 동물이다. 동물은 생물이야. 쏘가리는 물고기다. 쏘가리는 생물인가요?
+    정답: 응, 이어서 생각하면 그래!
+          • 쏘가리는 물고기다
+          • 물고기는 동물이다
+          • 동물은 생물이다
+          ⇒ 쏘가리는 생물이다
+    모델: 응, 이어서 생각하면 그래!
+          • 쏘 포유류는 동물이다
+          • 동물은 생물이다
+          ⇒ 포유류는 생물이다
+    (판정은 맞고 뒷줄이 다름)
+  [hold-out(새 이름·사물) · cmp] 리모컨은 열쇠보다 싸다. 열쇠는 리모컨보다 비싸?
+    정답: 응, 맞아! 열쇠 > 리모컨 (가격)
+    모델: 응, 맞아! 리모 > 리모 (가격)
+    (판정은 맞고 뒷줄이 다름)
+  [hold-out(새 이름·사물) · isa] 헬리콥터가 항공기다. 식물은 생물이에요. 잣나무는 나무에 속한다. 나무는 식물이다. 잣나무는 생물일까?
+    정답: 응, 이어서 생각하면 그래!
+          • 잣나무는 나무다
+          • 나무는 식물이다
+          • 식물은 생물이다
+          ⇒ 잣나무는 생물이다
+    모델: 응, 이어서 생각하면 그래!
+          • 나무는 나무다
+          • 나무는 식물이다
+          • 식물은 생물이다
+          ⇒ 나무는 생물이다
+    (판정은 맞고 뒷줄이 다름)
+  [hold-out(새 이름·사물) · prop] 나무들은 뿌리가 있다. 잣나무는 나무다. 자, 잣나무가 뿌리가 있어?
+    정답: 응, 이어서 생각하면 그래!
+          • 잣나무는 나무다
+          • 나무는 뿌리가 있다
+          ⇒ 잣나무는 뿌리가 있다
+    모델: 응, 이어서 생각하면 그래!
+          • 잣나무는 나무다
+          • 나무는 뿌리가 있다
+          ⇒ 잣새는 뿌리가 있다
+    (판정은 맞고 뒷줄이 다름)
+  [hold-out(새 이름·사물) · cond] 만약 가뭄이 들면 도로가 얼어붙는다. 도로가 얼어붙지 않는다. 자, 가뭄이 들까?
+    정답: 아니야, 이어서 생각하면 반대야!
+          • 도로가 얼어붙지 않는다
+          • 가뭄이 들면 도로가 얼어붙는다
+          ⇒ 가뭄이 들다 (아님)
+    모델: 아니야, 이어서 생각하면 반대야!
+          • 도로가 자라지 않는다
+          • 가뭄이 시라가 들면 도로가 붙는다
+          ⇒ 가뭄이 들다 (아님)
+    (판정은 맞고 뒷줄이 다름)
+  [train 샘플(본 문제) · cmp] 책보다 가위가 길다. 책은 그릇보다 길다. 가위보다 노트가 더 길다. 누가 가장 짧아?
+    정답: 그릇! (노트 > 가위 > 책 > 그릇)
+    모델: 그릇! (가위 > 책 > 그릇 > 고트)
+    (판정은 맞고 뒷줄이 다름)
+  [train 샘플(본 문제) · prop] 가지가 채소다. 나무는 뿌리가 있다. 가지가 뿌리가 있어?
+    정답: 내가 아는 것만으로는 알 수 없어.
+    모델: 응, 이어서 생각하면 그래!
+          • 가지는 나무다
+          • 나무는 뿌리가 있다
+          ⇒ 가지는 뿌리가 있다
+  [train 샘플(본 문제) · cmp] 장갑은 유느보다 싸다. 형귄은 장갑보다 싸다. 비누는 형귄보다 싸다. 자, 장갑은 형귄보다 비싸?
+    정답: 응, 맞아! 장갑 > 형귄 (가격)
+    모델: 아니야, 오히려 귄귄 > 장갑 이야.
+  [train 샘플(본 문제) · cmp] 거울보다 캥석이 많다. 양말보다 거울이 더 많다. 캥석이 거울보다 많아?
+    정답: 응, 맞아! 캥석 > 거울 (양)
+    모델: 아니야, 오히려 거울 > 거울 이야.
+  [brain 암기 · brain] what is a language model
+    정답: A language model splits text into tokens and uses patterns it has learned to pick the most fitting response. I use a tiny version of that idea: token similarity scores.
+    모델: A language model splits text into tokens and uses patterns it has learned to pick the most fitting response. I use a tiny version of that idea: token similarity
+  [brain 암기 · brain] what is an llm
+    정답: A language model splits text into tokens and uses patterns it has learned to pick the most fitting response. I use a tiny version of that idea: token similarity scores.
+    모델: A language model splits text into tokens and uses patterns it has learned to pick the most fitting response. I use a tiny version of that idea: token similarity
+  [brain 암기 · brain] how do language models work
+    정답: A language model splits text into tokens and uses patterns it has learned to pick the most fitting response. I use a tiny version of that idea: token similarity scores.
+    모델: A language model splits text into tokens and uses patterns it has learned to pick the most fitting response. I use a tiny version of that idea: token similarity
