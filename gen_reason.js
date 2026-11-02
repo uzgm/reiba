@@ -49,9 +49,16 @@ const HOLD_THINGS = ["우산", "열쇠", "지갑", "리모컨", "카메라", "�
 
 // 무작위 단어: 글자를 무작위로 이어 붙인다. 모델이 단어 목록을 외우지 못하고 문장 속 단어를 그대로 베껴 쓰게 만들려는 것이다.
 // 글자 풀(POOL)은 아래 단어 목록들이 다 만들어진 뒤에 정한다(평가 전용 단어의 글자도 포함. 단어 전체는 학습에 안 쓴다).
+// (변경) 길이는 이름 2~3, 물건 2~4, 대상·주어 2~5글자로 다양하게 만든다(평가 단어는 최대 5글자: 행글라이더).
+// (변경) 조사처럼 보이는 글자(JOSA)도 단어의 처음·중간에는 나올 수 있다. 그래야 모델이 '쏘가리'의 '가'를 조사로 착각해 단어를 자르지 않는다.
+//        단, 마지막 글자만은 조사 글자가 아닌 것으로 한다(뒤에 붙는 조사와 헷갈리지 않게).
 const RAND_P = .5; // 학습 데이터에서 무작위 단어를 쓰는 비율
-const randWord = (R, n = 2, avoid = []) => { for (;;) { let w = ""; for (let k = 0; k < n; k++) w += R.pick(POOL); if (w[0] !== w[w.length - 1] && !HOLD_WORDS.has(w) && !avoid.includes(w)) return w; } };
-const randName = (R, avoid) => randWord(R, 2, avoid);
+const JOSA = "은는이가을를의에도만와과보다야요";
+const hasJosa = w => [...w].some(c => JOSA.includes(c));
+const rlen = (R, hi = 3) => R.pick([2, 2, 3, 3, 3, 4, 4, 5].filter(x => x <= hi)); // 길이 2~hi (짧은 쪽이 조금 더 자주)
+const RW = []; // make() 한 번 동안 만든 무작위 단어. build가 조사 글자가 든 단어를 검사할 때 쓴다
+const randWord = (R, n = 2, avoid = []) => { for (;;) { let w = ""; for (let k = 0; k < n - 1; k++) w += R.chance(.12) ? R.pick(JP) : R.pick(POOL); w += R.pick(SAFE); if (w[0] !== w[w.length - 1] && !HOLD_WORDS.has(w) && !avoid.includes(w)) { RW.push(w); return w; } } };
+const randName = (R, avoid) => randWord(R, R.chance(.7) ? 2 : 3, avoid);
 
 const FLY = ["펭귄", "타조", "에뮤"];
 const PROPS = [
@@ -232,17 +239,19 @@ const HVERB = [ // 평가 전용 서술어
 ];
 
 // 글자 풀: 이름, 물건, 대상 단어, 주어, 서술어 어간, 원인/결과 앞말의 글자를 모두 모은다. 평가 전용 단어의 글자도 넣어서,
-// 새 단어의 글자가 학습 때 문장 속에서 한 번도 안 나오는 일이 없게 한다(평가는 '처음 보는 단어 전체'를 잰다). 조사처럼 보이는 글자는 뺀다.
+// 새 단어의 글자가 학습 때 문장 속에서 한 번도 안 나오는 일이 없게 한다(평가는 '처음 보는 단어 전체'를 잰다).
+// POOL = 모든 한글 글자(조사 글자 포함, 단어의 처음·중간에 씀) / SAFE = 조사 글자를 뺀 것(단어의 마지막 글자, 그리고 검사용 대체 글자)
 const POOL = [...new Set([
   ...NAMES, ...HOLD_NAMES, ...THINGS, ...HOLD_THINGS, ...TAX.flatMap(t => t.leaves), ...SUBJ, ...HSUBJ,
   ...VERB.map(v => v[0]), ...HVERB.map(v => v[0]), ...CAUSE.map(v => v[0]), ...EFFECT.map(v => v[0]), ...NCAUSE.map(v => v[0]), ...NEFFECT.map(v => v[0]),
-].join(""))].filter(c => /[가-힣]/.test(c) && !"은는이가을를의에도만와과보다야요".includes(c));
+].join(""))].filter(c => /[가-힣]/.test(c));
+const SAFE = POOL.filter(c => !JOSA.includes(c)), JP = POOL.filter(c => JOSA.includes(c)); // JP = 풀 안의 조사 글자(단어 처음·중간에 12% 확률로 일부러 넣는다)
 const HOLD_WORDS = new Set([...HOLD_NAMES, ...HOLD_THINGS, ...HOLD_LEAF, ...HSUBJ]); // 이 단어 자체는 무작위로도 만들지 않는다
 
 // 원인/결과를 하나씩 뽑는다. 사람 주어 20% · 주어x서술어 조합 40% · 자연스러운 목록 40%. hold=true면 평가 전용 단어가 들어간 것만 쓴다.
 function pickCond(R, hold) {
   const side = x => !!x[3] === hold, pickN = () => hold ? R.pick(HOLD_NAMES) : R.chance(RAND_P * .8) ? randName(R, []) : R.pick(NAMES);
-  const subj = () => iga(hold ? R.pick(HSUBJ) : R.chance(RAND_P) ? randWord(R, R.int(2, 3)) : R.pick(SUBJ)), verb = () => R.pick(hold && R.chance(.6) ? HVERB : VERB);
+  const subj = () => iga(hold ? R.pick(HSUBJ) : R.chance(RAND_P) ? randWord(R, rlen(R, 4)) : R.pick(SUBJ)), verb = () => R.pick(hold && R.chance(.6) ? HVERB : VERB);
   const cause = () => { // [~면 앞부분, 평서, 의문]
     const r = R();
     if (r < .2) { const v = R.pick(NCAUSE.filter(side)), n = pickN(); return [`${iga(n)} ${v[0]}`, `${iga(n)} ${v[1]}`, `${iga(n)} ${v[2]}`]; }
@@ -269,8 +278,9 @@ const isaF = (a, b) => S(`${eun(a)} ${ida(b)}.`, `${eun(a)} ${iya(b)}.`, `${eun(
 const isaQ = (a, b) => S(`${eun(a)} ${b}일까?`, `${eun(a)} ${iya(b)}?`, `${iga(a)} ${iya(b)}?`, `${eun(a)} ${b}인가요?`, `${eun(a)} ${b}에 속해?`);
 
 function make(R, hold) {
+  RW.length = 0; // 이번 문제에서 만든 무작위 단어를 새로 모은다
   const leaves = t => t.leaves.filter(l => hold === HOLD_LEAF.has(l)), nm = hold ? HOLD_NAMES : NAMES, th = hold ? HOLD_THINGS : THINGS;
-  const pickLeaf = () => { const t = R.pick(TAX.filter(t => leaves(t).length)), rnd = !hold && R.chance(RAND_P), l = rnd ? randWord(R, R.int(2, 3)) : R.pick(leaves(t)); return { l, rnd, chain: [l, ...[...t.path].reverse()] }; };
+  const pickLeaf = () => { const t = R.pick(TAX.filter(t => leaves(t).length)), rnd = !hold && R.chance(RAND_P), l = rnd ? randWord(R, rlen(R, 5)) : R.pick(leaves(t)); return { l, rnd, chain: [l, ...[...t.path].reverse()] }; };
   const distract = (n, skip) => { const o = []; for (let i = 0; i < n; i++) { const t = R.pick(TAX), c = [R.pick(t.leaves.filter(x => !HOLD_LEAF.has(x) || hold)), ...[...t.path].reverse()]; if (c.some(x => skip.includes(x))) continue; const j = R.int(0, c.length - 2); o.push(isaF(c[j], c[j + 1])); } return o; };
   const fam = R.pick(["isa", "isa", "isa", "prop", "prop", "cmp", "cmp", "cmp", "cond", "cond"]);
   if (fam === "isa") {
@@ -283,14 +293,15 @@ function make(R, hold) {
   }
   if (fam === "prop") {
     const P = R.pick(PROPS), t = TAX.find(t => t.path.at(-1) === P[0]), pool = t.leaves.filter(x => hold === HOLD_LEAF.has(x));
-    const ls = pool.length ? pool : t.leaves, rnd = !hold && R.chance(RAND_P), l = rnd ? randWord(R, R.int(2, 3)) : R.pick(ls), mode = R.pick(["yes", "yes", "unk", FLY.includes(l) || rnd ? "no" : "yes"]), gen = S(`${eun(P[0])} ${P[1]}.`, `${P[0]}들은 ${P[1]}.`);
-    if (mode === "unk") { const o = R.pick(TAX.filter(x => x.path.at(-1) !== P[0] && x.path.at(-1) !== "물고기")), ol = !hold && R.chance(RAND_P) ? randWord(R, R.int(2, 3)) : R.pick(o.leaves.filter(x => !HOLD_LEAF.has(x) || hold)); return { fam, kind: "unk", F: [gen, isaF(ol, o.path.at(-1))], Q: S(`${eun(ol)} ${P[3]}?`, `${iga(ol)} ${P[3]}?`) }; }
+    const ls = pool.length ? pool : t.leaves, rnd = !hold && R.chance(RAND_P), l = rnd ? randWord(R, rlen(R, 5)) : R.pick(ls), mode = R.pick(["yes", "yes", "unk", FLY.includes(l) || rnd ? "no" : "yes"]), gen = S(`${eun(P[0])} ${P[1]}.`, `${P[0]}들은 ${P[1]}.`);
+    if (mode === "unk") { const o = R.pick(TAX.filter(x => x.path.at(-1) !== P[0] && x.path.at(-1) !== "물고기")), ol = !hold && R.chance(RAND_P) ? randWord(R, rlen(R, 5)) : R.pick(o.leaves.filter(x => !HOLD_LEAF.has(x) || hold)); return { fam, kind: "unk", F: [gen, isaF(ol, o.path.at(-1))], Q: S(`${eun(ol)} ${P[3]}?`, `${iga(ol)} ${P[3]}?`) }; }
     const F = [gen, isaF(l, P[0])]; if (mode === "no") F.push(S(`${eun(l)} ${P[2]}.`)); else if (R.chance(.4)) F.push(...distract(1, [l, P[0]]));
     return { fam, kind: mode, F, Q: S(`${eun(l)} ${P[3]}?`, `${iga(l)} ${P[3]}?`) };
   }
   if (fam === "cmp") {
     const D = R.pick(DIM), pool = D[4] === "p" ? nm : th, n = Math.min(R.pick([2, 3, 3, 4]), pool.length), E = [], F = [];
-    while (E.length < n) { const w = !hold && R.chance(RAND_P) ? randName(R, E) : R.pick(pool); if (!E.includes(w)) E.push(w); }
+    // 사람 이름은 2~3글자, 물건은 2~4글자 (평가 전용 물건 '리모컨', '카메라'는 3글자)
+    while (E.length < n) { const w = !hold && R.chance(RAND_P) ? (D[4] === "p" ? randName(R, E) : randWord(R, rlen(R, 4), E)) : R.pick(pool); if (!E.includes(w)) E.push(w); }
     for (let i = 0; i < n - 1; i++) { const hi = E[i], lo = E[i + 1]; F.push(S(`${lo}보다 ${iga(hi)} ${D[0]}.`, `${eun(hi)} ${lo}보다 ${D[0]}.`, `${eun(lo)} ${hi}보다 ${D[1]}.`, `${lo}보다 ${iga(hi)} 더 ${D[0]}.`)); }
     const mode = R.pick(["top", "bot", "pair", "pair"]);
     if (mode === "top") return { fam, kind: "top:" + E[0], F, Q: S(`누가 제일 ${D[2]}?`, `누가 가장 ${D[2]}?`, `${D[4] === "p" ? "누가" : "뭐가"} 제일 ${D[2]}?`) };
@@ -312,14 +323,32 @@ function render(R, ex, canon) {
 }
 
 function build(n, hold, seed, seen) {
-  const R = rng(seed), out = [], st = {}, bump = (f, k) => { (st[f] = st[f] || { made: 0, noTeacher: 0, mismatch: 0, kept: 0, teacherOnVariant: 0 })[k]++; };
+  const R = rng(seed), G = rng(seed ^ 0x9E3779B9), out = [], st = {}, bump = (f, k) => { (st[f] = st[f] || { made: 0, noTeacher: 0, mismatch: 0, kept: 0, teacherOnVariant: 0, wordGuard: 0, josaKept: 0 })[k]++; };
+  // (변경) 조사 글자가 든 무작위 단어(예: '쏘가리' 같은 모양)를 도구(lm.js tools)가 통째로 한 단어로 읽는지 확인한다.
+  // 그 글자를 조사 아닌 글자로 바꾼 같은 문제를 다시 풀게 해서, 답을 원래 단어로 되돌렸을 때 똑같으면 통과. 다르면 도구가 단어를 잘못 쪼갠 것이라
+  // (판정만 맞고 근거 줄에 잘린 단어가 들어간 답이 학습에 섞이지 않도록) 버린다. 마지막 글자는 조사가 아니라서 그대로 둔다.
+  const wordGuard = (cq, a, words) => {
+    let q2 = cq; const back = [];
+    for (const w of words) {
+      let s = null;
+      for (let t = 0; t < 30 && !s; t++) { const c = [...w].map(ch => JOSA.includes(ch) ? G.pick(SAFE) : ch).join(""); if (c !== w && !cq.includes(c) && !back.some(b => b[0] === c)) s = c; }
+      if (!s) return false;
+      q2 = q2.split(w).join(s); back.push([s, w]);
+    }
+    const a2 = teach(q2); if (!a2) return false;
+    let r = a2; for (const [s, w] of back) r = r.split(s).join(w);
+    return r === a;
+  };
   for (let guard = 0; out.length < n && guard < n * 30; guard++) {
     const ex = make(R, hold); bump(ex.fam, "made");
-    const a = teach(render(R, ex, true));
+    const cq = render(R, ex, true), a = teach(cq);
     if (!a) { bump(ex.fam, "noTeacher"); continue; }
-    if (!verdict(a, ex.kind)) { bump(ex.fam, "mismatch"); st._bad = st._bad || []; if (st._bad.length < 8) st._bad.push({ q: render(R, ex, true), gold: ex.kind, got: a.split("\n")[0] }); continue; }
+    if (!verdict(a, ex.kind)) { bump(ex.fam, "mismatch"); st._bad = st._bad || []; if (st._bad.length < 8) st._bad.push({ q: cq, gold: ex.kind, got: a.split("\n")[0] }); continue; }
+    const used = [...new Set(RW)].filter(w => cq.includes(w)), josa = used.filter(hasJosa);
+    if (josa.length && !wordGuard(cq, a, josa)) { bump(ex.fam, "wordGuard"); st._guard = st._guard || []; if (st._guard.length < 6) st._guard.push({ q: cq, got: a.split("\n").join(" / ") }); continue; }
     const q = render(R, ex, false); if (seen.has(q)) continue; seen.add(q);
-    const t = verdict(teach(q), ex.kind) ? 1 : 0; bump(ex.fam, "kept"); if (t) bump(ex.fam, "teacherOnVariant");
+    const t = verdict(teach(q), ex.kind) ? 1 : 0; bump(ex.fam, "kept"); if (t) bump(ex.fam, "teacherOnVariant"); if (josa.length) bump(ex.fam, "josaKept");
+    st._wlen = st._wlen || {}; for (const w of used) st._wlen[w.length] = (st._wlen[w.length] || 0) + 1; // 무작위 단어 길이 분포 확인용
     out.push({ q, a, fam: ex.fam, kind: ex.kind, t });
   }
   return { out, st };
