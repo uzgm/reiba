@@ -1,0 +1,1 @@
+--steps 60000 --D 128 --L 4 --merges 300 --lr 1.5e-3 | gen_reason.js 60000 400 7
