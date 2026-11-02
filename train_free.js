@@ -13,6 +13,7 @@
 
    학습 시퀀스:  Q:{질문}\nA:{답}<eos>   (손실은 답 토큰에 1, 질문 토큰에 --pw(기본 0.05))
    배치 구성:    추론 76% (cmp --cmpw 40%, isa·prop·cond 각 20%) · brain 10% · 모름(OOD) 4% · 글자 복사 --cp(기본 10%)
+   글자 복사:    무작위 음절 1~2개 단어를 그대로 따라 쓰기. 단어 길이는 2~5글자(평가 단어는 최대 5글자), 조사 글자도 포함한다.
    저장 형식:    { kind:"free-v1", tok, lm, ... } — lm 부분은 lm.js의 Fast가 그대로 읽는다.
    tfjs:         @tensorflow/tfjs-node가 있으면 그것을(가장 빠름), 없으면 tfjs-backend-wasm, 그것도 없으면 순수 JS cpu를 쓴다.
                  (--backend auto|wasm|cpu)  설치:  npm i @tensorflow/tfjs @tensorflow/tfjs-node   (또는 tfjs-backend-wasm) */
@@ -140,8 +141,10 @@ async function train() {
   }
   const byFam = {}; for (const f of FAMS) byFam[f] = all.reason.filter(e => e.fam === f && e.ids.length <= T);
   const dropped = all.reason.length - FAMS.reduce((a, f) => a + byFam[f].length, 0);
-  const syl = tok.vocab.filter(t => t.length === 1 && /[가-힣]/.test(t)); // 글자 복사 과제용 음절(평가 전용 글자 포함 — 임베딩이 학습되게)
-  const copyEx = () => { const w = [...Array(1 + (R() < .4))].map(() => [...Array(2 + (R() < .5))].map(() => R.pick(syl)).join("")).join(" "); return enc({ q: R.pick(["따라 해: ", "이렇게 말해: ", "반복해: "]) + w, a: w, fam: "copy" }); };
+  const syl = tok.vocab.filter(t => t.length === 1 && /[가-힣]/.test(t)); // 글자 복사 과제용 음절(평가 전용 글자 포함 — 임베딩이 학습되게. 조사 글자도 들어 있다)
+  // (변경) 복사할 단어는 2~5글자(평가 단어는 최대 5글자: 행글라이더). 짧은 쪽이 조금 더 자주 나온다.
+  const clen = () => R.pick([2, 2, 3, 3, 3, 4, 4, 5]);
+  const copyEx = () => { const w = [...Array(1 + (R() < .4))].map(() => [...Array(clen())].map(() => R.pick(syl)).join("")).join(" "); return enc({ q: R.pick(["따라 해: ", "이렇게 말해: ", "반복해: "]) + w, a: w, fam: "copy" }); };
   const aug = q => { let s = q; if (s.length > 3 && R() < .12) { const i = 1 + Math.floor(R() * (s.length - 2)); s = s.slice(0, i) + s.slice(i + 1); } return R.pick(PRE) + s + R.pick(SUF); };
   // 추론 문제는 유형별 비중을 둔다: cmp(정렬이 필요해 가장 어렵다)를 --cmpw, 나머지 셋은 균등 분배
   const live = FAMS.filter(f => byFam[f].length), fw = f => f === "cmp" ? opt.cmpw : (1 - opt.cmpw) / 3, tw = live.reduce((a, f) => a + fw(f), 0);
