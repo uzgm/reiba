@@ -23,7 +23,7 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_REPO: ${{ vars.HF_REPO }}
         run: |
-          NAME="$NAME_IN"
+          export NAME="$NAME_IN"
           if [[ ! "$NAME" =~ ^[A-Za-z0-9._-]+$ ]] || [ "$NAME" = "." ] || [ "$NAME" = ".." ]; then
             echo "결과 이름은 영문/숫자/._- 만 쓸 수 있어요: '$NAME'"; exit 1
           fi
