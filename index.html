@@ -6,24 +6,12 @@
 <title>Reiba</title>
 <style>
   :root {
-    --bg: #e9eef5;
-    --ink: #14213d;
-    --muted: #4a5873;
-    --btn-bg: #14213d;
-    --btn-ink: #ffffff;
-    --line: #c3cde0;
-    color-scheme: light;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #101828;
-      --ink: #eaf0fb;
-      --muted: #9fb0cf;
-      --btn-bg: #eaf0fb;
-      --btn-ink: #101828;
-      --line: #2a3a5c;
-      color-scheme: dark;
-    }
+    --bg: #f4eee1;
+    --ink: #2d2a22;
+    --muted: #7a705a;
+    --accent: #e8b923;
+    --accent-hover: #d9a90f;
+    --line: #dccfae;
   }
   * { box-sizing: border-box; }
   html, body { height: 100%; margin: 0; }
@@ -51,26 +39,28 @@
     display: block;
     margin: 28px 0 24px;
     padding: 18px 20px;
-    background: var(--btn-bg);
-    color: var(--btn-ink);
+    background: var(--accent);
+    color: var(--ink);
     text-align: center;
     font-size: 1.1rem;
     font-weight: 700;
     text-decoration: none;
-    border-radius: 10px;
+    border-radius: 12px;
   }
-  a.open:focus-visible { outline: 3px solid var(--muted); outline-offset: 3px; }
+  a.open:hover { background: var(--accent-hover); }
+  a:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
   .note { border-top: 1px solid var(--line); padding-top: 16px; font-size: 0.92rem; }
+  .note a { color: #8a6200; }
 </style>
 </head>
 <body>
 <main>
   <h1>Reiba</h1>
-  <p>직접 학습시킨 모델과 바로 대화할 수 있어요. 아래 버튼을 누르면 채팅 화면이 열립니다.</p>
-  <a class="open" href="https://huggingface.co/spaces/Uzgm/reiba">채팅 열기</a>
+  <p>직접 학습시킨 모델과 바로 대화할 수 있어요.</p>
+  <a class="open" href="https://uzgm-reiba.hf.space">채팅 열기</a>
   <div class="note">
-    <p>Hugging Face에 로그인한 상태로 열면 하루 사용 한도가 더 넉넉해요. 로그인하지 않아도 쓸 수 있어요.</p>
     <p>처음 열 때는 서버를 깨우느라 1~2분 걸릴 수 있어요.</p>
+    <p>Hugging Face 계정이 있다면 로그인한 뒤 <a href="https://huggingface.co/spaces/Uzgm/reiba">이 주소</a>로 열어 보세요. 계정별 사용 한도가 따로 적용돼요.</p>
   </div>
 </main>
 </body>
